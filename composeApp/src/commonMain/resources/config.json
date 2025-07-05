@@ -1,0 +1,1205 @@
+{
+  "TemplateName": "Jebus",
+  "Zones": [
+    {
+      "ZoneId": 1,
+      "TerrainType": "FirstPlayer",
+      "DwellingGenerationConfig": {
+        "MinCount": 14,
+        "MaxCount": 18,
+        "MinTiersCount": 3,
+        "MaxTiersCount": 6,
+        "UniformDistribution": false,
+        "AllowedTiers": []
+      },
+      "DwellingTexture": "PandoraBox",
+      "Prisons": {
+        "MinValue": 0,
+        "MaxValue": 0
+      },
+      "ShopPoints": {
+        "MinValue": 60,
+        "MaxValue": 90
+      },
+      "CreaturesConfiguration": {
+        "ReplacementsCount": {
+          "MinValue": 5,
+          "MaxValue": 7
+        },
+        "TerrainFaction": true,
+        "NonPlayersFactions": true,
+        "NoGrades": true,
+        "Grades": true,
+        "Neutrals": false,
+        "BaseCostMultiplier": 0.0,
+        "BaseResourcesMultiplier": 0.0,
+        "CreatureModifiers": [
+          {
+            "Tier": 1,
+            "GrowMultiplier": 2.5
+          },
+          {
+            "Tier": 2,
+            "GrowMultiplier": 2.0
+          },
+          {
+            "Tier": 3,
+            "GrowMultiplier": 1.5
+          },
+          {
+            "Tier": 4,
+            "GrowMultiplier": 1.25
+          }
+        ],
+        "CreatureTierReplacements": [],
+        "NonUniqueReplacements": false
+      }
+    },
+    {
+      "ZoneId": 2,
+      "TerrainType": "SecondPlayer",
+      "DwellingGenerationConfig": {
+        "MinCount": 14,
+        "MaxCount": 18,
+        "MinTiersCount": 3,
+        "MaxTiersCount": 6,
+        "UniformDistribution": false,
+        "AllowedTiers": []
+      },
+      "DwellingTexture": "PandoraBox",
+      "Prisons": {
+        "MinValue": 0,
+        "MaxValue": 0
+      },
+      "ShopPoints": {
+        "MinValue": 60,
+        "MaxValue": 90
+      },
+      "CreaturesConfiguration": {
+        "ReplacementsCount": {
+          "MinValue": 5,
+          "MaxValue": 7
+        },
+        "TerrainFaction": true,
+        "NonPlayersFactions": true,
+        "NoGrades": true,
+        "Grades": true,
+        "Neutrals": false,
+        "BaseCostMultiplier": 0.0,
+        "BaseResourcesMultiplier": 0.0,
+        "CreatureModifiers": [
+          {
+            "Tier": 1,
+            "GrowMultiplier": 2.5
+          },
+          {
+            "Tier": 2,
+            "GrowMultiplier": 2.0
+          },
+          {
+            "Tier": 3,
+            "GrowMultiplier": 1.5
+          },
+          {
+            "Tier": 4,
+            "GrowMultiplier": 1.25
+          }
+        ],
+        "CreatureTierReplacements": [],
+        "NonUniqueReplacements": false
+      }
+    },
+    {
+      "ZoneId": 3,
+      "TerrainType": "Terrain1",
+      "DwellingGenerationConfig": {
+        "MinCount": 15,
+        "MaxCount": 20,
+        "MinTiersCount": 5,
+        "MaxTiersCount": 5,
+        "UniformDistribution": false,
+        "AllowedTiers": [
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      "DwellingTexture": "PandoraBox",
+      "Prisons": {
+        "MinValue": 0,
+        "MaxValue": 0
+      },
+      "ShopPoints": {
+        "MinValue": 50,
+        "MaxValue": 100
+      },
+      "RedwoodObservatoryDensity": {
+        "MinValue": 2,
+        "MaxValue": 2
+      },
+      "CreaturesConfiguration": {
+        "ReplacementsCount": {
+          "MinValue": 3,
+          "MaxValue": 5
+        },
+        "TerrainFaction": true,
+        "NonPlayersFactions": false,
+        "NoGrades": true,
+        "Grades": true,
+        "Neutrals": true,
+        "BaseCostMultiplier": 0.0,
+        "BaseResourcesMultiplier": 0.0,
+        "BaseGrowMultiplier": 2.0,
+        "CreatureModifiers": [
+          {
+            "Tier": 7,
+            "GrowMultiplier": 1.0
+          }
+        ],
+        "CreatureTierReplacements": [
+          {
+            "Tier": 4,
+            "CreatureIds": [
+              "CREATURE_FIRE_ELEMENTAL",
+              "CREATURE_WATER_ELEMENTAL",
+              "CREATURE_EARTH_ELEMENTAL",
+              "CREATURE_AIR_ELEMENTAL"
+            ]
+          },
+          {
+            "Tier": 4,
+            "CreatureIds": [
+              "CREATURE_WOLF"
+            ]
+          },
+          {
+            "Tier": 5,
+            "CreatureIds": [
+              "CREATURE_MUMMY"
+            ]
+          },
+          {
+            "Tier": 6,
+            "CreatureIds": [
+              "CREATURE_DEATH_KNIGHT",
+              "CREATURE_MANTICORE"
+            ]
+          },
+          {
+            "Tier": 7,
+            "CreatureIds": [
+              "CREATURE_PHOENIX"
+            ]
+          }
+        ],
+        "NonUniqueReplacements": false
+      }
+    },
+    {
+      "ZoneId": 4,
+      "TerrainType": "Terrain2",
+      "MirrorZoneId": 3,
+      "DwellingTexture": "PandoraBox"
+    },
+    {
+      "ZoneId": 5,
+      "TerrainType": "Terrain3",
+      "DwellingGenerationConfig": {
+        "MinCount": 20,
+        "MaxCount": 25,
+        "MinTiersCount": 3,
+        "MaxTiersCount": 7,
+        "UniformDistribution": false,
+        "AllowedTiers": []
+      },
+      "DwellingTexture": "PandoraBox",
+      "Prisons": {
+        "MinValue": 0,
+        "MaxValue": 0
+      },
+      "ShopPoints": {
+        "MinValue": 100,
+        "MaxValue": 150
+      },
+      "RedwoodObservatoryDensity": {
+        "MinValue": 2,
+        "MaxValue": 2
+      },
+      "CreaturesConfiguration": {
+        "ReplacementsCount": {
+          "MinValue": 5,
+          "MaxValue": 7
+        },
+        "TerrainFaction": true,
+        "NonPlayersFactions": true,
+        "NoGrades": true,
+        "Grades": true,
+        "Neutrals": false,
+        "BaseCostMultiplier": 0.0,
+        "BaseResourcesMultiplier": 0.0,
+        "CreatureModifiers": [
+          {
+            "Tier": 1,
+            "GrowMultiplier": 5.0
+          },
+          {
+            "Tier": 2,
+            "GrowMultiplier": 4.5
+          },
+          {
+            "Tier": 3,
+            "GrowMultiplier": 4.0
+          },
+          {
+            "Tier": 4,
+            "GrowMultiplier": 3.5
+          },
+          {
+            "Tier": 5,
+            "GrowMultiplier": 3.0
+          },
+          {
+            "Tier": 6,
+            "GrowMultiplier": 2.0
+          },
+          {
+            "Tier": 7,
+            "GrowMultiplier": 2.0
+          }
+        ],
+        "CreatureTierReplacements": [],
+        "NonUniqueReplacements": false
+      }
+    }
+  ],
+  "BaseArmyMultiplier": 1.0,
+  "ArmyMultipliers": {
+    "Horde": 0.7,
+    "Humans": 0.9,
+    "Inferno": 1.0,
+    "Liga": 1.1,
+    "Necropolis": 0.8,
+    "Elves": 0.6,
+    "Mages": 0.7,
+    "Dwarfs": 1.0
+  },
+  "Connections": [],
+  "ShopBuildingConfigs": [
+    {
+      "Id": 1,
+      "Value": 5,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Academy_04",
+        "CreaturesPool": [
+          "CREATURE_ARCH_MAGI",
+          "CREATURE_COMBAT_MAGE"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_IRON_GOLEM",
+              "CREATURE_IRON_GOLEM"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.3,
+        "CreatureResourcesMultiplier": 0.3,
+        "CreatureGrowMultiplier": 3.0,
+        "GuardGrowMultiplier": 4.0
+      }
+    },
+    {
+      "Id": 2,
+      "Value": 8,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Academy_05",
+        "CreaturesPool": [
+          "CREATURE_MASTER_GENIE",
+          "CREATURE_DJINN_VIZIER"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_IRON_GOLEM",
+              "CREATURE_IRON_GOLEM",
+              "CREATURE_IRON_GOLEM"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.4,
+        "CreatureResourcesMultiplier": 0.4,
+        "CreatureGrowMultiplier": 2.5,
+        "GuardGrowMultiplier": 4.0
+      }
+    },
+    {
+      "Id": 3,
+      "Value": 12,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Academy_06",
+        "CreaturesPool": [
+          "CREATURE_RAKSHASA_RUKH",
+          "CREATURE_RAKSHASA_KSHATRI"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_IRON_GOLEM",
+              "CREATURE_IRON_GOLEM",
+              "CREATURE_IRON_GOLEM",
+              "CREATURE_IRON_GOLEM"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.5,
+        "CreatureResourcesMultiplier": 0.5,
+        "CreatureGrowMultiplier": 2.0,
+        "GuardGrowMultiplier": 5.0
+      }
+    },
+    {
+      "Id": 4,
+      "Value": 15,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Academy_07",
+        "CreaturesPool": [
+          "CREATURE_TITAN",
+          "CREATURE_STORM_LORD"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_IRON_GOLEM",
+              "CREATURE_IRON_GOLEM",
+              "CREATURE_IRON_GOLEM",
+              "CREATURE_IRON_GOLEM",
+              "CREATURE_IRON_GOLEM"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.6,
+        "CreatureResourcesMultiplier": 0.6,
+        "CreatureGrowMultiplier": 1.0,
+        "GuardGrowMultiplier": 5.0
+      }
+    },
+    {
+      "Id": 5,
+      "Value": 5,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Dwarf_04",
+        "CreaturesPool": [
+          "CREATURE_BERSERKER",
+          "CREATURE_BATTLE_RAGER"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_BEAR_RIDER",
+              "CREATURE_BEAR_RIDER"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.3,
+        "CreatureResourcesMultiplier": 0.3,
+        "CreatureGrowMultiplier": 3.0,
+        "GuardGrowMultiplier": 4.0
+      }
+    },
+    {
+      "Id": 6,
+      "Value": 8,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Dwarf_05",
+        "CreaturesPool": [
+          "CREATURE_FLAME_KEEPER",
+          "CREATURE_FLAME_MAGE"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_BEAR_RIDER",
+              "CREATURE_BEAR_RIDER",
+              "CREATURE_BEAR_RIDER"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.4,
+        "CreatureResourcesMultiplier": 0.4,
+        "CreatureGrowMultiplier": 2.5,
+        "GuardGrowMultiplier": 4.0
+      }
+    },
+    {
+      "Id": 7,
+      "Value": 12,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Dwarf_06",
+        "CreaturesPool": [
+          "CREATURE_THUNDER_THANE",
+          "CREATURE_WARLORD"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_BEAR_RIDER",
+              "CREATURE_BEAR_RIDER",
+              "CREATURE_BEAR_RIDER",
+              "CREATURE_BEAR_RIDER"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.5,
+        "CreatureResourcesMultiplier": 0.5,
+        "CreatureGrowMultiplier": 2.0,
+        "GuardGrowMultiplier": 5.0
+      }
+    },
+    {
+      "Id": 8,
+      "Value": 15,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Dwarf_07",
+        "CreaturesPool": [
+          "CREATURE_LAVA_DRAGON",
+          "CREATURE_MAGMA_DRAGON"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_BEAR_RIDER",
+              "CREATURE_BEAR_RIDER",
+              "CREATURE_BEAR_RIDER",
+              "CREATURE_BEAR_RIDER",
+              "CREATURE_BEAR_RIDER"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.6,
+        "CreatureResourcesMultiplier": 0.6,
+        "CreatureGrowMultiplier": 1.0,
+        "GuardGrowMultiplier": 5.0
+      }
+    },
+    {
+      "Id": 9,
+      "Value": 5,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Inferno_04",
+        "CreaturesPool": [
+          "CREATURE_INFERNAL_SUCCUBUS",
+          "CREATURE_SUCCUBUS_SEDUCER"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_HELL_HOUND",
+              "CREATURE_HELL_HOUND"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.3,
+        "CreatureResourcesMultiplier": 0.3,
+        "CreatureGrowMultiplier": 3.0,
+        "GuardGrowMultiplier": 4.0
+      }
+    },
+    {
+      "Id": 10,
+      "Value": 8,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Inferno_05",
+        "CreaturesPool": [
+          "CREATURE_FRIGHTFUL_NIGHTMARE",
+          "CREATURE_HELLMARE"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_HELL_HOUND",
+              "CREATURE_HELL_HOUND",
+              "CREATURE_HELL_HOUND"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.4,
+        "CreatureResourcesMultiplier": 0.4,
+        "CreatureGrowMultiplier": 2.5,
+        "GuardGrowMultiplier": 4.0
+      }
+    },
+    {
+      "Id": 11,
+      "Value": 12,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Inferno_06",
+        "CreaturesPool": [
+          "CREATURE_PIT_SPAWN",
+          "CREATURE_BALOR"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_HELL_HOUND",
+              "CREATURE_HELL_HOUND",
+              "CREATURE_HELL_HOUND",
+              "CREATURE_HELL_HOUND"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.5,
+        "CreatureResourcesMultiplier": 0.5,
+        "CreatureGrowMultiplier": 2.0,
+        "GuardGrowMultiplier": 5.0
+      }
+    },
+    {
+      "Id": 12,
+      "Value": 15,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Inferno_07",
+        "CreaturesPool": [
+          "CREATURE_ARCH_DEMON",
+          "CREATURE_ARCHDEVIL"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_HELL_HOUND",
+              "CREATURE_HELL_HOUND",
+              "CREATURE_HELL_HOUND",
+              "CREATURE_HELL_HOUND",
+              "CREATURE_HELL_HOUND"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.6,
+        "CreatureResourcesMultiplier": 0.6,
+        "CreatureGrowMultiplier": 1.0,
+        "GuardGrowMultiplier": 5.0
+      }
+    },
+    {
+      "Id": 13,
+      "Value": 5,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Dungeon_04",
+        "CreaturesPool": [
+          "CREATURE_RAVAGER",
+          "CREATURE_BLACK_RIDER"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_MINOTAUR",
+              "CREATURE_MINOTAUR"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.3,
+        "CreatureResourcesMultiplier": 0.3,
+        "CreatureGrowMultiplier": 3.0,
+        "GuardGrowMultiplier": 4.0
+      }
+    },
+    {
+      "Id": 14,
+      "Value": 8,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Dungeon_05",
+        "CreaturesPool": [
+          "CREATURE_CHAOS_HYDRA",
+          "CREATURE_ACIDIC_HYDRA"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_MINOTAUR",
+              "CREATURE_MINOTAUR",
+              "CREATURE_MINOTAUR"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.4,
+        "CreatureResourcesMultiplier": 0.4,
+        "CreatureGrowMultiplier": 2.5,
+        "GuardGrowMultiplier": 4.0
+      }
+    },
+    {
+      "Id": 15,
+      "Value": 12,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Dungeon_06",
+        "CreaturesPool": [
+          "CREATURE_MATRIARCH",
+          "CREATURE_SHADOW_MISTRESS"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_MINOTAUR",
+              "CREATURE_MINOTAUR",
+              "CREATURE_MINOTAUR",
+              "CREATURE_MINOTAUR"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.5,
+        "CreatureResourcesMultiplier": 0.5,
+        "CreatureGrowMultiplier": 2.0,
+        "GuardGrowMultiplier": 5.0
+      }
+    },
+    {
+      "Id": 16,
+      "Value": 15,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Dungeon_07",
+        "CreaturesPool": [
+          "CREATURE_BLACK_DRAGON",
+          "CREATURE_RED_DRAGON"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_MINOTAUR",
+              "CREATURE_MINOTAUR",
+              "CREATURE_MINOTAUR",
+              "CREATURE_MINOTAUR",
+              "CREATURE_MINOTAUR"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.6,
+        "CreatureResourcesMultiplier": 0.6,
+        "CreatureGrowMultiplier": 1.0,
+        "GuardGrowMultiplier": 5.0
+      }
+    },
+    {
+      "Id": 17,
+      "Value": 5,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Necro_04",
+        "CreaturesPool": [
+          "CREATURE_VAMPIRE_LORD",
+          "CREATURE_NOSFERATU"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_ZOMBIE",
+              "CREATURE_ZOMBIE",
+              "CREATURE_ZOMBIE"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.3,
+        "CreatureResourcesMultiplier": 0.3,
+        "CreatureGrowMultiplier": 3.0,
+        "GuardGrowMultiplier": 4.0
+      }
+    },
+    {
+      "Id": 18,
+      "Value": 8,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Necro_05",
+        "CreaturesPool": [
+          "CREATURE_DEMILICH",
+          "CREATURE_LICH_MASTER"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_ZOMBIE",
+              "CREATURE_ZOMBIE",
+              "CREATURE_ZOMBIE",
+              "CREATURE_ZOMBIE"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.4,
+        "CreatureResourcesMultiplier": 0.4,
+        "CreatureGrowMultiplier": 2.5,
+        "GuardGrowMultiplier": 4.0
+      }
+    },
+    {
+      "Id": 19,
+      "Value": 12,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Necro_06",
+        "CreaturesPool": [
+          "CREATURE_WRAITH",
+          "CREATURE_BANSHEE"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_ZOMBIE",
+              "CREATURE_ZOMBIE",
+              "CREATURE_ZOMBIE",
+              "CREATURE_ZOMBIE",
+              "CREATURE_ZOMBIE"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.5,
+        "CreatureResourcesMultiplier": 0.5,
+        "CreatureGrowMultiplier": 2.0,
+        "GuardGrowMultiplier": 5.0
+      }
+    },
+    {
+      "Id": 20,
+      "Value": 15,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Necro_07",
+        "CreaturesPool": [
+          "CREATURE_HORROR_DRAGON",
+          "CREATURE_SHADOW_DRAGON"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_ZOMBIE",
+              "CREATURE_ZOMBIE",
+              "CREATURE_ZOMBIE",
+              "CREATURE_ZOMBIE",
+              "CREATURE_ZOMBIE",
+              "CREATURE_ZOMBIE"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.6,
+        "CreatureResourcesMultiplier": 0.6,
+        "CreatureGrowMultiplier": 1.0,
+        "GuardGrowMultiplier": 5.0
+      }
+    },
+    {
+      "Id": 21,
+      "Value": 5,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Haven_04",
+        "CreaturesPool": [
+          "CREATURE_ROYAL_GRIFFIN",
+          "CREATURE_BATTLE_GRIFFIN"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_FOOTMAN",
+              "CREATURE_FOOTMAN"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.3,
+        "CreatureResourcesMultiplier": 0.3,
+        "CreatureGrowMultiplier": 3.0,
+        "GuardGrowMultiplier": 4.0
+      }
+    },
+    {
+      "Id": 22,
+      "Value": 8,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Haven_05",
+        "CreaturesPool": [
+          "CREATURE_CLERIC",
+          "CREATURE_ZEALOT"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_FOOTMAN",
+              "CREATURE_FOOTMAN",
+              "CREATURE_FOOTMAN"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.4,
+        "CreatureResourcesMultiplier": 0.4,
+        "CreatureGrowMultiplier": 2.5,
+        "GuardGrowMultiplier": 4.0
+      }
+    },
+    {
+      "Id": 23,
+      "Value": 12,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Haven_06",
+        "CreaturesPool": [
+          "CREATURE_CHAMPION",
+          "CREATURE_PALADIN"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_FOOTMAN",
+              "CREATURE_FOOTMAN",
+              "CREATURE_FOOTMAN",
+              "CREATURE_FOOTMAN"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.5,
+        "CreatureResourcesMultiplier": 0.5,
+        "CreatureGrowMultiplier": 2.0,
+        "GuardGrowMultiplier": 5.0
+      }
+    },
+    {
+      "Id": 24,
+      "Value": 15,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Haven_07",
+        "CreaturesPool": [
+          "CREATURE_SERAPH",
+          "CREATURE_ARCHANGEL"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_FOOTMAN",
+              "CREATURE_FOOTMAN",
+              "CREATURE_FOOTMAN",
+              "CREATURE_FOOTMAN",
+              "CREATURE_FOOTMAN"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.6,
+        "CreatureResourcesMultiplier": 0.6,
+        "CreatureGrowMultiplier": 1.0,
+        "GuardGrowMultiplier": 5.0
+      }
+    },
+    {
+      "Id": 25,
+      "Value": 5,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Orcs_04",
+        "CreaturesPool": [
+          "CREATURE_SHAMAN_WITCH",
+          "CREATURE_SHAMAN_HAG"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_ORC_WARRIOR",
+              "CREATURE_ORC_WARRIOR"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.3,
+        "CreatureResourcesMultiplier": 0.3,
+        "CreatureGrowMultiplier": 3.0,
+        "GuardGrowMultiplier": 4.0
+      }
+    },
+    {
+      "Id": 26,
+      "Value": 8,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Orcs_05",
+        "CreaturesPool": [
+          "CREATURE_ORCCHIEF_EXECUTIONER",
+          "CREATURE_ORCCHIEF_CHIEFTAIN"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_ORC_WARRIOR",
+              "CREATURE_ORC_WARRIOR",
+              "CREATURE_ORC_WARRIOR"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.4,
+        "CreatureResourcesMultiplier": 0.4,
+        "CreatureGrowMultiplier": 2.5,
+        "GuardGrowMultiplier": 4.0
+      }
+    },
+    {
+      "Id": 27,
+      "Value": 12,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Orcs_06",
+        "CreaturesPool": [
+          "CREATURE_WYVERN_POISONOUS",
+          "CREATURE_WYVERN_PAOKAI"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_ORC_WARRIOR",
+              "CREATURE_ORC_WARRIOR",
+              "CREATURE_ORC_WARRIOR",
+              "CREATURE_ORC_WARRIOR"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.5,
+        "CreatureResourcesMultiplier": 0.5,
+        "CreatureGrowMultiplier": 2.0,
+        "GuardGrowMultiplier": 5.0
+      }
+    },
+    {
+      "Id": 28,
+      "Value": 15,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Orcs_07",
+        "CreaturesPool": [
+          "CREATURE_CYCLOP_BLOODEYED",
+          "CREATURE_CYCLOP_UNTAMED"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_ORC_WARRIOR",
+              "CREATURE_ORC_WARRIOR",
+              "CREATURE_ORC_WARRIOR",
+              "CREATURE_ORC_WARRIOR",
+              "CREATURE_ORC_WARRIOR"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.6,
+        "CreatureResourcesMultiplier": 0.6,
+        "CreatureGrowMultiplier": 1.0,
+        "GuardGrowMultiplier": 5.0
+      }
+    },
+    {
+      "Id": 29,
+      "Value": 5,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Elves_04",
+        "CreaturesPool": [
+          "CREATURE_DRUID_ELDER",
+          "CREATURE_HIGH_DRUID"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_BLADE_JUGGLER",
+              "CREATURE_BLADE_JUGGLER"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.3,
+        "CreatureResourcesMultiplier": 0.3,
+        "CreatureGrowMultiplier": 3.0,
+        "GuardGrowMultiplier": 4.0
+      }
+    },
+    {
+      "Id": 30,
+      "Value": 8,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Elves_05",
+        "CreaturesPool": [
+          "CREATURE_WAR_UNICORN",
+          "CREATURE_WHITE_UNICORN"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_BLADE_JUGGLER",
+              "CREATURE_BLADE_JUGGLER",
+              "CREATURE_BLADE_JUGGLER"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.4,
+        "CreatureResourcesMultiplier": 0.4,
+        "CreatureGrowMultiplier": 2.5,
+        "GuardGrowMultiplier": 4.0
+      }
+    },
+    {
+      "Id": 31,
+      "Value": 12,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Elves_06",
+        "CreaturesPool": [
+          "CREATURE_TREANT_GUARDIAN",
+          "CREATURE_ANGER_TREANT"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_BLADE_JUGGLER",
+              "CREATURE_BLADE_JUGGLER",
+              "CREATURE_BLADE_JUGGLER",
+              "CREATURE_BLADE_JUGGLER"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.5,
+        "CreatureResourcesMultiplier": 0.5,
+        "CreatureGrowMultiplier": 2.0,
+        "GuardGrowMultiplier": 5.0
+      }
+    },
+    {
+      "Id": 32,
+      "Value": 15,
+      "GuardStrenght": 0,
+      "CreatureBankConfig": {
+        "Name": "Elves_07",
+        "CreaturesPool": [
+          "CREATURE_GOLD_DRAGON",
+          "CREATURE_RAINBOW_DRAGON"
+        ],
+        "GuardsPool": [
+          {
+            "Values": [
+              "CREATURE_BLADE_JUGGLER",
+              "CREATURE_BLADE_JUGGLER",
+              "CREATURE_BLADE_JUGGLER",
+              "CREATURE_BLADE_JUGGLER",
+              "CREATURE_BLADE_JUGGLER"
+            ]
+          }
+        ],
+        "CreatureCostMultiplier": 0.6,
+        "CreatureResourcesMultiplier": 0.6,
+        "CreatureGrowMultiplier": 1.0,
+        "GuardGrowMultiplier": 5.0
+      }
+    }
+  ],
+  "TerrainConfig": [
+    {
+      "TerrainType": "FirstPlayer",
+      "BuildingsToDelete": [],
+      "BuildingsToAdd": [],
+      "NewShopBuildings": {
+        "BuildingsToDelete": [],
+        "BuildingsToAdd": [],
+        "AddCreatureBanksPool": true
+      },
+      "NewUpgradeBuildings": {
+        "BuildingsToDelete": [],
+        "BuildingsToAdd": [],
+        "AddCreatureBanksPool": true
+      }
+    },
+    {
+      "TerrainType": "SecondPlayer",
+      "MirrorTerrainType": 0,
+      "BuildingsToDelete": [],
+      "BuildingsToAdd": []
+    },
+    {
+      "TerrainType": "Terrain3",
+      "BuildingsToDelete": [],
+      "BuildingsToAdd": [],
+      "NewShopBuildings": {
+        "BuildingsToDelete": [],
+        "BuildingsToAdd": [],
+        "AddCreatureBanksPool": true
+      },
+      "NewUpgradeBuildings": {
+        "BuildingsToDelete": [],
+        "BuildingsToAdd": [],
+        "AddCreatureBanksPool": true
+      }
+    }
+  ],
+  "ScriptFeaturesConfig": {
+    "CastleCaptureProps": {
+      "CoordinateX": 90,
+      "CoordinateY": 97,
+      "SearchRadius": 25,
+      "CaptureTimer": 14,
+      "DisableFortifications": true
+    },
+    "GloballyDisabledBuildingsProps": {
+      "Buildings": [
+        "NecromancyUnholyTemple"
+      ]
+    }
+  },
+  "EntitiesBanConfig": {
+    "BannedHeroes": [
+      "Hero1",
+      "Hero2",
+      "Brem",
+      "Grok",
+      "Jazaz"
+    ],
+    "BannedSpells": [],
+    "BannedArtifacts": []
+  },
+  "CreatureBanksPool": {
+    "NonPlayerFactions": true,
+    "PlayerFactions": false,
+    "BanksAmount": {
+      "MinValue": 4,
+      "MaxValue": 8
+    }
+  },
+  "GeneralData": {
+    "DisableDwellingIcon": true
+  },
+  "StartBuildingConfigs": [
+    {
+      "ApplyAllTerrains": true,
+      "TerrainType": "FirstPlayer",
+      "Buildings": [
+        "Market1",
+        "Forge"
+      ],
+      "BuildingMode": "StartCastle"
+    },
+    {
+      "TerrainType": "Terrain3",
+      "Buildings": [
+        "Gm1",
+        "Gm2",
+        "Gm3"
+      ],
+      "BuildingMode": "All"
+    }
+  ]
+}
