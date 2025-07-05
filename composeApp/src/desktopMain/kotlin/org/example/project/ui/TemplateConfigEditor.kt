@@ -58,6 +58,7 @@ fun TemplateConfigEditor(
                 )
 
                 "Connections" -> ConnectionsConfigSection(
+                    zones = config.Zones,
                     connections = config.Connections,
                     onConnectionsChanged = { newConnections ->
                         onConfigChanged(config.copy(Connections = newConnections))

@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class GMRebuildModel(
-    val MinimalGMLevel : Long,
-    val MinimalWarcriesLevel : Long,
+    val MinimalGMLevel : Long?,
+    val MinimalWarcriesLevel : Long?,
     val RebuildCost : GMRebuildCost
 )

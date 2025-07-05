@@ -13,7 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -27,11 +27,8 @@ import androidx.compose.ui.unit.dp
 import org.example.project.data.CreatureBankConfig
 import org.example.project.data.CreatureBuildingConfig
 import org.example.project.data.ShopBuildingConfig
+import org.example.project.ui.common.DecimalInputField
 import kotlin.text.ifEmpty
-
-
-// Implementations for other sections would follow similar patterns
-// ShopConfigSection, TerrainConfigSection, ScriptFeaturesConfigSection, etc.
 
 @Composable
 fun ShopConfigSection(
@@ -44,7 +41,7 @@ fun ShopConfigSection(
         // Shop list
         Column(modifier = Modifier.width(200.dp).padding(8.dp).verticalScroll(rememberScrollState())) {
             Text("Shops", style = MaterialTheme.typography.headlineSmall)
-            Divider()
+            HorizontalDivider()
 
             shops.forEachIndexed { index, shop ->
                 Button(
@@ -126,35 +123,32 @@ fun ShopEditor(
                 Text("Delete Shop")
             }
         }
-
-        OutlinedTextField(
+// Value (numeric field)
+        DecimalInputField(
             value = shop.Value.toString(),
+            title = "Value",
             onValueChange = { newValue ->
-                newValue.toLongOrNull()?.let { value ->
-                    onShopChanged(shop.copy(Value = value))
-                }
+                onShopChanged(shop.copy(Value = newValue.toLongOrNull()))
             },
-            label = { Text("Value") },
             modifier = Modifier.fillMaxWidth().padding(8.dp)
         )
 
-        OutlinedTextField(
+// Guard Strength (numeric field)
+        DecimalInputField(
             value = shop.GuardStrenght.toString(),
+            title = "Guard Strength",
             onValueChange = { newValue ->
-                newValue.toLongOrNull()?.let { strength ->
-                    onShopChanged(shop.copy(GuardStrenght = strength))
-                }
+                onShopChanged(shop.copy(GuardStrenght = newValue.toLongOrNull()))
             },
-            label = { Text("Guard Strength") },
             modifier = Modifier.fillMaxWidth().padding(8.dp)
         )
 
-        OutlinedTextField(
+        DecimalInputField(
             value = shop.XdbRef ?: "",
             onValueChange = { newValue ->
                 onShopChanged(shop.copy(XdbRef = newValue.ifEmpty { null }))
             },
-            label = { Text("Xdb Reference") },
+            title = "Xdb Reference",
             modifier = Modifier.fillMaxWidth().padding(8.dp)
         )
 

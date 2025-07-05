@@ -15,6 +15,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -27,10 +31,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.example.project.data.ConnectionModel
+import org.example.project.data.Zone
+import org.example.project.ui.common.AddButton
+import org.example.project.ui.common.DecimalInputField
 
 
 @Composable
 fun ConnectionsConfigSection(
+    zones: List<Zone>,
     connections: List<ConnectionModel>,
     onConnectionsChanged: (List<ConnectionModel>) -> Unit
 ) {
@@ -51,25 +59,25 @@ fun ConnectionsConfigSection(
                         else MaterialTheme.colorScheme.surface
                     )
                 ) {
-                    Text("${connection.sourceZoneIndex} → ${connection.destZoneIndex}", color = MaterialTheme.colorScheme.onSurface)
+                    Text(
+                        "${connection.sourceZoneIndex} ← → ${connection.destZoneIndex}",
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
             }
 
-            Button(
-                onClick = {
-                    val newSource = connections.maxOfOrNull { it.sourceZoneIndex } ?: 0
-                    val newDest = connections.maxOfOrNull { it.destZoneIndex } ?: 0
+            if (zones.isEmpty()) {
+                Text("No zones found", modifier = Modifier.fillMaxSize().wrapContentSize())
+            } else {
+                AddButton {
                     onConnectionsChanged(
                         connections + ConnectionModel(
-                            sourceZoneIndex = newSource,
-                            destZoneIndex = newDest,
+                            sourceZoneIndex = zones.first().ZoneId,
+                            destZoneIndex = zones.last().ZoneId,
                             isMain = false
                         )
                     )
-                },
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
-            ) {
-                Text("Add Connection")
+                }
             }
         }
 
@@ -77,6 +85,7 @@ fun ConnectionsConfigSection(
         Box(modifier = Modifier.weight(1f).padding(8.dp)) {
             selectedConnectionIndex?.let { index ->
                 ConnectionEditor(
+                    zones = zones,
                     connection = connections[index],
                     onConnectionChanged = { updatedConnection ->
                         onConnectionsChanged(connections.toMutableList().apply {
@@ -95,8 +104,10 @@ fun ConnectionsConfigSection(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConnectionEditor(
+    zones: List<Zone>,
     connection: ConnectionModel,
     onConnectionChanged: (ConnectionModel) -> Unit,
     onDelete: () -> Unit
@@ -118,28 +129,68 @@ fun ConnectionEditor(
             }
         }
 
-        Row(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-            OutlinedTextField(
-                value = connection.sourceZoneIndex.toString(),
-                onValueChange = { newValue ->
-                    newValue.toIntOrNull()?.let { source ->
-                        onConnectionChanged(connection.copy(sourceZoneIndex = source))
-                    }
-                },
-                label = { Text("Source Zone") },
-                modifier = Modifier.weight(1f).padding(end = 4.dp)
-            )
+        Box(modifier = Modifier.padding(8.dp)) {
+            var sourceExpanded by remember { mutableStateOf(false) }
+            ExposedDropdownMenuBox(
+                expanded = sourceExpanded,
+                onExpandedChange = { sourceExpanded = !sourceExpanded }
+            ) {
+                OutlinedTextField(
+                    value = connection.sourceZoneIndex.toString(),
+                    onValueChange = {},
+                    label = { Text("Source Zone") },
+                    readOnly = true,
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = sourceExpanded) },
+                    modifier = Modifier.fillMaxWidth().menuAnchor()
+                )
 
-            OutlinedTextField(
-                value = connection.destZoneIndex.toString(),
-                onValueChange = { newValue ->
-                    newValue.toIntOrNull()?.let { dest ->
-                        onConnectionChanged(connection.copy(destZoneIndex = dest))
+                ExposedDropdownMenu(
+                    expanded = sourceExpanded,
+                    onDismissRequest = { sourceExpanded = false }
+                ) {
+                    zones.map { it.ZoneId }.forEach { type ->
+                        DropdownMenuItem(
+                            text = { Text(type.toString()) },
+                            onClick = {
+                                onConnectionChanged(connection.copy(sourceZoneIndex = type))
+                                sourceExpanded = false
+                            }
+                        )
                     }
-                },
-                label = { Text("Destination Zone") },
-                modifier = Modifier.weight(1f).padding(start = 4.dp)
-            )
+                }
+            }
+        }
+
+        Box(modifier = Modifier.padding(8.dp)) {
+            var destExpanded by remember { mutableStateOf(false) }
+            ExposedDropdownMenuBox(
+                expanded = destExpanded,
+                onExpandedChange = { destExpanded = !destExpanded }
+            ) {
+                OutlinedTextField(
+                    value = connection.destZoneIndex.toString(),
+                    onValueChange = {},
+                    label = { Text("Destination Zone") },
+                    readOnly = true,
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = destExpanded) },
+                    modifier = Modifier.fillMaxWidth().menuAnchor()
+                )
+
+                ExposedDropdownMenu(
+                    expanded = destExpanded,
+                    onDismissRequest = { destExpanded = false }
+                ) {
+                    zones.map { it.ZoneId }.forEach { type ->
+                        DropdownMenuItem(
+                            text = { Text(type.toString()) },
+                            onClick = {
+                                onConnectionChanged(connection.copy(destZoneIndex = type))
+                                destExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
         }
 
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)) {
@@ -173,15 +224,13 @@ fun ConnectionEditor(
         }
 
         connection.guarded?.let {
-            OutlinedTextField(
+            DecimalInputField(
                 value = connection.guardStrenght?.toString() ?: "",
+                title = "Guard Strength",
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
                 onValueChange = { newValue ->
-                    newValue.toIntOrNull()?.let { strength ->
-                        onConnectionChanged(connection.copy(guardStrenght = strength))
-                    }
-                },
-                label = { Text("Guard Strength") },
-                modifier = Modifier.fillMaxWidth().padding(8.dp)
+                    onConnectionChanged(connection.copy(guardStrenght = newValue.toIntOrNull()))
+                }
             )
         }
 
@@ -207,83 +256,99 @@ fun ConnectionEditor(
 
         if (connection.staticPos == true) {
             Row(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-                OutlinedTextField(
+                DecimalInputField(
                     value = connection.startPointX?.toString() ?: "",
+                    title = "Start Point X",
+                    modifier = Modifier.weight(1f).padding(end = 4.dp),
                     onValueChange = { newValue ->
-                        newValue.toIntOrNull()?.let { x ->
-                            onConnectionChanged(connection.copy(startPointX = x))
-                        }
-                    },
-                    label = { Text("Start Point X") },
-                    modifier = Modifier.weight(1f).padding(end = 4.dp)
+                        onConnectionChanged(connection.copy(startPointX = newValue.toIntOrNull()))
+                    }
                 )
 
-                OutlinedTextField(
+                DecimalInputField(
                     value = connection.startPointY?.toString() ?: "",
+                    title = "Start Point Y",
+                    modifier = Modifier.weight(1f).padding(start = 4.dp),
                     onValueChange = { newValue ->
-                        newValue.toIntOrNull()?.let { y ->
-                            onConnectionChanged(connection.copy(startPointY = y))
-                        }
-                    },
-                    label = { Text("Start Point Y") },
-                    modifier = Modifier.weight(1f).padding(start = 4.dp)
+                        onConnectionChanged(connection.copy(startPointY = newValue.toIntOrNull()))
+                    }
                 )
             }
         }
 
-        OutlinedTextField(
+        DecimalInputField(
             value = connection.minRadiusToSearch?.toString() ?: "",
+            title = "Min Radius To Search",
             onValueChange = { newValue ->
-                newValue.toIntOrNull()?.let { radius ->
-                    onConnectionChanged(connection.copy(minRadiusToSearch = radius))
-                }
+                onConnectionChanged(connection.copy(minRadiusToSearch = newValue.toIntOrNull()))
             },
-            label = { Text("Min Radius To Search") },
             modifier = Modifier.fillMaxWidth().padding(8.dp)
         )
 
-        OutlinedTextField(
+        DecimalInputField(
             value = connection.maxRadiusToSearch?.toString() ?: "",
+            title = "Max Radius To Search",
             onValueChange = { newValue ->
-                newValue.toIntOrNull()?.let { radius ->
-                    onConnectionChanged(connection.copy(maxRadiusToSearch = radius))
-                }
+                onConnectionChanged(connection.copy(maxRadiusToSearch = newValue.toIntOrNull()))
             },
-            label = { Text("Max Radius To Search") },
             modifier = Modifier.fillMaxWidth().padding(8.dp)
         )
 
-        OutlinedTextField(
+        DecimalInputField(
             value = connection.minRadiusToMain?.toString() ?: "",
+            title = "Min Radius To Main",
             onValueChange = { newValue ->
-                newValue.toIntOrNull()?.let { radius ->
-                    onConnectionChanged(connection.copy(minRadiusToMain = radius))
-                }
+                onConnectionChanged(connection.copy(minRadiusToMain = newValue.toIntOrNull()))
             },
-            label = { Text("Min Radius To Main") },
             modifier = Modifier.fillMaxWidth().padding(8.dp)
         )
 
-        OutlinedTextField(
+        DecimalInputField(
             value = connection.maxRadiusToMain?.toString() ?: "",
+            title = "Max Radius To Main",
             onValueChange = { newValue ->
-                newValue.toIntOrNull()?.let { radius ->
-                    onConnectionChanged(connection.copy(maxRadiusToMain = radius))
-                }
+                onConnectionChanged(connection.copy(maxRadiusToMain = newValue.toIntOrNull()))
             },
-            label = { Text("Max Radius To Main") },
             modifier = Modifier.fillMaxWidth().padding(8.dp)
         )
 
-        OutlinedTextField(
-            value = connection.roadType?.toString() ?: "",
-            onValueChange = { newValue ->
-                newValue.toIntOrNull()?.let { roadType ->
-                    onConnectionChanged(connection.copy(roadType = roadType))
+        Box(modifier = Modifier.padding(8.dp)) {
+            var expanded by remember { mutableStateOf(false) }
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = { expanded = !expanded }
+            ) {
+                OutlinedTextField(
+                    value = connection.roadType?.toString() ?: "",
+                    onValueChange = {},
+                    label = { Text("Road Type") },
+                    readOnly = true,
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                    modifier = Modifier.fillMaxWidth().menuAnchor()
+                )
+
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    listOf(0, 1, 2).forEach { type ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    when (type) {
+                                        0 -> "Без дороги"; 1 -> "земляная"; 2 -> "каменная"
+                                        else -> ""
+                                    }
+                                )
+                            },
+                            onClick = {
+                                onConnectionChanged(connection.copy(roadType = type))
+                                expanded = false
+                            }
+                        )
+                    }
                 }
-            },
-            label = { Text("Road Type") },
-            modifier = Modifier.fillMaxWidth().padding(8.dp)
-        )
+            }
+        }
     }
 }

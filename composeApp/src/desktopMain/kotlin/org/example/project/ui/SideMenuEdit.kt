@@ -13,10 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.example.project.data.*
-import org.example.project.data.enums.BuildingMode
-import org.example.project.data.enums.BuildingTexture
 import org.example.project.data.enums.TerrainType
-import org.example.project.ui.common.EnumDropdown
+import org.example.project.ui.common.DecimalInputField
 
 @Composable
 fun ResourceCostEditor(
@@ -25,108 +23,66 @@ fun ResourceCostEditor(
 ) {
     Column {
         // Wood
-        OutlinedTextField(
+        DecimalInputField(
             value = cost.Wood.toString(),
+            title = "Wood",
             onValueChange = { newValue ->
-                newValue.toLongOrNull()?.let { wood ->
-                    onCostChanged(cost.copy(Wood = wood))
-                }
+                onCostChanged(cost.copy(Wood = newValue.toLongOrNull()))
             },
-            label = { Text("Wood") },
-            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Number
-            )
         )
 
-        // Ore
-        OutlinedTextField(
+// Ore
+        DecimalInputField(
             value = cost.Ore.toString(),
+            title = "Ore",
             onValueChange = { newValue ->
-                newValue.toLongOrNull()?.let { ore ->
-                    onCostChanged(cost.copy(Ore = ore))
-                }
+                onCostChanged(cost.copy(Ore = newValue.toLongOrNull()))
             },
-            label = { Text("Ore") },
-            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Number
-            )
         )
 
-        // Mercury
-        OutlinedTextField(
+// Mercury
+        DecimalInputField(
             value = cost.Mercury.toString(),
+            title = "Mercury",
             onValueChange = { newValue ->
-                newValue.toLongOrNull()?.let { mercury ->
-                    onCostChanged(cost.copy(Mercury = mercury))
-                }
+                onCostChanged(cost.copy(Mercury = newValue.toLongOrNull()))
             },
-            label = { Text("Mercury") },
-            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Number
-            )
         )
 
-        // Sulfur
-        OutlinedTextField(
+// Sulfur
+        DecimalInputField(
             value = cost.Sulfur.toString(),
+            title = "Sulfur",
             onValueChange = { newValue ->
-                newValue.toLongOrNull()?.let { sulfur ->
-                    onCostChanged(cost.copy(Sulfur = sulfur))
-                }
+                onCostChanged(cost.copy(Sulfur = newValue.toLongOrNull()))
             },
-            label = { Text("Sulfur") },
-            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Number
-            )
         )
 
-        // Gem
-        OutlinedTextField(
+// Gem
+        DecimalInputField(
             value = cost.Gem.toString(),
+            title = "Gem",
             onValueChange = { newValue ->
-                newValue.toLongOrNull()?.let { gem ->
-                    onCostChanged(cost.copy(Gem = gem))
-                }
+                onCostChanged(cost.copy(Gem = newValue.toLongOrNull()))
             },
-            label = { Text("Gem") },
-            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Number
-            )
         )
 
-        // Crystal
-        OutlinedTextField(
+// Crystal
+        DecimalInputField(
             value = cost.Crystal.toString(),
+            title = "Crystal",
             onValueChange = { newValue ->
-                newValue.toLongOrNull()?.let { crystal ->
-                    onCostChanged(cost.copy(Crystal = crystal))
-                }
+                onCostChanged(cost.copy(Crystal = newValue.toLongOrNull()))
             },
-            label = { Text("Crystal") },
-            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Number
-            )
         )
 
-        // Gold
-        OutlinedTextField(
+// Gold
+        DecimalInputField(
             value = cost.Gold.toString(),
+            title = "Gold",
             onValueChange = { newValue ->
-                newValue.toLongOrNull()?.let { gold ->
-                    onCostChanged(cost.copy(Gold = gold))
-                }
+                onCostChanged(cost.copy(Gold = newValue.toLongOrNull()))
             },
-            label = { Text("Gold") },
-            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Number
-            )
         )
     }
 }
@@ -142,7 +98,7 @@ fun TerrainConfigSection(
         // Terrain list
         Column(modifier = Modifier.width(200.dp).padding(8.dp).verticalScroll(rememberScrollState())) {
             Text("Terrain Configs", style = MaterialTheme.typography.headlineSmall)
-            Divider()
+            HorizontalDivider()
 
             terrains.forEachIndexed { index, terrain ->
                 Button(
@@ -158,29 +114,31 @@ fun TerrainConfigSection(
                 }
             }
 
-            Button(
-                onClick = {
-                    val newTerrain = TerrainConfig(
-                        TerrainType = TerrainType.values().firstOrNull { type ->
-                            !terrains.any { it.TerrainType == type }
-                        } ?: TerrainType.Terrain1,
-                        MirrorTerrainType = null,
-                        BuildingsToDelete = emptyList(),
-                        BuildingsToAdd = emptyList(),
-                        NewLuckMoraleBuildings = null,
-                        NewShopBuildings = null,
-                        NewResourceGivers = null,
-                        NewUpgradeBuildings = null,
-                        NewShrines = null,
-                        NewTreasuryBuildings = null,
-                        NewBuffBuildings = null
-                    )
-                    onTerrainsChanged(terrains + newTerrain)
-                },
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
-            ) {
-                Text("Add Terrain Config")
-            }
+            if (terrains.size < TerrainType.entries.size)
+                Button(
+                    onClick = {
+                        val nextTerrainType = TerrainType.entries.first { type ->
+                            terrains.none { it.TerrainType == type }
+                        }
+                        val newTerrain = TerrainConfig(
+                            nextTerrainType,
+                            MirrorTerrainType = null,
+                            BuildingsToDelete = emptyList(),
+                            BuildingsToAdd = emptyList(),
+                            NewLuckMoraleBuildings = null,
+                            NewShopBuildings = null,
+                            NewResourceGivers = null,
+                            NewUpgradeBuildings = null,
+                            NewShrines = null,
+                            NewTreasuryBuildings = null,
+                            NewBuffBuildings = null
+                        )
+                        onTerrainsChanged(terrains + newTerrain)
+                    },
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                ) {
+                    Text("Add Terrain Config")
+                }
         }
 
         // Terrain details
@@ -795,19 +753,6 @@ fun CreatureBanksConfigSection(
                 Text("Player Factions", modifier = Modifier.padding(start = 8.dp))
             }
         }
-
-        // Пример добавления дополнительных параметров, если они появятся в будущем
-        /*
-        Text("Additional Parameters", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 16.dp))
-        OutlinedTextField(
-            value = pool.AdditionalParameter?.toString() ?: "",
-            onValueChange = { newValue ->
-                onPoolChanged(pool.copy(AdditionalParameter = newValue.toIntOrNull()))
-            },
-            label = { Text("Additional Parameter") },
-            modifier = Modifier.fillMaxWidth().padding(8.dp)
-        )
-        */
     }
 }
 
@@ -866,15 +811,12 @@ fun GeneralConfigSection(
             modifier = Modifier.fillMaxWidth().padding(8.dp)
         )
 
-        OutlinedTextField(
+        DecimalInputField(
             value = config.BaseArmyMultiplier.toString(),
+            title = "Base Army Multiplier",
             onValueChange = { newValue ->
-                newValue.toDoubleOrNull()?.let {
-                    onConfigChanged(config.copy(BaseArmyMultiplier = it))
-                }
-            },
-            label = { Text("Base Army Multiplier") },
-            modifier = Modifier.fillMaxWidth().padding(8.dp)
+                onConfigChanged(config.copy(BaseArmyMultiplier = newValue.toDoubleOrNull()))
+            }
         )
     }
 }
@@ -897,25 +839,25 @@ fun IntConfigEditor(
                 }
 
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    OutlinedTextField(
+                    DecimalInputField(
                         value = config.MinValue.toString(),
+                        title = "Min Value",
                         onValueChange = { newValue ->
                             newValue.toIntOrNull()?.let { min ->
                                 onConfigChanged(config.copy(MinValue = min))
                             }
                         },
-                        label = { Text("Min Value") },
                         modifier = Modifier.weight(1f).padding(end = 4.dp)
                     )
 
-                    OutlinedTextField(
+                    DecimalInputField(
                         value = config.MaxValue.toString(),
+                        title = "Max Value",
                         onValueChange = { newValue ->
                             newValue.toIntOrNull()?.let { max ->
                                 onConfigChanged(config.copy(MaxValue = max))
                             }
                         },
-                        label = { Text("Max Value") },
                         modifier = Modifier.weight(1f).padding(start = 4.dp)
                     )
                 }
@@ -947,51 +889,50 @@ fun DwellingConfigEditor(
                     Icon(Icons.Default.Delete, contentDescription = "Delete")
                 }
             }
-
             Row(modifier = Modifier.fillMaxWidth()) {
-                OutlinedTextField(
+                DecimalInputField(
                     value = config.MinCount.toString(),
+                    title = "Min Count",
                     onValueChange = { newValue ->
                         newValue.toIntOrNull()?.let { min ->
                             onConfigChanged(config.copy(MinCount = min))
                         }
                     },
-                    label = { Text("Min Count") },
                     modifier = Modifier.weight(1f).padding(end = 4.dp)
                 )
 
-                OutlinedTextField(
+                DecimalInputField(
                     value = config.MaxCount.toString(),
+                    title = "Max Count",
                     onValueChange = { newValue ->
                         newValue.toIntOrNull()?.let { max ->
                             onConfigChanged(config.copy(MaxCount = max))
                         }
                     },
-                    label = { Text("Max Count") },
                     modifier = Modifier.weight(1f).padding(start = 4.dp)
                 )
             }
 
             Row(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
-                OutlinedTextField(
+                DecimalInputField(
                     value = config.MinTiersCount.toString(),
+                    title = "Min Tiers Count",
                     onValueChange = { newValue ->
                         newValue.toIntOrNull()?.let { min ->
                             onConfigChanged(config.copy(MinTiersCount = min))
                         }
                     },
-                    label = { Text("Min Tiers Count") },
                     modifier = Modifier.weight(1f).padding(end = 4.dp)
                 )
 
-                OutlinedTextField(
+                DecimalInputField(
                     value = config.MaxTiersCount.toString(),
+                    title = "Max Tiers Count",
                     onValueChange = { newValue ->
                         newValue.toIntOrNull()?.let { max ->
                             onConfigChanged(config.copy(MaxTiersCount = max))
                         }
                     },
-                    label = { Text("Max Tiers Count") },
                     modifier = Modifier.weight(1f).padding(start = 4.dp)
                 )
             }
@@ -1050,24 +991,23 @@ fun MineConfigEditor(
             )
 
             mineTypes.forEach { (type, count) ->
-                OutlinedTextField(
+                DecimalInputField(
                     value = count.toString(),
+                    title = type,
                     onValueChange = { newValue ->
-                        newValue.toIntOrNull()?.let { newCount ->
-                            val newConfig = when (type) {
-                                "Wood" -> config.copy(Wood = newCount)
-                                "Ore" -> config.copy(Ore = newCount)
-                                "Mercury" -> config.copy(Mercury = newCount)
-                                "Crystals" -> config.copy(Crystals = newCount)
-                                "Sulfur" -> config.copy(Sulfur = newCount)
-                                "Gems" -> config.copy(Gems = newCount)
-                                "Gold" -> config.copy(Gold = newCount)
-                                else -> config
-                            }
-                            onConfigChanged(newConfig)
+                        val newCount = newValue.toIntOrNull()
+                        val newConfig = when (type) {
+                            "Wood" -> config.copy(Wood = newCount)
+                            "Ore" -> config.copy(Ore = newCount)
+                            "Mercury" -> config.copy(Mercury = newCount)
+                            "Crystals" -> config.copy(Crystals = newCount)
+                            "Sulfur" -> config.copy(Sulfur = newCount)
+                            "Gems" -> config.copy(Gems = newCount)
+                            "Gold" -> config.copy(Gold = newCount)
+                            else -> config
                         }
+                        onConfigChanged(newConfig)
                     },
-                    label = { Text(type) },
                     modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
                 )
             }
@@ -1143,20 +1083,19 @@ fun CreaturesConfigEditor(
                 )
 
                 multipliers.forEach { (name, value) ->
-                    OutlinedTextField(
+                    DecimalInputField(
                         value = value?.toString() ?: "",
+                        title = name.replace(Regex("([A-Z])"), " $1").trim(),
                         onValueChange = { newValue ->
-                            newValue.toDoubleOrNull()?.let { newMultiplier ->
-                                val newConfig = when (name) {
-                                    "BaseCostMultiplier" -> config.copy(BaseCostMultiplier = newMultiplier)
-                                    "BaseResourcesMultiplier" -> config.copy(BaseResourcesMultiplier = newMultiplier)
-                                    "BaseGrowMultiplier" -> config.copy(BaseGrowMultiplier = newMultiplier)
-                                    else -> config
-                                }
-                                onConfigChanged(newConfig)
+                            val newMultiplier = newValue.toDoubleOrNull()
+                            val newConfig = when (name) {
+                                "BaseCostMultiplier" -> config.copy(BaseCostMultiplier = newMultiplier)
+                                "BaseResourcesMultiplier" -> config.copy(BaseResourcesMultiplier = newMultiplier)
+                                "BaseGrowMultiplier" -> config.copy(BaseGrowMultiplier = newMultiplier)
+                                else -> config
                             }
+                            onConfigChanged(newConfig)
                         },
-                        label = { Text(name.replace(Regex("([A-Z])"), " $1").trim()) },
                         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
                     )
                 }
@@ -1206,9 +1145,10 @@ fun CreatureModifiersList(
                             Icon(Icons.Default.Delete, contentDescription = "Delete")
                         }
                     }
-
-                    OutlinedTextField(
+// Tier (integer input)
+                    DecimalInputField(
                         value = modifier.Tier.toString(),
+                        title = "Tier",
                         onValueChange = { newValue ->
                             newValue.toIntOrNull()?.let { tier ->
                                 val newModifiers = modifiers.toMutableList().apply {
@@ -1217,49 +1157,45 @@ fun CreatureModifiersList(
                                 onModifiersChanged(newModifiers)
                             }
                         },
-                        label = { Text("Tier") },
                         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
                     )
 
-                    OutlinedTextField(
+// Cost Multiplier (decimal input)
+                    DecimalInputField(
                         value = modifier.CostMultiplier?.toString() ?: "",
+                        title = "Cost Multiplier",
                         onValueChange = { newValue ->
-                            newValue.toDoubleOrNull()?.let { multiplier ->
-                                val newModifiers = modifiers.toMutableList().apply {
-                                    set(index, modifier.copy(CostMultiplier = multiplier))
-                                }
-                                onModifiersChanged(newModifiers)
+                            val newModifiers = modifiers.toMutableList().apply {
+                                set(index, modifier.copy(CostMultiplier = newValue.toDoubleOrNull()))
                             }
+                            onModifiersChanged(newModifiers)
                         },
-                        label = { Text("Cost Multiplier") },
                         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
                     )
 
-                    OutlinedTextField(
+// Resources Multiplier (decimal input)
+                    DecimalInputField(
                         value = modifier.ResourcesMultiplier?.toString() ?: "",
+                        title = "Resources Multiplier",
                         onValueChange = { newValue ->
-                            newValue.toDoubleOrNull()?.let { multiplier ->
-                                val newModifiers = modifiers.toMutableList().apply {
-                                    set(index, modifier.copy(ResourcesMultiplier = multiplier))
-                                }
-                                onModifiersChanged(newModifiers)
+                            val newModifiers = modifiers.toMutableList().apply {
+                                set(index, modifier.copy(ResourcesMultiplier = newValue.toDoubleOrNull()))
                             }
+                            onModifiersChanged(newModifiers)
                         },
-                        label = { Text("Resources Multiplier") },
                         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
                     )
 
-                    OutlinedTextField(
+// Grow Multiplier (decimal input)
+                    DecimalInputField(
                         value = modifier.GrowMultiplier.toString(),
+                        title = "Grow Multiplier",
                         onValueChange = { newValue ->
-                            newValue.toDoubleOrNull()?.let { multiplier ->
-                                val newModifiers = modifiers.toMutableList().apply {
-                                    set(index, modifier.copy(GrowMultiplier = multiplier))
-                                }
-                                onModifiersChanged(newModifiers)
+                            val newModifiers = modifiers.toMutableList().apply {
+                                set(index, modifier.copy(GrowMultiplier = newValue.toDoubleOrNull()))
                             }
+                            onModifiersChanged(newModifiers)
                         },
-                        label = { Text("Grow Multiplier") },
                         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
                     )
                 }
@@ -1302,20 +1238,17 @@ fun CreatureTierReplacementsList(
                         }
                     }
 
-                    OutlinedTextField(
+                    DecimalInputField(
                         value = replacement.Tier.toString(),
                         onValueChange = { newValue ->
-                            newValue.toIntOrNull()?.let { tier ->
-                                val newReplacements = replacements.toMutableList().apply {
-                                    set(index, replacement.copy(Tier = tier))
-                                }
-                                onReplacementsChanged(newReplacements)
+                            val newReplacements = replacements.toMutableList().apply {
+                                set(index, replacement.copy(Tier = newValue.toIntOrNull()))
                             }
+                            onReplacementsChanged(newReplacements)
                         },
-                        label = { Text("Tier") },
+                        title = "Tier",
                         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
                     )
-
                     Text(
                         "Creature IDs",
                         style = MaterialTheme.typography.titleSmall,
@@ -1430,20 +1363,20 @@ fun <T> ChipGroup(
 
 @Composable
 fun ArmyConfigSection(
-    baseMultiplier: Double,
+    baseMultiplier: Double?,
     multipliers: ArmyMultipliers,
-    onBaseMultiplierChanged: (Double) -> Unit,
+    onBaseMultiplierChanged: (Double?) -> Unit,
     onMultipliersChanged: (ArmyMultipliers) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
         Text("Army Multipliers", style = MaterialTheme.typography.headlineMedium)
 
-        OutlinedTextField(
+        DecimalInputField(
             value = baseMultiplier.toString(),
+            title = "Base Army Multiplier",
             onValueChange = { newValue ->
-                newValue.toDoubleOrNull()?.let { onBaseMultiplierChanged(it) }
+                onBaseMultiplierChanged(newValue.toDoubleOrNull())
             },
-            label = { Text("Base Army Multiplier") },
             modifier = Modifier.fillMaxWidth().padding(8.dp)
         )
 
@@ -1459,25 +1392,24 @@ fun ArmyConfigSection(
         )
 
         factions.forEach { (faction, multiplier) ->
-            OutlinedTextField(
+            DecimalInputField(
                 value = multiplier.toString(),
                 onValueChange = { newValue ->
-                    newValue.toDoubleOrNull()?.let { newMultiplier ->
-                        val newMultipliers = when (faction) {
-                            "Dwarfs" -> multipliers.copy(Dwarfs = newMultiplier)
-                            "Elves" -> multipliers.copy(Elves = newMultiplier)
-                            "Horde" -> multipliers.copy(Horde = newMultiplier)
-                            "Humans" -> multipliers.copy(Humans = newMultiplier)
-                            "Inferno" -> multipliers.copy(Inferno = newMultiplier)
-                            "Liga" -> multipliers.copy(Liga = newMultiplier)
-                            "Mages" -> multipliers.copy(Mages = newMultiplier)
-                            "Necropolis" -> multipliers.copy(Necropolis = newMultiplier)
-                            else -> multipliers
-                        }
-                        onMultipliersChanged(newMultipliers)
+                    val newMultiplier = newValue.toDoubleOrNull()
+                    val newMultipliers = when (faction) {
+                        "Dwarfs" -> multipliers.copy(Dwarfs = newMultiplier)
+                        "Elves" -> multipliers.copy(Elves = newMultiplier)
+                        "Horde" -> multipliers.copy(Horde = newMultiplier)
+                        "Humans" -> multipliers.copy(Humans = newMultiplier)
+                        "Inferno" -> multipliers.copy(Inferno = newMultiplier)
+                        "Liga" -> multipliers.copy(Liga = newMultiplier)
+                        "Mages" -> multipliers.copy(Mages = newMultiplier)
+                        "Necropolis" -> multipliers.copy(Necropolis = newMultiplier)
+                        else -> multipliers
                     }
+                    onMultipliersChanged(newMultipliers)
                 },
-                label = { Text("$faction Multiplier") },
+                title = "$faction Multiplier",
                 modifier = Modifier.fillMaxWidth().padding(8.dp)
             )
         }
@@ -1737,21 +1669,20 @@ fun CreatureBankConfigEditor(
                 )
 
                 multipliers.forEach { (name, value) ->
-                    OutlinedTextField(
+                    DecimalInputField(
                         value = value.toString(),
                         onValueChange = { newValue ->
-                            newValue.toDoubleOrNull()?.let { multiplier ->
-                                val newConfig = when (name) {
-                                    "CreatureCostMultiplier" -> config.copy(CreatureCostMultiplier = multiplier)
-                                    "CreatureGrowMultiplier" -> config.copy(CreatureGrowMultiplier = multiplier)
-                                    "CreatureResourcesMultiplier" -> config.copy(CreatureResourcesMultiplier = multiplier)
-                                    "GuardGrowMultiplier" -> config.copy(GuardGrowMultiplier = multiplier)
-                                    else -> config
-                                }
-                                onConfigChanged(newConfig)
+                            val multiplier = newValue.toDoubleOrNull()
+                            val newConfig = when (name) {
+                                "CreatureCostMultiplier" -> config.copy(CreatureCostMultiplier = multiplier)
+                                "CreatureGrowMultiplier" -> config.copy(CreatureGrowMultiplier = multiplier)
+                                "CreatureResourcesMultiplier" -> config.copy(CreatureResourcesMultiplier = multiplier)
+                                "GuardGrowMultiplier" -> config.copy(GuardGrowMultiplier = multiplier)
+                                else -> config
                             }
+                            onConfigChanged(newConfig)
                         },
-                        label = { Text(name.replace(Regex("([A-Z])"), " $1").trim()) },
+                        title = name.replace(Regex("([A-Z])"), " $1").trim(),
                         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
                     )
                 }
@@ -1759,3 +1690,4 @@ fun CreatureBankConfigEditor(
         }
     }
 }
+

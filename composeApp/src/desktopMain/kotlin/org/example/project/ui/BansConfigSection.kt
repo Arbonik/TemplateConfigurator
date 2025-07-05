@@ -18,6 +18,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.example.project.data.EntitiesBanConfig
+import org.example.project.data.enums.ArtifactType
+import org.example.project.data.enums.HeroType
+import org.example.project.data.enums.SpellType
+import org.example.project.ui.common.AddButton
+import org.example.project.ui.components.PickerDialog
 
 
 @Composable
@@ -36,25 +41,19 @@ fun BansConfigSection(
             }
         )
 
-        var newArtifact by remember { mutableStateOf("") }
         Row(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
-            OutlinedTextField(
-                value = newArtifact,
-                onValueChange = { newArtifact = it },
-                label = { Text("New Artifact") },
-                modifier = Modifier.weight(1f)
+            var isDialogOpen by remember { mutableStateOf(false) }
+            PickerDialog(
+                show = isDialogOpen,
+                onDismiss = { isDialogOpen = false },
+                items = ArtifactType.values().toList(),
+                text = { it.description },
+                onBuildingSelected = { artifact ->
+                    onBansChanged(bans.copy(BannedArtifacts = bans.BannedArtifacts + artifact.name))
+                    isDialogOpen = false
+                }
             )
-            Button(
-                onClick = {
-                    if (newArtifact.isNotBlank()) {
-                        onBansChanged(bans.copy(BannedArtifacts = bans.BannedArtifacts + newArtifact))
-                        newArtifact = ""
-                    }
-                },
-                modifier = Modifier.padding(start = 8.dp)
-            ) {
-                Text("Add")
-            }
+            AddButton { isDialogOpen = true }
         }
 
         Text("Banned Heroes", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 16.dp))
@@ -65,25 +64,19 @@ fun BansConfigSection(
             }
         )
 
-        var newHero by remember { mutableStateOf("") }
         Row(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
-            OutlinedTextField(
-                value = newHero,
-                onValueChange = { newHero = it },
-                label = { Text("New Hero") },
-                modifier = Modifier.weight(1f)
+            var isDialogOpen by remember { mutableStateOf(false) }
+            PickerDialog(
+                show = isDialogOpen,
+                onDismiss = { isDialogOpen = false },
+                items = HeroType.values().toList(),
+                text = { it.description.ifEmpty { it.name } },
+                onBuildingSelected = { hero ->
+                    onBansChanged(bans.copy(BannedHeroes = bans.BannedHeroes + hero.name))
+                    isDialogOpen = false
+                }
             )
-            Button(
-                onClick = {
-                    if (newHero.isNotBlank()) {
-                        onBansChanged(bans.copy(BannedHeroes = bans.BannedHeroes + newHero))
-                        newHero = ""
-                    }
-                },
-                modifier = Modifier.padding(start = 8.dp)
-            ) {
-                Text("Add")
-            }
+            AddButton{ isDialogOpen = true }
         }
 
         Text("Banned Spells", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 16.dp))
@@ -94,25 +87,19 @@ fun BansConfigSection(
             }
         )
 
-        var newSpell by remember { mutableStateOf("") }
         Row(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
-            OutlinedTextField(
-                value = newSpell,
-                onValueChange = { newSpell = it },
-                label = { Text("New Spell") },
-                modifier = Modifier.weight(1f)
+            var isDialogOpen by remember { mutableStateOf(false) }
+            PickerDialog(
+                show = isDialogOpen,
+                onDismiss = { isDialogOpen = false },
+                items = SpellType.values().toList(),
+                text = { it.description.ifEmpty { it.name } },
+                onBuildingSelected = { newSpell ->
+                    onBansChanged(bans.copy(BannedSpells = bans.BannedSpells + newSpell.name))
+                    isDialogOpen = false
+                }
             )
-            Button(
-                onClick = {
-                    if (newSpell.isNotBlank()) {
-                        onBansChanged(bans.copy(BannedSpells = bans.BannedSpells + newSpell))
-                        newSpell = ""
-                    }
-                },
-                modifier = Modifier.padding(start = 8.dp)
-            ) {
-                Text("Add")
-            }
+            AddButton { isDialogOpen = true }
         }
     }
 }

@@ -37,7 +37,7 @@ fun<T> PickerDialog(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "Select Building Type",
+                        text = "Select",
                         style = MaterialTheme.typography.headlineSmall,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )

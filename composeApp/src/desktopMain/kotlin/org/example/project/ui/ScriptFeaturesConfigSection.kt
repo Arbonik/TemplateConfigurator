@@ -34,6 +34,7 @@ import org.example.project.data.GMRebuildModel
 import org.example.project.data.GloballyDisabledBuildingsProps
 import org.example.project.data.ScriptFeaturesConfig
 import org.example.project.data.enums.BuildingType
+import org.example.project.ui.common.DecimalInputField
 import org.example.project.ui.components.PickerDialog
 
 
@@ -126,31 +127,21 @@ fun ForcedFinalBattleEditor(
 
                 // Week and Day
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    OutlinedTextField(
+                    DecimalInputField(
                         value = props.Week.toString(),
+                        title = "Week",
+                        modifier = Modifier.weight(1f),
                         onValueChange = { newValue ->
-                            newValue.toLongOrNull()?.let { week ->
-                                onPropsChanged(props.copy(Week = week))
-                            }
+                            onPropsChanged(props.copy(Week = newValue.toLongOrNull()))
                         },
-                        label = { Text("Week") },
-                        modifier = Modifier.weight(1f).padding(end = 4.dp),
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Number
-                        )
                     )
-                    OutlinedTextField(
+                    DecimalInputField(
                         value = props.Day.toString(),
-                        onValueChange = { newValue ->
-                            newValue.toLongOrNull()?.let { day ->
-                                onPropsChanged(props.copy(Day = day))
-                            }
-                        },
-                        label = { Text("Day") },
+                        title = "Day",
                         modifier = Modifier.weight(1f).padding(start = 4.dp),
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Number
-                        )
+                        onValueChange = { newValue ->
+                            onPropsChanged(props.copy(Day = newValue.toLongOrNull()))
+                        },
                     )
                 }
             }
@@ -258,31 +249,21 @@ fun GMRebuildEditor(
 
                 // Minimal Levels
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    OutlinedTextField(
+                    DecimalInputField(
                         value = props.MinimalGMLevel.toString(),
+                        title = "Min GM Level",
+                        modifier = Modifier.weight(1f),
                         onValueChange = { newValue ->
-                            newValue.toLongOrNull()?.let { level ->
-                                onPropsChanged(props.copy(MinimalGMLevel = level))
-                            }
+                            onPropsChanged(props.copy(MinimalGMLevel = newValue.toLongOrNull()))
                         },
-                        label = { Text("Min GM Level") },
-                        modifier = Modifier.weight(1f).padding(end = 4.dp),
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Number
-                        )
                     )
-                    OutlinedTextField(
+                    DecimalInputField(
                         value = props.MinimalWarcriesLevel.toString(),
+                        title = "Min Warcries Level",
+                        modifier = Modifier.weight(1f),
                         onValueChange = { newValue ->
-                            newValue.toLongOrNull()?.let { level ->
-                                onPropsChanged(props.copy(MinimalWarcriesLevel = level))
-                            }
+                            onPropsChanged(props.copy(MinimalWarcriesLevel = newValue.toLongOrNull()))
                         },
-                        label = { Text("Min Warcries Level") },
-                        modifier = Modifier.weight(1f).padding(start = 4.dp),
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Number
-                        )
                     )
                 }
 
@@ -327,62 +308,42 @@ fun CastleCaptureEditor(
         Column(modifier = Modifier.padding(16.dp)) {
             // Coordinates
             Row(modifier = Modifier.fillMaxWidth()) {
-                OutlinedTextField(
+                DecimalInputField(
                     value = props.CoordinateX.toString(),
-                    onValueChange = { newValue ->
-                        newValue.toLongOrNull()?.let { x ->
-                            onPropsChanged(props.copy(CoordinateX = x))
-                        }
-                    },
-                    label = { Text("Coordinate X") },
+                    title = "Coordinate X",
                     modifier = Modifier.weight(1f).padding(end = 4.dp),
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number
-                    )
-                )
-                OutlinedTextField(
-                    value = props.CoordinateY.toString(),
                     onValueChange = { newValue ->
-                        newValue.toLongOrNull()?.let { y ->
-                            onPropsChanged(props.copy(CoordinateY = y))
-                        }
+                        onPropsChanged(props.copy(CoordinateX = newValue.toLongOrNull()))
                     },
-                    label = { Text("Coordinate Y") },
+                )
+                DecimalInputField(
+                    value = props.CoordinateY.toString(),
+                    title = "Coordinate Y",
                     modifier = Modifier.weight(1f).padding(start = 4.dp),
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number
-                    )
+                    onValueChange = { newValue ->
+                        onPropsChanged(props.copy(CoordinateY = newValue.toLongOrNull()))
+                    },
                 )
             }
 
             // Search Radius
-            OutlinedTextField(
+            DecimalInputField(
                 value = props.SearchRadius.toString(),
+                title = "Search Radius",
+                Modifier.fillMaxWidth().padding(vertical = 8.dp),
                 onValueChange = { newValue ->
-                    newValue.toIntOrNull()?.let { radius ->
-                        onPropsChanged(props.copy(SearchRadius = radius))
-                    }
-                },
-                label = { Text("Search Radius") },
-                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Number
-                )
+                    onPropsChanged(props.copy(SearchRadius = newValue.toIntOrNull()))
+                }
             )
 
             // Capture Timer
-            OutlinedTextField(
+            DecimalInputField(
                 value = props.CaptureTimer.toString(),
+                title = "Capture Timer",
+                Modifier.fillMaxWidth().padding(vertical = 8.dp),
                 onValueChange = { newValue ->
-                    newValue.toLongOrNull()?.let { timer ->
-                        onPropsChanged(props.copy(CaptureTimer = timer))
-                    }
-                },
-                label = { Text("Capture Timer") },
-                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Number
-                )
+                    onPropsChanged(props.copy(CaptureTimer = newValue.toLongOrNull()))
+                }
             )
 
             // Disable Fortifications

@@ -7,5 +7,5 @@ data class CreatureModifier(
     val Tier: Int,
     val CostMultiplier: Double? = null,
     val ResourcesMultiplier: Double? = null,
-    val GrowMultiplier: Double,
+    val GrowMultiplier: Double? = null,
 )

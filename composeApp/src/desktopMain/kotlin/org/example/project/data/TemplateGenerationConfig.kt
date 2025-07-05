@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 data class TemplateGenerationConfig(
     val TemplateName: String,
     val Zones: List<Zone>,
-    val BaseArmyMultiplier: Double = 1.0,
+    val BaseArmyMultiplier: Double? = 1.0,
     val ArmyMultipliers: ArmyMultipliers,
     val Connections: List<ConnectionModel>,
     val ShopBuildingConfigs: List<ShopBuildingConfig>,

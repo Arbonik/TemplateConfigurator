@@ -7,8 +7,8 @@ data class CreatureBankConfig(
     val Name: String,
     val CreaturesPool: List<String>,
     val GuardsPool: List<GuardsPool>,
-    val CreatureCostMultiplier: Double,
-    val CreatureGrowMultiplier: Double,
-    val CreatureResourcesMultiplier: Double,
-    val GuardGrowMultiplier: Double
+    val CreatureCostMultiplier: Double?,
+    val CreatureGrowMultiplier: Double?,
+    val CreatureResourcesMultiplier: Double?,
+    val GuardGrowMultiplier: Double?
 )
