@@ -1,5 +1,6 @@
 package org.example.project
 
+import FilePickerScreen
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeContentPadding
@@ -11,24 +12,39 @@ import kotlinx.serialization.json.Json
 import org.example.project.data.TemplateGenerationConfig
 import org.example.project.ui.TemplateConfigEditor
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import java.awt.FileDialog
+import java.awt.Frame
 import java.io.File
 
-private val json = Json {
+val json = Json {
+    ignoreUnknownKeys = true
     explicitNulls = false   // не требовать явных null для отсутствующих полей
     coerceInputValues = true // преобразовывать некорректные значения к значениям по умолчанию
+}
+
+// Открытие файла
+fun openFile(readerText: (String) -> Unit) {
+    try {
+        val dialog = FileDialog(null as Frame?, "Выберите файл", FileDialog.LOAD)
+        dialog.isVisible = true
+        val file = dialog.file?.let { File(dialog.directory, it) }
+        readerText(file?.readText() ?: "")
+    } catch (e: Exception) {
+        println(e)
+    }
+}
+
+// Сохранение файла
+fun saveFile(content: String) {
+    val dialog = FileDialog(null as Frame?, "Сохранить файл", FileDialog.SAVE)
+    dialog.isVisible = true
+    val file = dialog.file?.let { File(dialog.directory, it) }
+    file?.writeText(content)
 }
 
 @Composable
 @Preview
 fun App() {
-    val text = File(
-        "/Users/arbonik/KMPProject/TemplateConfigurator/composeApp/src/commonMain/resources/config.json"
-    ).readText()
-
-    val config = json.decodeFromString<TemplateGenerationConfig>(text)
-
-    println(config)
-
     MaterialTheme {
         Column(
             modifier = Modifier
@@ -36,15 +52,28 @@ fun App() {
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            var config by remember { mutableStateOf(config) }
+            var config: TemplateGenerationConfig? by remember { mutableStateOf(null) }
 
-            TemplateConfigEditor(
-                config = config,
-                onConfigChanged = { newConfig ->
-                    config = newConfig
-                    // You might want to save the config here
-                }
-            )
+            var isFileOpen by remember { mutableStateOf(false) }
+
+            if (isFileOpen) {
+                TemplateConfigEditor(
+                    config = config!!,
+                    onConfigChanged = { newConfig ->
+                        config = newConfig
+                    }
+                )
+            } else {
+                FilePickerScreen(
+                    openFile = {
+                        openFile { text ->
+                            config = json.decodeFromString<TemplateGenerationConfig>(text ?: "")
+                            isFileOpen = true
+                        }
+                    },
+                    saveFile = null
+                )
+            }
         }
     }
 }

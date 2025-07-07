@@ -695,19 +695,6 @@ fun GeneralDataConfigSection(
             label = { Text("Gold Mines Guard Level") },
             modifier = Modifier.fillMaxWidth().padding(8.dp)
         )
-
-        // Additional parameters can be added here as needed
-        /*
-        Text("Additional Parameters", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 16.dp))
-        OutlinedTextField(
-            value = generalData.AdditionalParameter?.toString() ?: "",
-            onValueChange = { newValue ->
-                onGeneralDataChanged(generalData.copy(AdditionalParameter = newValue.toIntOrNull()))
-            },
-            label = { Text("Additional Parameter") },
-            modifier = Modifier.fillMaxWidth().padding(8.dp)
-        )
-        */
     }
 }
 
@@ -763,10 +750,11 @@ fun SidebarNavigation(
     modifier: Modifier = Modifier
 ) {
     Surface(modifier = modifier.fillMaxHeight(), tonalElevation = 4.dp) {
-        Column(modifier = Modifier.padding(8.dp)) {
+        Column(modifier = Modifier.padding(8.dp).verticalScroll(rememberScrollState())) {
             Text("Configuration", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(16.dp))
 
             val sections = listOf(
+                "Settings" to Icons.Default.Save,
                 "General" to Icons.Default.Settings,
                 "Zones" to Icons.Default.Map,
                 "Army" to Icons.Default.MilitaryTech,

@@ -1,6 +1,8 @@
 package org.example.project.ui
 
+import FilePickerScreen
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,6 +15,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.example.project.data.TemplateGenerationConfig
+import org.example.project.json
+import org.example.project.openFile
+import org.example.project.saveFile
 
 
 @Composable
@@ -25,15 +30,32 @@ fun TemplateConfigEditor(
 
     Row(modifier = modifier.fillMaxSize()) {
         // Sidebar Navigation
-        SidebarNavigation(
-            selectedSection = selectedSection,
-            onSectionSelected = { selectedSection = it },
-            modifier = Modifier.width(200.dp)
-        )
+        Column {
+            SidebarNavigation(
+                selectedSection = selectedSection,
+                onSectionSelected = { selectedSection = it },
+                modifier = Modifier.width(200.dp)
+            )
+        }
 
         // Main Content
         Box(modifier = Modifier.weight(1f).padding(16.dp)) {
             when (selectedSection) {
+                "Settings" -> FilePickerScreen(
+                    openFile = {
+                        openFile {
+                            onConfigChanged(json.decodeFromString<TemplateGenerationConfig>(it))
+                        }
+                    },
+                    saveFile = {
+                        saveFile(
+                            json.encodeToString(
+                                config
+                            )
+                        )
+                    }
+                )
+
                 "General" -> GeneralConfigSection(
                     config = config,
                     onConfigChanged = onConfigChanged

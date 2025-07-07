@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.example.project.data.StartBuildingConfig
+import org.example.project.data.TerrainConfig
 import org.example.project.data.enums.BuildingMode
 import org.example.project.data.enums.TerrainType
 import org.example.project.ui.common.EnumDropdown
@@ -60,21 +61,26 @@ fun StartBuildingsConfigSection(
                 }
             }
 
-            Button(
-                onClick = {
-                    onBuildingsChanged(
-                        buildings + StartBuildingConfig(
-                            ApplyAllTerrains = null,
-                            TerrainType = TerrainType.FirstPlayer,
-                            Buildings = emptyList(),
-                            BuildingMode = BuildingMode.All
+            val terrains = buildings.map { it.TerrainType }
+            if (terrains.size < TerrainType.entries.size)
+                Button(
+                    onClick = {
+                        val nextTerrainType = TerrainType.entries.first { type ->
+                            terrains.none { it == type }
+                        }
+                        onBuildingsChanged(
+                            buildings + StartBuildingConfig(
+                                ApplyAllTerrains = null,
+                                TerrainType = nextTerrainType,
+                                Buildings = emptyList(),
+                                BuildingMode = BuildingMode.All
+                            )
                         )
-                    )
-                },
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
-            ) {
-                Text("Add Start Building Config")
-            }
+                    },
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                ) {
+                    Text("Add Start Building Config")
+                }
         }
 
         // Building details
