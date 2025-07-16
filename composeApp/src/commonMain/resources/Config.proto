@@ -1,0 +1,1511 @@
+syntax = "proto3";
+import "google/protobuf/wrappers.proto";
+import "HeroTypeEnum.proto";
+import "SpellTypeEnum.proto";
+import "ArtifactTypeEnum.proto";
+import "Common.proto";
+import "Enums.proto";
+import "TemplateGeneration/Enums.proto";
+package TemplateGenerationConfigs;
+option optimize_for = SPEED;
+
+enum SpellType {
+  SpellNone = 0;
+  MagicArrow = 1; // Магическая стрела
+  MagicFist = 2; // Магический кулак
+  LightningBolt = 3; // Молния
+  IceBolt = 4; // Льдина
+  Fireball = 5; // Огненный шар
+  FrostRing = 6; // Кольцо холода
+  ChainLightning = 7; // Цепь молний
+  MeteorShower = 8; // Метеоритный дождь
+  Implosion = 9; // Шок земли
+  Armageddon = 10; // Армагеддон
+  Curse = 11; // Ослабление
+  Slow = 12; // Замедление
+  DisruptingRay = 13; // Разрушающий луч
+  Plague = 14; // Чума
+  Weakness = 15; // Немощность
+  Forgetfullness = 17; // Рассеянность
+  Berserk = 18; // Берсерк
+  Blind = 19; // Ослепление
+  Hypnotize = 20; // Подчинение
+  UnholyWord = 21; // Нечестивое слово
+  Bless = 23; // Божественная сила
+  Haste = 24; // Ускорение
+  Stoneskin = 25; // Каменная кожа
+  Dispel = 26; // Снятие чар
+  Bloodlust = 28; // Карающий удар
+  DeflectArrows = 29; // Уклонение
+  Antimagic = 31; // Антимагия
+  Teleport = 32; // Телепорт
+  CelestialShield = 34; // Небесный щит
+  HolyWord = 35; // Святое слово
+  LandMine = 38; // Огненная ловушка
+  WaspSwarm = 39; // Призыв осиного роя
+  Phantom = 40; // Создание фантома
+  Earthquake = 41; // Землетрясение
+  AnimateDead = 42; // Поднятие мертвых
+  SummonElementals = 43; // Призыв элементалей
+  Resurrect = 48; // Воскрешение
+  SummonBoat = 49; // Вызов корабля
+  DimensionDoor = 50; // Астральные врата
+  TownPortal = 51; // Портал в город
+  SummonCreatures = 234; // Вызов подкреплений
+  ConjurePhoenix = 235; // Призыв феникса
+  Firewall = 236; // Огненная стена
+  StoneSpikes = 237; // Каменные шипы
+  RuneOfCharge = 249; // Руна энергии
+  RuneOfBerserk = 250; // Руна берсеркерства
+  RuneOfMagicControl = 251; // Руна магического надзора
+  RuneOfExorcism = 252; // Руна экзорцизма
+  RuneOfElementalImmunity = 253; // Руна стихийной невосприимчивости
+  RuneOfStunning = 254; // Руна громового раската
+  RuneOfBattlerage = 255; // Руна боевой ярости
+  RuneOfEtherealness = 256; // Руна неосязаемости
+  RuneOfRevive = 257; // Руна воскрешения
+  RuneOfDragonform = 258; // Руна драконьего обличия
+  Sorrow = 277; // Скорбь
+  Vampirism = 278; // Вампиризм
+  DeepFreeze = 279; // Останавливающий холод
+  Regeneration = 280; // Регенерация
+  DivineVengeance = 281; // Божественная месть
+  ArcaneCrystal = 282; // Магический кристалл
+  SummonHive = 283; // Призыв улья
+  BladeBarrier = 284; // Стена мечей
+  RallingCry = 290; // Сборный клич
+  CallOfBlood = 291; // Зов крови
+  WordOfTheChief = 292; // Слово воштя
+  FearMyRoar = 293; // Пугалка
+  Battlecry = 294; // Боевой клич
+  ShoutOfMany = 295; // Ярость орды
+  SummonAirElementals = 378; // Призыв элементалей воздуха
+  SummonEarthElementals = 379; // Призыв элементалей земли
+  SummonFireElementals = 380; // Призыв элементалей огня
+  SummonWaterElementals = 381; // Призыв элементалей воды
+}
+
+enum MagicSchool {
+  Destructive = 0; // Хаос
+  Dark = 1; // Тьма
+  Light = 2; // Свет
+  Summoning = 3; // Призыв
+  Adventure = 4; // Контроль
+  Runic = 5; // Руны гномов
+  Warcries = 6; // Кличи орков
+  Special = 7; // Абилки существ/героев и технические спеллы
+}
+
+enum BuildingType {
+  T1 = 0; // Т1 двелл
+  T1G = 1; // Т1 гс
+  T2 = 2; // Т2 двелл
+  T2G = 3; // Т2 гс
+  T3 = 4; // Т3 двелл
+  T3G = 5; // Т3 гс
+  T4 = 6; // Т4 двелл
+  T4G = 7; // Т4 гс
+  T5 = 8; // Т5 двелл
+  T5G = 9; // Т5 гс
+  T6 = 10; // Т6 двелл
+  T6G = 11; // Т6 гс
+  T7 = 12; // Т7 двелл
+  T7G = 13; // Т7 гс
+  Tavern = 14; // Таверна
+  Forge = 15; // Кузница
+  Market1 = 16; // Рынок
+  Market2 = 17; // Склад
+  GM1 = 18; // Гм лвл 1
+  GM2 = 19; // Гм лвл 2
+  GM3 = 20; // Гм лвл 3
+  GM4 = 21; // Гм лвл 4
+  GM5 = 22; // Гм лвл 5
+  Fort1 = 23; // Форт
+  Fort2 = 24; // Цитадель
+  Fort3 = 25; // Замок
+  Gold1 = 26; // Дом старейшин
+  Gold2 = 27; // Ратуша
+  Gold3 = 28; // Магистрат
+  Gold4 = 29; // Капитолий
+  Asha = 30; // Здание за Слезу Асхи
+  HavenTrainingGrounds = 31; // Трен лвл 1
+  HavenHeroesMonument = 32; // Трен лвл 2
+  HavenStables = 33; // Конюшня
+  HavenFarms = 34; // Фермы на прирост крестьян
+  InfernoHellGates = 35; // +10% к гейтингу
+  InfernoDemonsGrow = 36; // Прирост демонов +2
+  InfernoHallOfHorror = 37; // Прирост коней +1
+  InfernoSacrificialPit = 38; // Жертвенная яма
+  NecromancyAmplifier = 39; // +1000 очков некромантии
+  NecromancyUnholyTemple = 40; // Конвертер нежити
+  NecromancyGraves = 41; // Прирост скелетов +6
+  NecromancyDragonTombstone = 42; // Прирост драконов +1
+  PreserveAvengerGuild = 43; // Гильдия мстителей
+  PreserveAvengerBrotherhood = 44; // Братство мстителей, +10% шанс прока заклятых
+  PreserveMysticPond = 45; // Пруд +ресурсы
+  PreserveSparklingFountain = 46; // Фонтан +удачи
+  PreserveBloomingGrove = 47; // Прирост фей
+  PreserveTreantSamplings = 48; // Прирост энтов
+  DungeonAltarOfElements = 49; // Элементальные цепочки
+  DungeonAltarOfPrimalChaos = 50; // +10% урона от цепочек
+  DungeonRitualPit = 51; // Ритуальная яма
+  DungeonTradePost = 52; // Лавка артефактов
+  DungeonHallOfIntrigue = 53; // +1 знания героям
+  AcademyLibrary = 54; // Библиотека
+  AcademyArcaneForge = 55; // Кузница миниартефактов
+  AcademyArtifactMerchant = 56; // Лавка артефактов
+  AcademyTreasureCave = 57; // +500 золота и прирост джиннов
+  FortressRunicShrine1 = 58; // Руны лвл 1
+  FortressRunicShrine2 = 59; // Руны лвл 2
+  FortressRunicShrine3 = 60; // Руны лвл 3
+  FortressArena = 61; // Прирост берсерков
+  FortressGuardPost = 62; // Сторожевая башня +отряд карликов
+  FortressStoneworks = 63; // Укрепленные стены
+  FortressRunicAcademy = 64; // Прирост жрецов рун
+  StrongholdHallOfTrial = 65; // Кличи лвл 1
+  StrongholdHallOfMastership = 66; // Кличи лвл 2
+  StrongholdHallOfMight = 67; // Кличи лвл 3
+  StrongholdGarbagePile = 68; // Прирост гоблинов
+  StrongholdTravellerShelter = 69; // Талисманы для походных артов
+  StrongholdPileOfOurFoes = 70; // Куча черепов +кровь на старте боя
+  StrongholdSlaveMarket = 71; // Рынок рабов
+}
+
+enum BuildingMode {
+  All = 0; //Здание будет построенно во всех городах фракции
+  StartCastle = 1; //Здание будет построенно только в стартовых городах игроков
+  NeutralCastle = 2; //Здание будет построенно только в нейтральных городах
+}
+
+enum BuildingTextureConfig {
+  BuildingTextureConfigNull = 0;
+  DefaultDwellingByTerrain = 1; // Двелинг в соответствии с террейном
+  DefaultDwellingByCreature = 2; // Двелинг в соотстветствии с юнитом
+
+  NeutralCreatureBuilding = 3; // Здание нейтралов
+  TowerByCreature = 4; // Башня в соотстветствии с юнитом
+  TowerByTerrain = 5; // Башня в соответствии с террейном
+
+  TowerGates = 10; // Текстура портала
+  RunicChest = 11; // Рунная коробка
+  DwarvenCareer = 12; // Шахта с редкими ресурсами
+  WoodShelter = 13; // Склад дерева
+  OreShelter = 14; // Склад руды
+
+  RandomChest = 20; // Сундук с неизвестным наполнением
+  ArtsChest = 21; // Сундук с артефактом
+  GoldChest = 22; // Сундук с золотом
+  ExpChest = 23; // Сундук с экспой
+  ResourceChest = 24; // Сундук с реурсами
+  SpellsChest = 25; // Сундук с заклинаниями
+
+  PandoraBox = 100; // ящик пандоры
+  Random = 101; // случайная текстура
+}
+
+enum TerrainType {
+  TerrainTypeNull = 0; // нет значения
+  FirstPlayer = 1; // террейн первого игрока
+  SecondPlayer = 2; // террейн второго игрока
+  Terrain1 = 3; // первый случайный свободный террейн
+  Terrain2 = 4; // второй случайный свободный террейн
+  Terrain3 = 5; // третий случайный свободный террейн
+  Terrain4 = 6; // четвёртый случайный свободный террейн
+  Terrain5 = 7; // пятый случайный свободный террейн
+  Terrain6 = 8; // шестой случайный свободный террейн
+}
+
+enum PlayerType {
+  Any = 0;  // любой игрок игроки
+  First = 1; // первый игрока
+  Second = 2; // второй игрока
+}
+
+enum HeroClassType {
+  None = 0;
+  Knight = 1; // Рыцарь
+  Demonlord = 2; // Повелитель демонов
+  Necromancer = 3;  // Некромант
+  Ranger = 4; // Рейнджер
+  Warlock = 5; // Чернокнижник
+  Wizard = 6; // Маг
+  Runemage = 7; // Рунный жрец
+  Barbarian = 8; // Варвар
+}
+
+enum SkillType {
+  NoSkill = 0;
+  Logistics = 1; // Логистика
+  WarMachines = 2; // Машины
+  Learning = 3; // Образование
+  Leadership = 4; // Лидерство
+  Luck = 5; // Удача
+  Offence = 6; // Нападение
+  Defence = 7; // Защита
+  Sorcery = 8; // Чародейство
+  DestructiveMagic = 9; // Магия Хаоса
+  DarkMagic = 10; // Магия Тьмы
+  LightMagic = 11; // Магия Света
+  SummoningMagic = 12; // Магия Призыва
+  Training = 13; // Контрудар
+  Gating = 14; // Открытие врат
+  Necromancy = 15; // Некромантия
+  Avenger = 16; // Мститель
+  Artificier = 17; // Мастер артефактов
+  Invocation = 18; // Неодолимая магия
+  Runelore = 151; // Магия рун
+  DemonicRage = 172; // Гнев крови
+  BarbarianLearning = 183; // Образование варвара
+  Voice = 187; // Кличи
+  ShatterDestructive = 191; // Приглушение Хаоса
+  ShatterDark = 195; // Приглушение Тьмы
+  ShatterLight = 199; // Приглушение Света
+  ShatterSummoning = 203; // Приглушение Призыва
+}
+
+enum ScriptBuilding {
+  TowerPortal = 0; // Портал перемещающий игрока к ближайшему родному городу
+}
+
+enum DefaultBuilding {
+  GoldChest5k = 0; // Сундук на 5k золота
+  GoldChest10k = 1; // Сундук на 10k золота
+  GoldChest15k = 2; // Сундук на 15k золота
+  GoldChest20k = 3; // Сундук на 20k золота
+
+  ExpChest5k = 4; // Сундук на 5k опыта
+  ExpChest10k = 5; // Сундук на 10k опыта
+  ExpChest15k = 6; // Сундук на 15k опыта
+  ExpChest20k = 7; // Сундук на 20k опыта
+
+  MinorArtChest = 8; // Сундук с малым артефактом
+  MajorArtChest = 9; // Сундук с большим артефактом
+  RelicArtChest = 10; // Сундук с реликтовым артефактом
+
+  FullDestructiveMagicChest = 11; // Сундук со всеми заклинаниями Разрушения (Все кличи для орка)
+  FullDarkMagicChest = 12; // Сундук со всеми заклинаниями Тьмы (Все кличи для орка)
+  FullLightMagicChest = 13; // Сундук со всеми заклинаниями Света (Все кличи для орка)
+  FullSummoningMagicChest = 14; // Сундук со всеми заклинаниями Призыва (Все кличи для орка)
+  FullAdventureMagicChest = 15; // Сундук со всеми заклинаниями Приключений (Все кличи для орка)
+  RandomFullMagicSchoolChest = 16; // Сундук со всеми заклинаниями случайной школы (Все кличи для орка)
+
+  FullT1MagicChest = 17; // Сундук со всеми заклинаниями 1 уровня (Т1 для орка)
+  FullT2MagicChest = 18; // Сундук со всеми заклинаниями 2 уровня (Т2 для орка)
+  FullT3MagicChest = 19; // Сундук со всеми заклинаниями 3 уровня (Т2 для орка)
+  FullT4MagicChest = 20; // Сундук со всеми заклинаниями 4 уровня (T3 для орка)
+  FullT5MagicChest = 21; // Сундук со всеми заклинаниями 5 уровня (T3 для орка)
+
+  RandomT1MagicChest = 22; // Сундук со случайным заклинанием 1 уровня (T1 для орка)
+  RandomT2MagicChest = 23; // Сундук со случайным заклинанием 2 уровня (T2 для орка)
+  RandomT3MagicChest = 24; // Сундук со случайным заклинанием 3 уровня (T2 для орка)
+  RandomT4MagicChest = 25; // Сундук со случайным заклинанием 4 уровня (T3 для орка)
+  RandomT5MagicChest = 26; // Сундук со случайным заклинанием 5 уровня (T3 для орка)
+
+  RandomT1CreatureBox = 27; // Ящик со случайным грейженным существом 1 ранга x3 прирост
+  RandomT2CreatureBox = 28; // Ящик со случайным грейженным существом 2 ранга x3 прирост
+  RandomT3CreatureBox = 29; // Ящик со случайным грейженным существом 3 ранга x3 прирост
+  RandomT4CreatureBox = 30; // Ящик со случайным грейженным существом 4 ранга x3 прирост
+  RandomT5CreatureBox = 31; // Ящик со случайным грейженным существом 5 ранга x3 прирост
+  RandomT6CreatureBox = 32; // Ящик со случайным грейженным существом 6 ранга x3 прирост
+  RandomT7CreatureBox = 33; // Ящик со случайным грейженным существом 7 ранга x3 прирост
+
+  HighTierRunicChest = 34; // Сундук с высокоуровневыми (т3-т5) рунами и 5к экспы герою не гнома
+  RandomRunicChest = 35; // Сундук со случайной руной и 3к экспы герою не гнома
+  T1RunicChest = 36; // Сундук с руной 1 ранга и 1к экспы герою не гнома
+  T2RunicChest = 37; // Сундук с руной 2 ранга и 2к экспы герою не гнома
+  T3RunicChest = 38; // Сундук с руной 3 ранга и 3к экспы герою не гнома
+  T4RunicChest = 39; // Сундук с руной 4 ранга и 4к экспы герою не гнома
+  T5RunicChest = 40; // Сундук с руной 5 ранга и 5к экспы герою не гнома
+
+  WoodGiver = 41; // Здание выдающее 5-10 дерева
+  OreGiver = 42; // Здание выдающее 5-10 руды
+  RareResourceGiver = 43; // Здание выдающее 5-10 случайного редкого ресурса
+
+  DefaultBuildingTowerPortal = 44; // Портал в родной город
+}
+enum ArtifactType {
+  None = 0;
+  SwordOfRuins = 1; // Меч мощи
+  DwarfKingAxe = 2; // Секира короля гномов
+  WandOfSpell = 3; // Палочка с заклинанием
+  UnicornBow = 4; // Лук из рога единорога
+  TitansTrident = 5; // Трезубец титанов
+  StaffOfTheUnderworld = 6; // Посох Преисподней
+  Shackles = 7; // Кандалы неизбежности
+  FourLeafClover = 8; // Четырехлистный клевер
+  IceShield = 9; // Ледяной щит
+  Sextant = 10; // Секстант морских эльфов
+  CrownOfLion = 11; // Корона льва
+  CrownOfManyEyes = 12; // Корона всевидящего
+  ArmorOfForgottenHero = 13; // Доспехи забытого героя
+  BreastplateOfPower = 14; // Нагрудник огромной мощи
+  PedantOfMastery = 15; // Кулон мастерства
+  NecklaceOfLion = 16; // Ошейник льва
+  NecklaceOfBloodyClaw = 17; // Ожерелье кровавого когтя
+  EvercoldIcycle = 18; // Кулон ледяных объятий
+  NecklaceOfVictory = 19; // Ожерелье победы
+  RingOfLightningProtection = 20; // Кольцо защиты от молний
+  RingOfVitality = 21; // Кольцо жизненной силы
+  RingOfHaste = 22; // Кольцо скорости
+  NightmarishRing = 23; // Кольцо сломленного духа
+  BootsOfSwiftJourney = 24; // Сапоги путешественника
+  GoldenHorseshoe = 25; // Золотая подкова
+  BootsOfOpenRoad = 26; // Сапоги открытого пути
+  BootsOfMagicDefence = 27; // Сапоги магической защиты
+  EndlessSackOfGold = 28; // Сумка бесконечного золота
+  EndlessBagOfGold = 29; // Мешочек бесконечного золота
+  CapeOfLion = 31; // Накидка с гривой льва
+  PhoenixFeatherCape = 32; // Накидка из перьев феникса
+  CloakOfMourning = 33; // Плащ смертоносной тени
+  TurbanOfEnlightenment = 34; // Тюрбан просвещения
+  ChainMailOfEnlightenment = 35; // Кольчуга просвещения
+  DragonScaleArmor = 36; // Доспех из чешуи дракона
+  DragonScaleShield = 37; // Щит из чешуи дракона
+  DragonBoneGraves = 38; // Поножи из кости дракона
+  DragonWingMantle = 39; // Мантия из крыльев дракона
+  DragonTeethNecklace = 40; // Ожерелье из зубов дракона
+  DragonTalonCrown = 41; // Корона из когтей дракона
+  DragonEyeRing = 42; // Кольцо глаз дракона
+  DragonFlameTongue = 43; // Пламенный язык дракона
+  RobeOfSarIssa = 44; // Халат Сар-Иссы
+  StaffOfSarIssa = 45; // Посох Сар-Иссы
+  CrownOfSarIssa = 46; // Корона Сар-Иссы
+  RingOfSarIssa = 47; // Кольцо Сар-Иссы
+  DwarvenKingCuirass = 48; // Кираса короля гномов
+  DwarvenKingGreaves = 49; // Поножи короля гномов
+  DwarvenKingHelmet = 50; // Шлем короля гномов
+  DwarvenKingShield = 51; // Щит короля гномов
+  ScrollOfSpell = 52; // Свиток с заклинанием
+  NecromancerHelm = 55; // Шлем некроманта
+  ArmorOfValor = 56; // Доспехи бесстрашия
+  WindstriderBoots = 57; // Сапоги странника
+  Moonblade = 58; // Лунный клинок
+  RingOfCelerity = 59; // Кольцо стремительности
+  ElementalWaistband = 60; // Кольцо элементалей
+  EmeraldSlippers = 61; // Изумрудные туфли
+  CloakOfSylanna = 62; // Плащ силанны
+  CursedWaistband = 63; // Проклятое кольцо
+  TunicOfFlesh = 64; // Туника из плоти
+  RingOfCaution = 65; // Кольцо предостережения
+  HelmOfChaos = 66; // Шлем хаоса
+  PendantOfConflux = 67; // Кулон поглощения
+  SandalsOfBlessed = 68; // Сандалии святого
+  SandroCloak = 69; // Плащ Сандро
+  NecromancerRing = 70; // Кольцо грешников
+  NecromancerAmulet = 71; // Амулет некроманта
+  OgreClub = 74; // Дубина людоеда
+  OgreShield = 75; // Щит людоеда
+  TomeOfChaos = 76; // Том магии Хаоса
+  TomeOfLight = 77; // Том магии Света
+  TomeOfDark = 78; // Том магии Тьмы
+  TomeOfSummon = 79; // Том магии Призыва
+  BeginnerMagicStick = 80; // Волшебная палочка новичка
+  RunicAxe = 81; // Рунный боевой топор
+  RunicHarness = 82; // Рунная боевая упряжь
+  SkullOfMarkal = 83; // Шлем Маркела
+  BearhideWraps = 84; // Тайные защитные покровы
+  DwarvenHammer = 85; // Гномий кузнечный молот
+  RuneOfFlame = 86; // Руна пламени
+  TarotDesk = 87; // Колода Таро
+  CrownOfLeadership = 88; // Корона лидерства
+  MaskOfDoppelganger = 89; // Маска справедливости
+  EdgeOfBalance = 90; // На грани равновесия
+  RingOfMachines = 91; // Кольцо родства с машинами
+  HornOfPlenty = 92; // Рог изобилия
+  RingOfUnsummon = 93; // Кольцо изгнания
+  BookOfPower = 94; // Том Силы
+  TreebornQuiver = 95; // Изумительный колчан
+  RingOfSilence = 97; // Кольцо безмолвия
+}
+
+enum ArtifactCategory {
+  Minor = 0; // Минор
+  Major = 1; // Мажор
+  Relic = 2; // Реликт
+  Grail = 3;
+}
+
+enum ArtifactSlot {
+  Inventory = 0; // только в сумке
+  Primary = 1; // оружие
+  Secondary = 2; // щит
+  Head = 3; // голова
+  Chest = 4; // грудь
+  Neck = 5; // шея
+  Finger = 6; // кольцо
+  Feet = 7; // сапоги
+  Shoulders = 8; // плечи
+  MiscSlot = 9; // карман
+}
+
+// Это входная точка генерации, эта модель будет рутовая в json документе
+message TemplateGenerationConfig {
+  string TemplateName = 1; // название шаблона который будет заменяться
+  repeated ZoneGenerationConfig Zones = 2; // настройка зон, не заполненные параметры будут использованы из оригинального XDB
+  repeated ConnectionModel Connections = 3; // настройки ГО шаблона,  не заполненные параметры будут использованы из оригинального XDB
+  repeated TerrainConfig TerrainConfig = 4; // управлениями объектов в шоп поинтсах под конкретные террейны
+  repeated StartBuildingConfig StartBuildingConfigs = 5; // настройка стартовых зданий в городах
+  GeneralData GeneralData = 6; // общие настройки: иконки, плотность боёв и т.д.
+
+  google.protobuf.DoubleValue BaseArmyMultiplier = 7; // общий множитель стартовой армии, 1 по умолчанию
+  map<string, double> ArmyMultipliers = 8; //  настройка множителей для конкретной фракции (Humans, Inferno, Necropolis, Elves, Liga, Mages, Dwarfs, Horde )
+
+  ScriptFeaturesConfig ScriptFeaturesConfig = 9; // настройки скриптовых фич
+  EntitiesBanModel EntitiesBanConfig = 10; // настройки банов на шаблоне
+  StartSpellsConfig StartSpellsConfig = 11; // найстройки стартовых заклинаний
+
+  repeated CustomBuildingConfig CustomBuildingConfigs = 12; // Создание кастомных зданий которые можно использовать в других секциях конфигов
+  CreatureBanksPool CreatureBanksPool = 13; // настройки специального пула банков существ который может быть добавлен в настройках террейнов через опцию AddCreatureBanksPool
+
+  ZoneRandomizationConfig ZoneRandomizationConfig = 14; // настройки рандомизации координат в шаблоне
+}
+
+message EntitiesBanModel {
+  repeated HeroTypeEnum.HeroType BannedHeroes = 1; // забаненные герои
+  repeated SpellTypeEnum.SpellType BannedSpells = 2; // забаненные заклинания
+  repeated ArtifactTypeEnum.ArtifactType BannedArtifacts = 3; // забаненные артефакты
+  BasesBanModel BannedBases = 4; // забаненные базовые скиллы
+  google.protobuf.BoolValue BanMaradeur = 5; // забанить мародерство?
+}
+
+message GeneralData {
+  google.protobuf.Int32Value Mine1LevelGuardLevel = 1; // охрана древесины и рудника
+  google.protobuf.Int32Value Mine2LevelGuardLevel = 2; // охрана шахт редких ресурсов
+  google.protobuf.Int32Value MineGoldGuardLevel = 3; // охрана голд шахт
+}
+
+message IntValueConfig {
+  google.protobuf.Int32Value MinValue = 1; // минимальное значение параметра
+  google.protobuf.Int32Value MaxValue = 2; // максимальное значение параметра
+}
+
+message CreaturesConfiguration {
+  IntValueConfig ReplacementsCount = 1; // количество тиров, которые будут заменены
+  google.protobuf.BoolValue TerrainFaction = 2; // добавлять ли юнитов текущего террейна
+  google.protobuf.BoolValue NonPlayersFactions = 3; // включать ли фракции, не выданные игрокам
+  google.protobuf.BoolValue NoGrades = 4; // включать ли негрейды
+  google.protobuf.BoolValue Grades = 5; // включать ли грейды
+  google.protobuf.BoolValue Neutrals = 6; // включать ли нейтралов
+  google.protobuf.DoubleValue BaseCostMultiplier = 7; // множитель стоимости в золоте
+  google.protobuf.DoubleValue BaseResourcesMultiplier = 8; // множитель стоимости в ресурсах
+  google.protobuf.DoubleValue BaseGrowMultiplier = 9; // множитель прироста
+  repeated CreatureModifier CreatureModifiers = 10; // модификаторы юнитов по тирам
+  repeated CreatureTierReplacement CreatureTierReplacements = 11; // конкретные юниты на замену в тирах, при заполнении секции в эти тиры будут рандомиться только юниты по указанным айди
+  google.protobuf.BoolValue NonUniqueReplacements = 12; // могут ли заменённые юниты повторяться в других локациях
+}
+
+message CreatureModifier {
+  int32 Tier = 1; // тир существа
+  google.protobuf.DoubleValue CostMultiplier = 2; // множитель стоимости в золоте
+  google.protobuf.DoubleValue ResourcesMultiplier = 3; // множитель стоимости в ресурсах
+  google.protobuf.DoubleValue GrowMultiplier = 4; // множитель прироста
+}
+
+// <details>
+//  <summary>Показать список существ</summary>
+//  <pre>
+//Крестьяне : CREATURE_PEASANT  
+//Ополченцы : CREATURE_MILITIAMAN  
+//Лучники : CREATURE_ARCHER  
+//Арбалетчики : CREATURE_MARKSMAN  
+//Мечники : CREATURE_FOOTMAN  
+//Латники : CREATURE_SWORDSMAN  
+//Грифоны : CREATURE_GRIFFIN  
+//Королевские грифоны : CREATURE_ROYAL_GRIFFIN  
+//Монахи : CREATURE_PRIEST  
+//Инквизиторы : CREATURE_CLERIC  
+//Рыцари : CREATURE_CAVALIER  
+//Паладины : CREATURE_PALADIN  
+//Ангелы : CREATURE_ANGEL  
+//Архангелы : CREATURE_ARCHANGEL  
+//Бесы : CREATURE_FAMILIAR  
+//Черти : CREATURE_IMP  
+//Демоны : CREATURE_DEMON  
+//Огненные демоны : CREATURE_HORNED_DEMON  
+//Адские гончие : CREATURE_HELL_HOUND  
+//Церберы : CREATURE_CERBERI  
+//Суккубы : CREATURE_SUCCUBUS  
+//Демонессы : CREATURE_INFERNAL_SUCCUBUS  
+//Адские жеребцы : CREATURE_NIGHTMARE  
+//Кошмары : CREATURE_FRIGHTFUL_NIGHTMARE  
+//Пещерные демоны : CREATURE_PIT_FIEND  
+//Пещерные владыки : CREATURE_BALOR  
+//Дьяволы : CREATURE_DEVIL  
+//Архидьяволы : CREATURE_ARCHDEVIL  
+//Костяные воины : CREATURE_SKELETON  
+//Костяные лучники : CREATURE_SKELETON_ARCHER  
+//Зомби : CREATURE_WALKING_DEAD  
+//Чумные зомби : CREATURE_ZOMBIE  
+//Привидения : CREATURE_MANES  
+//Призраки : CREATURE_GHOST  
+//Вампиры : CREATURE_VAMPIRE  
+//Высшие вампиры : CREATURE_VAMPIRE_LORD  
+//Личи : CREATURE_LICH  
+//Архиличи : CREATURE_DEMILICH  
+//Умертвия : CREATURE_WIGHT  
+//Вестники смерти : CREATURE_WRAITH  
+//Костяные драконы : CREATURE_BONE_DRAGON  
+//Призрачные драконы : CREATURE_SHADOW_DRAGON  
+//Феи : CREATURE_PIXIE  
+//Дриады : CREATURE_SPRITE  
+//Танцующие с клинками : CREATURE_BLADE_JUGGLER  
+//Танцующие со смертью : CREATURE_WAR_DANCER  
+//Эльфийские лучники : CREATURE_WOOD_ELF  
+//Мастера лука : CREATURE_GRAND_ELF  
+//Друиды : CREATURE_DRUID  
+//Верховные друиды : CREATURE_DRUID_ELDER  
+//Единороги : CREATURE_UNICORN  
+//Боевые единороги : CREATURE_WAR_UNICORN  
+//Энты : CREATURE_TREANT  
+//Древние энты : CREATURE_TREANT_GUARDIAN  
+//Зеленые драконы : CREATURE_GREEN_DRAGON  
+//Изумрудные драконы : CREATURE_GOLD_DRAGON  
+//Гремлины : CREATURE_GREMLIN  
+//Старшие гремлины : CREATURE_MASTER_GREMLIN  
+//Каменные горгульи : CREATURE_STONE_GARGOYLE  
+//Обсидиановые горгульи : CREATURE_OBSIDIAN_GARGOYLE  
+//Железные големы : CREATURE_IRON_GOLEM  
+//Стальные големы : CREATURE_STEEL_GOLEM  
+//Маги : CREATURE_MAGI  
+//Архимаги : CREATURE_ARCH_MAGI  
+//Джинны : CREATURE_GENIE  
+//Султаны джиннов : CREATURE_MASTER_GENIE  
+//Принцессы ракшас : CREATURE_RAKSHASA  
+//Раджи ракшас : CREATURE_RAKSHASA_RUKH  
+//Колоссы : CREATURE_GIANT  
+//Титаны : CREATURE_TITAN  
+//Лазутчики : CREATURE_SCOUT  
+//Ассасины : CREATURE_ASSASSIN  
+//Бестии : CREATURE_WITCH  
+//Фурии : CREATURE_BLOOD_WITCH  
+//Минотавры : CREATURE_MINOTAUR  
+//Минотавры-стражи : CREATURE_MINOTAUR_KING  
+//Наездники на ящерах : CREATURE_RIDER  
+//Темные всадники : CREATURE_RAVAGER  
+//Гидры : CREATURE_HYDRA  
+//Пещерные гидры : CREATURE_CHAOS_HYDRA  
+//Сумеречные ведьмы : CREATURE_MATRON  
+//Владычицы тени : CREATURE_MATRIARCH  
+//Сумеречные драконы : CREATURE_DEEP_DRAGON  
+//Черные драконы : CREATURE_BLACK_DRAGON  
+//Огненные элементали : CREATURE_FIRE_ELEMENTAL  
+//Водные элементали : CREATURE_WATER_ELEMENTAL  
+//Земные элементали : CREATURE_EARTH_ELEMENTAL  
+//Воздушные элементали : CREATURE_AIR_ELEMENTAL  
+//Рыцари смерти : CREATURE_DEATH_KNIGHT  
+//Фениксы : CREATURE_PHOENIX  
+//Защитники гор : CREATURE_DEFENDER  
+//Воители : CREATURE_STOUT_DEFENDER  
+//Метатели копья : CREATURE_AXE_FIGHTER  
+//Мастера копья : CREATURE_AXE_THROWER  
+//Наездники на медведях : CREATURE_BEAR_RIDER  
+//Хозяева медведей : CREATURE_BLACKBEAR_RIDER  
+//Костоломы : CREATURE_BROWLER  
+//Берсерки : CREATURE_BERSERKER  
+//Жрецы Рун : CREATURE_RUNE_MAGE  
+//Жрецы Арката : CREATURE_FLAME_MAGE  
+//Таны : CREATURE_THANE  
+//Ярлы : CREATURE_WARLORD  
+//Огненные драконы : CREATURE_FIRE_DRAGON  
+//Лавовые драконы : CREATURE_MAGMA_DRAGON  
+//Лендлорды : CREATURE_LANDLORD  
+//Стрелки : CREATURE_LONGBOWMAN  
+//Ревнитель веры : CREATURE_VINDICATOR  
+//Боевые грифоны : CREATURE_BATTLE_GRIFFIN  
+//Адепт : CREATURE_ZEALOT  
+//Рыцари Изабель : CREATURE_CHAMPION  
+//Серафим : CREATURE_SERAPH  
+//Волки : CREATURE_WOLF  
+//Мантикоры : CREATURE_MANTICORE  
+//Мумии : CREATURE_MUMMY  
+//Гоблины : CREATURE_GOBLIN  
+//Трапперы : CREATURE_GOBLIN_TRAPPER  
+//Кентавры : CREATURE_CENTAUR  
+//Кочевые кентавры : CREATURE_CENTAUR_NOMAD  
+//Орочьи воины : CREATURE_ORC_WARRIOR  
+//Орочьи бойцы : CREATURE_ORC_SLAYER  
+//Шаманки : CREATURE_SHAMAN  
+//Дочери неба : CREATURE_SHAMAN_WITCH  
+//Убийцы : CREATURE_ORCCHIEF_BUTCHER  
+//Палачи : CREATURE_ORCCHIEF_EXECUTIONER  
+//Виверны : CREATURE_WYVERN  
+//Темные виверны : CREATURE_WYVERN_POISONOUS  
+//Циклопы : CREATURE_CYCLOP  
+//Свободные циклопы : CREATURE_CYCLOP_UNTAMED  
+//Дьяволята : CREATURE_QUASIT  
+//Старшие демоны : CREATURE_HORNED_LEAPER  
+//Огненные гончие : CREATURE_FIREBREATHER_HOUND  
+//Искусительницы : CREATURE_SUCCUBUS_SEDUCER  
+//Кони преисподней : CREATURE_HELLMARE  
+//Пещерные отродья : CREATURE_PIT_SPAWN  
+//Архидемоны : CREATURE_ARCH_DEMON  
+//Ловчие : CREATURE_STALKER  
+//Мегеры : CREATURE_BLOOD_WITCH_2  
+//Минотавры-надсмотрщики : CREATURE_MINOTAUR_CAPTAIN  
+//Проворные наездники : CREATURE_BLACK_RIDER  
+//Темные гидры : CREATURE_ACIDIC_HYDRA  
+//Хозяйки ночи : CREATURE_SHADOW_MISTRESS  
+//Красные драконы : CREATURE_RED_DRAGON  
+//Нимфы : CREATURE_DRYAD  
+//Танцующие с ветром : CREATURE_BLADE_SINGER  
+//Лесные стрелки : CREATURE_SHARP_SHOOTER  
+//Старшие друиды : CREATURE_HIGH_DRUID  
+//Светлые единороги : CREATURE_WHITE_UNICORN  
+//Дикие энты : CREATURE_ANGER_TREANT  
+//Кристаллические драконы : CREATURE_RAINBOW_DRAGON  
+//Костяные воители : CREATURE_SKELETON_WARRIOR  
+//Гниющие зомби : CREATURE_DISEASE_ZOMBIE  
+//Духи : CREATURE_POLTERGEIST  
+//Князья вампиров : CREATURE_NOSFERATU  
+//Высшие личи : CREATURE_LICH_MASTER  
+//Баньши : CREATURE_BANSHEE  
+//Астральные драконы : CREATURE_HORROR_DRAGON  
+//Гремлины-вредители : CREATURE_GREMLIN_SABOTEUR  
+//Стихийные горгульи : CREATURE_MARBLE_GARGOYLE  
+//Обсидиановые големы : CREATURE_OBSIDIAN_GOLEM  
+//Боевые маги : CREATURE_COMBAT_MAGE  
+//Визири джиннов : CREATURE_DJINN_VIZIER  
+//Кшатрии ракшас : CREATURE_RAKSHASA_KSHATRI  
+//Громовержцы : CREATURE_STORM_LORD  
+//Горные стражи : CREATURE_STONE_DEFENDER  
+//Гарпунеры : CREATURE_HARPOONER  
+//Северные наездники : CREATURE_WHITE_BEAR_RIDER  
+//Воины Арката : CREATURE_BATTLE_RAGER  
+//Жрецы Пламени : CREATURE_FLAME_KEEPER  
+//Эрлы : CREATURE_THUNDER_THANE  
+//Драконы Арката : CREATURE_LAVA_DRAGON  
+//Колдуны гоблинов : CREATURE_GOBLIN_DEFILER  
+//Боевые кентавры : CREATURE_CENTAUR_MARADEUR  
+//Вармонгеры : CREATURE_ORC_WARMONGER  
+//Дочери земли : CREATURE_SHAMAN_HAG  
+//Вожаки : CREATURE_ORCCHIEF_CHIEFTAIN  
+//Паокаи : CREATURE_WYVERN_PAOKAI  
+//Кровоглазые циклопы : CREATURE_CYCLOP_BLOODEYED
+//  </pre>
+//</details>
+message CreatureTierReplacement {
+  int32 Tier = 1; // тир, в котором будет произведеназамена
+  repeated string CreatureIds = 2; // айди юнитов на замену
+}
+
+// Начиная с поля RandomDwellingConfig допустима только одна вариация настройки т.е. нукжно заполнять только один из полей. По умолчанию считается первое если заполнить несколько
+message DwellingGenerationConfig {
+  TemplateGenerationEnums.BuildingTextureConfig BuildingTexture = 1; // текстура двелов
+  CreaturesConfiguration CreaturesConfiguration = 2; // настройки замены юнитов в двелах в рамках террейна.
+  oneof GenerationType{
+      RandomDwellingConfig RandomDwellingConfig = 3; // вариант рандомной генерации двелов
+      StaticDwellingConfigs StaticDwellingConfigs = 4; // статичные наборы двеллингов
+      DwellingByPointsConfig DwellingByPointsConfig = 5; // генерация двелинга по очкам
+      DependantDwellingConfig DependantDwellingConfig = 6; // вариант генерации тиров на основе другой локации.
+  }
+}
+
+message RandomDwellingConfig {
+  int32 MinCount = 1; // минимальное количество двелов
+  int32 MaxCount = 2; // максимальное количество двелов
+  google.protobuf.Int64Value MinTiersCount = 3; // минимальное количество тиров существ в двелинга, по умолчанию 7
+  google.protobuf.Int64Value MaxTiersCount = 4; // максимальное количество тиров существ в двелинга, по умолчанию 7
+  google.protobuf.BoolValue UniformDistribution = 5; // равномерное распределение по тирам, т.е. если 14 двелов и 7 тиров их сдаст гарантированно T1x2;T2x2;T3x2;T4x2;T5x2;T6x2;T7x2
+  repeated int64 AllowedTiers = 6; // массив разрешённых тиров для генерации, по умолчанию будут все тиры 1-7
+  google.protobuf.Int64Value MinCountPerTier = 7; // настройка минимального количества двелов для тира
+  google.protobuf.Int64Value MaxCountPerTier = 8; // настройка максимального количества двелов для тира
+}
+
+message StaticDwellingConfigs {
+  repeated DwellingValue DwellingValue = 1; // набор статических вариаций двелов т1-т7, будет выбрана случайная
+}
+
+message DwellingByPointsConfig {
+  int64 PointsCount = 1; // количество поинтов для распределения двелов
+  DwellingValue DwellingPoints = 2; // выставление велью поинтов конкретным тирам
+  map<string, DwellingValue> DwellingPointsByFaction = 3; // выставление велью поинтов конкретным тирам по фракциям (Humans, Inferno, Necropolis, Elves, Liga, Mages, Dwarfs, Horde )
+  google.protobuf.Int64Value MinTiersCount = 4; // минимальное количество тиров существ в двелинга
+  google.protobuf.Int64Value MaxTiersCount = 5; // максимальное количество тиров существ в двелинга
+  repeated int64 AllowedTiers = 6; // массив разрешённых тиров для генерации, по умолчанию будут все тиры 1-7
+  DwellingValue MinCountPerTier = 7; // настройка минимального количества двелов для конкретного тира
+  map<string, DwellingValue> MinCountPerTierByFaction = 8; // настройка минимального количества двелов для конкретного тира по фракциям (Humans, Inferno, Necropolis, Elves, Liga, Mages, Dwarfs, Horde )
+  DwellingValue MaxCountPerTier = 9; // настройка максимального количества двелов для конкретного тира
+  map<string, DwellingValue> MaxCountPerTierByFaction = 10; // настройка максимального количества двелов для конкретного тира по фракциям (Humans, Inferno, Necropolis, Elves, Liga, Mages, Dwarfs, Horde )
+}
+
+message DependantDwellingConfig {
+  int64 ZoneId = 1; // зона от которой зависят настройки двелингов
+  int32 MinCount = 2; // минимальное количество двелов
+  int32 MaxCount = 3; // максимальное количество двелов
+  google.protobuf.Int64Value MinTiersCount = 4; // минимальное количество тиров существ в двелинга
+  google.protobuf.Int64Value MaxTiersCount = 5; // максимальное количество тиров существ в двелинга
+  google.protobuf.BoolValue UniformDistribution = 6; // равномерное распределение по тирам, т.е. если 14 двелов и 7 тиров их сдаст гарантированно T1x2;T2x2;T3x2;T4x2;T5x2;T6x2;T7x2
+  google.protobuf.Int64Value MinCountPerTier = 7; // настройка минимального количества двелов для конкретного тира
+  google.protobuf.Int64Value MaxCountPerTier = 8; // настройка максимального количества двелов для тира
+  bool IsCopyMode = 9; // false - будут взяты тиры которые не сгенерировались в другой локации, true - тиры будут скопированы из другой локации
+}
+
+
+message DwellingValue {
+  google.protobuf.Int64Value T1 = 1;
+  google.protobuf.Int64Value T2 = 2;
+  google.protobuf.Int64Value T3 = 3;
+  google.protobuf.Int64Value T4 = 4;
+  google.protobuf.Int64Value T5 = 5;
+  google.protobuf.Int64Value T6 = 6;
+  google.protobuf.Int64Value T7 = 7;
+}
+
+message ResourcesConfig {
+  IntValueConfig Wood = 1; // Количетсов дерева
+  IntValueConfig Ore = 2; // Количество руды
+  IntValueConfig Mercury = 3; // Количество ртути
+  IntValueConfig Crystals = 4;  // Количество кристалов
+  IntValueConfig Sulfur = 5;  // Количество серы
+  IntValueConfig Gems = 6;  // Количество самоцветов
+  IntValueConfig Gold = 7;  // Количество золота
+}
+
+message ZoneGenerationConfig {
+  int32 ZoneId = 1; // индекс зоны из шаблона
+  TemplateGenerationEnums.TerrainType TerrainType = 2; // тип террейна
+  google.protobuf.Int32Value MirrorZoneId = 3; // Id зоны с которой нужно скопировать остальные результаты генерации. Если параметр указан все остальные настройки кроме TerrainType, ZoneId и координат локации/замка игнорируются. CreaturesConfiguration возьмётся зеркальное только если не указано в оригинальном конфиге.
+  DwellingGenerationConfig DwellingGenerationConfig = 4; // конфигурация генерации двелов
+  ResourcesConfig MineGenerationConfig = 5; // конфигурация шахт
+  IntValueConfig AbandonedMines = 6; //  количество забррошенных шахт
+  IntValueConfig UpgBuildingsDensity = 7; //  повышалки героев
+  IntValueConfig TreasureDensity = 8;  // ресурсы на земле
+  IntValueConfig TreasureChestDensity = 9; // сундуки  на земле
+  IntValueConfig Prisons = 10; // количество тюрем
+  IntValueConfig TownGuardStrenght = 11; // охрана города
+  IntValueConfig ShopPoints = 12; // очки магазинов
+  IntValueConfig ShrinePoints = 13; // очки храмов магии 
+  IntValueConfig LuckMoralBuildingsDensity = 14; // бафы на морраль, мувы и т.д.
+  IntValueConfig ResourceBuildingsDensity = 15; // плотность размещения строений ресурсов
+  IntValueConfig TreasureBuildingPoints = 16; // очки сокровищниц
+  IntValueConfig TreasureBlocksTotalValue = 17; //  велью локации
+  IntValueConfig DenOfThieves = 18; //  0 = стартовые сокровищницы, 1 = не стартовые
+  IntValueConfig RedwoodObservatoryDensity = 19; // параметр силы локации 0 - старт, 1 - сегмент и т.д.
+  IntValueConfig Size = 20; // размер локации
+  google.protobuf.BoolValue Town = 21; // будет ли размещён город в локации
+  IntValueConfig ZoneStartPointX = 22; // стартовая координата x из которой генерируется локация
+  IntValueConfig ZoneStartPointY = 23; // стартовая координата y из которой генерируется локация
+  IntValueConfig MainTownStartPointX = 24; // координата x стартового замка
+  IntValueConfig MainTownStartPointY = 25; // координата y стартового замка
+  IntValueConfig MainTownRotationDirection = 26; // поворот замка, принимает значение 0, 1, 2, 3
+  google.protobuf.BoolValue TreasureBlocksScalingFromTownDist = 27; // включён ли скейлинг распределения велью по удалению от замка
+  IntValueConfig DistBetweenTreasureBlocks = 28; // расстояние между боевыми точками, определяет плотность пробивок
+}
+
+//SourceZoneIndex-DestZoneIndex-IsMain - эти три поля являются ключём для поиска. Если го по таком ключу будет найденно то следующие параметры будут просто обновлены, если нет - будет добавлено новое го в шаблон.
+message ConnectionModel {
+  int32 SourceZoneIndex = 1; // id зоны источника
+  int32 DestZoneIndex = 2; // id зоны назначения
+  bool IsMain = 3; // основное ГО или альтернативное
+
+  google.protobuf.BoolValue RemoveConnection = 4; // нужно ли удалить это го, последующие параметры игнорируются
+
+  google.protobuf.BoolValue TwoWay = 5;
+  google.protobuf.Int32Value GuardStrenght = 6; // размер охраны ГО
+  google.protobuf.BoolValue Guarded = 7; // наличие охраны на ГО
+  google.protobuf.BoolValue Wide = 8;
+  google.protobuf.BoolValue StaticPos = 9; // генерить ГО по указанным статисческим координатам true - по координатам false - случайно
+  google.protobuf.Int32Value StartPointX = 10; // координата X для генерации ГО (если StaticPos = true)
+  google.protobuf.Int32Value StartPointY = 11; // координата Y для генерации ГО (если StaticPos = true)
+  google.protobuf.Int32Value MinRadiusToSearch = 12; // минимальный радиус поиска пересечений (если StaticPos = true)
+  google.protobuf.Int32Value MaxRadiusToSearch = 13; // максимальный радиус поиска пересечений (если StaticPos = true)
+  google.protobuf.Int32Value MinRadiusToMain = 14; // минимальный радиус для поиска основного ГО (если IsMain = false)
+  google.protobuf.Int32Value MaxRadiusToMain = 15; // максимальный радиус для поиска основного ГО (если IsMain = false)
+  google.protobuf.Int32Value RoadType = 16; // тип дороги: 0 – без дороги, 1 – земляная, 2 – каменная
+}
+
+//<details>
+//  <summary>Секции зданий шаблона (полный список)</summary>
+//
+//  <details>
+//    <summary>&lt;NewLuckMoraleBuildings&gt; — здания удачи, морали и передвижения (не охраняются)</summary>
+//    <p>Плотность регулируется параметром <code>LuckMoralBuildingsDensity</code>:</p>
+//    <ul>
+//      <li><code>href="/MapObjects/Faerie_Ring.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Fountain_Of_Fortune.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Idol_Of_Fortune.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Temple.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Rally_Flag.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/H5A2/RandomSancutuary.xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/H5A2/ShamanOfNommads.xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Fountain_Of_Youth.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Universe_mod/LakeofScarlettSwan.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Universe_mod/LakeofMermaids.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Stables.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//    </ul>
+//  </details>
+//
+//  <details>
+//    <summary>&lt;NewShopBuildings&gt; — магазины (охраняются, ставятся по <code>ShopPoints</code>)</summary>
+//    <ul>
+//      <li><code>href="/MapObjects/Special/ElementalConflux.xdb#xpointer(/AdvMapDwellingShared)"</code> — слияние стихий, Value: 5</li>
+//      <li><code>href="/MapObjects/Objects-All-Terra/War_Machine_Factory.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — мастерская машин, Value: 5</li>
+//      <li><code>href="/MapObjects/H5A2/House_Of_Astrologer.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — башня астролога, Value: 10</li>
+//      <li><code>href="/MapObjects/Special/RefugeeCamp.xdb#xpointer(/AdvMapDwellingShared)"</code> — рефьюга, Value: 15</li>
+//      <li><code>href="/MapObjects/H5A2/SpellShop.xdb#xpointer(/AdvMapBuildingShared)"</code> — Библиотека заклинаний, Value: 15</li>
+//      <li><code>href="/MapObjects/Black_Market.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — Рынок артефактов, Value: 25</li>
+//    </ul>
+//  </details>
+//
+//  <details>
+//    <summary>&lt;NewResourceGivers&gt; — здания ресурсов (не охраняются, зависят от <code>ResourceBuildingsDensity</code>)</summary>
+//    <ul>
+//      <li><code>href="/MapObjects/Mystical_Garden.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — гном (5 гемов или 500 золота)</li>
+//      <li><code>href="/MapObjects/Windmill.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — мельница</li>
+//      <li><code>href="/MapObjects/Universe_mod/EnchantedTreasure.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — сокровищница на 1000 золота</li>
+//    </ul>
+//  </details>
+//
+//  <details>
+//    <summary>&lt;NewUpgradeBuildings&gt; — здания характеристик (охраняются, ставятся по <code>UpgBuildingsDensity</code>)</summary>
+//    <ul>
+//      <li><code>href="/MapObjects/Mercenary_Camp.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 1 напа, Value: 6</li>
+//      <li><code>href="/MapObjects/Marletto_Tower.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 1 дефа, Value: 6</li>
+//      <li><code>href="/MapObjects/Garden_Of_Revelation.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 1 знания, Value: 6</li>
+//      <li><code>href="/MapObjects/Star_Axis.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 1 колды, Value: 6</li>
+//      <li><code>href="/MapObjects/WarAcademy.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 1 напа или дефа, Value: 8</li>
+//      <li><code>href="/MapObjects/Magic_Spring.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — магический источник (+30 маны?), Value: 10</li>
+//      <li><code>href="/MapObjects/Tree_of_Knowledge.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — лвлап?, Value: 14</li>
+//      <li><code>href="/MapObjects/SchoolofMagic.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 2 маг стата на выбор, Value: 16</li>
+//      <li><code>href="/MapObjects/Arena.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 2 боевых стата на выбор, Value: 16</li>
+//      <li><code>href="/MapObjects/LibraryOfEnlightenment.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 2 колды и знания, Value: 24</li>
+//    </ul>
+//  </details>
+//
+//  <details>
+//    <summary>&lt;NewShrines&gt; — святилища заклинаний (не охраняются, зависят от <code>ShrinePoints</code>)</summary>
+//    <ul>
+//      <li><code>href="/MapObjects/Shrine_Of_Magic_1.(AdvMapShrineShared).xdb#xpointer(/AdvMapShrineShared)"</code> — т1 закл, Value: 4</li>
+//      <li><code>href="/MapObjects/Shrine_Of_Magic_2.(AdvMapShrineShared).xdb#xpointer(/AdvMapShrineShared)"</code> — т2 закл, Value: 8</li>
+//      <li><code>href="/MapObjects/Shrine_Of_Magic_3.(AdvMapShrineShared).xdb#xpointer(/AdvMapShrineShared)"</code> — т3 закл, Value: 12</li>
+//    </ul>
+//  </details>
+//
+//  <details>
+//    <summary>&lt;NewTreasuryBuildings&gt; — банки стартовой зоны (охраняются, зависят от <code>TreasureBuildingPoints</code>)</summary>
+//    <ul>
+//      <li><code>href="/MapObjects/Crypt.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — склеп, Value: 5</li>
+//      <li><code>href="/MapObjects/GargoyleStonevault.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — гаргулятник, Value: 5</li>
+//      <li><code>href="/MapObjects/DwarvenTreasury.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — гномник, Value: 10</li>
+//      <li><code>href="/MapObjects/Universe_mod/Demonbank.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — бесятник, Value: 10</li>
+//      <li><code>href="/MapObjects/Elemantal_Stockpile.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — элемник, Value: 10</li>
+//      <li><code>href="/MapObjects/Universe_mod/Monasterybank.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — монастырь, Value: 10</li>
+//    </ul>
+//  </details>
+//
+//  <details>
+//    <summary>&lt;NewBuffBuildings&gt; — средние банки и утопии (охраняются, зависят от <code>TreasureBuildingPoints</code>)</summary>
+//    <ul>
+//      <li><code>href="/MapObjects/Elemantal_Stockpile.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — элемник, Value: 10</li>
+//      <li><code>href="/MapObjects/Universe_mod/Monasterybank.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — монастырь, Value: 10</li>
+//      <li><code>href="/MapObjects/MagiVault.xdb#xpointer(/AdvMapBuildingShared)"</code> — магятник, Value: 15</li>
+//      <li><code>href="/MapObjects/TreantThicket.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — энтятник, Value: 15</li>
+//      <li><code>href="/MapObjects/WitchBank.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — кровавый храм, Value: 15</li>
+//      <li><code>href="/MapObjects/Universe_mod/NecroEstate.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — некрятник, Value: 15</li>
+//      <li><code>href="/MapObjects/Universe_mod/OrcDeposit.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — орчатник, Value: 35</li>
+//      <li><code>href="/MapObjects/Dragon_Utopia.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — утопа драконов, Value: 40</li>
+//    </ul>
+//  </details>
+//
+//</details>
+message TerrainConfig {
+  TemplateGenerationEnums.TerrainType TerrainType = 1; // айди террейна, по аналогии с террейном в зонах
+  TemplateGenerationEnums.TerrainType MirrorTerrainType = 2;  // отзеркалить настройки какого то террейна, если указано то другие настройки игнорируются
+  repeated string BuildingsToDelete = 3; // строковые названия объектов для удаления из всех секций перечисленных ниже
+  repeated int32 BuildingsToAdd = 4; // ID из ShopBuildingConfigs для добавления во все секции перечисленные ниже
+  TerrainBuildingsConfig NewLuckMoraleBuildings = 5; // Повышалки удачи, морали и мувов, не охраняются
+  TerrainBuildingsConfig NewShopBuildings = 6; // Элемник,мастерская, библа и т.д. Эти строения охраняются.
+  TerrainBuildingsConfig NewResourceGivers = 7; // Мельница, сокровищница, леприкон. Не охраняются.
+  TerrainBuildingsConfig NewUpgradeBuildings = 8; // Повышалки статов. Здания охраняются
+  TerrainBuildingsConfig NewShrines = 9; // Шрайны на экспу. Не охраняются
+  TerrainBuildingsConfig NewTreasuryBuildings = 10; //  Банки стартовой зоны. Не охраняются.
+  TerrainBuildingsConfig NewBuffBuildings = 11; // Банки сегмент +. Не охраняются
+}
+
+//<details>
+//  <summary>Секции зданий шаблона (полный список)</summary>
+//
+//  <details>
+//    <summary>&lt;NewLuckMoraleBuildings&gt; — здания удачи, морали и передвижения (не охраняются)</summary>
+//    <p>Плотность регулируется параметром <code>LuckMoralBuildingsDensity</code>:</p>
+//    <ul>
+//      <li><code>href="/MapObjects/Faerie_Ring.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Fountain_Of_Fortune.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Idol_Of_Fortune.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Temple.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Rally_Flag.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/H5A2/RandomSancutuary.xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/H5A2/ShamanOfNommads.xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Fountain_Of_Youth.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Universe_mod/LakeofScarlettSwan.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Universe_mod/LakeofMermaids.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Stables.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//    </ul>
+//  </details>
+//
+//  <details>
+//    <summary>&lt;NewShopBuildings&gt; — магазины (охраняются, ставятся по <code>ShopPoints</code>)</summary>
+//    <ul>
+//      <li><code>href="/MapObjects/Special/ElementalConflux.xdb#xpointer(/AdvMapDwellingShared)"</code> — слияние стихий, Value: 5</li>
+//      <li><code>href="/MapObjects/Objects-All-Terra/War_Machine_Factory.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — мастерская машин, Value: 5</li>
+//      <li><code>href="/MapObjects/H5A2/House_Of_Astrologer.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — башня астролога, Value: 10</li>
+//      <li><code>href="/MapObjects/Special/RefugeeCamp.xdb#xpointer(/AdvMapDwellingShared)"</code> — рефьюга, Value: 15</li>
+//      <li><code>href="/MapObjects/H5A2/SpellShop.xdb#xpointer(/AdvMapBuildingShared)"</code> — Библиотека заклинаний, Value: 15</li>
+//      <li><code>href="/MapObjects/Black_Market.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — Рынок артефактов, Value: 25</li>
+//    </ul>
+//  </details>
+//
+//  <details>
+//    <summary>&lt;NewResourceGivers&gt; — здания ресурсов (не охраняются, зависят от <code>ResourceBuildingsDensity</code>)</summary>
+//    <ul>
+//      <li><code>href="/MapObjects/Mystical_Garden.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — гном (5 гемов или 500 золота)</li>
+//      <li><code>href="/MapObjects/Windmill.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — мельница</li>
+//      <li><code>href="/MapObjects/Universe_mod/EnchantedTreasure.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — сокровищница на 1000 золота</li>
+//    </ul>
+//  </details>
+//
+//  <details>
+//    <summary>&lt;NewUpgradeBuildings&gt; — здания характеристик (охраняются, ставятся по <code>UpgBuildingsDensity</code>)</summary>
+//    <ul>
+//      <li><code>href="/MapObjects/Mercenary_Camp.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 1 напа, Value: 6</li>
+//      <li><code>href="/MapObjects/Marletto_Tower.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 1 дефа, Value: 6</li>
+//      <li><code>href="/MapObjects/Garden_Of_Revelation.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 1 знания, Value: 6</li>
+//      <li><code>href="/MapObjects/Star_Axis.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 1 колды, Value: 6</li>
+//      <li><code>href="/MapObjects/WarAcademy.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 1 напа или дефа, Value: 8</li>
+//      <li><code>href="/MapObjects/Magic_Spring.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — магический источник (+30 маны?), Value: 10</li>
+//      <li><code>href="/MapObjects/Tree_of_Knowledge.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — лвлап?, Value: 14</li>
+//      <li><code>href="/MapObjects/SchoolofMagic.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 2 маг стата на выбор, Value: 16</li>
+//      <li><code>href="/MapObjects/Arena.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 2 боевых стата на выбор, Value: 16</li>
+//      <li><code>href="/MapObjects/LibraryOfEnlightenment.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 2 колды и знания, Value: 24</li>
+//    </ul>
+//  </details>
+//
+//  <details>
+//    <summary>&lt;NewShrines&gt; — святилища заклинаний (не охраняются, зависят от <code>ShrinePoints</code>)</summary>
+//    <ul>
+//      <li><code>href="/MapObjects/Shrine_Of_Magic_1.(AdvMapShrineShared).xdb#xpointer(/AdvMapShrineShared)"</code> — т1 закл, Value: 4</li>
+//      <li><code>href="/MapObjects/Shrine_Of_Magic_2.(AdvMapShrineShared).xdb#xpointer(/AdvMapShrineShared)"</code> — т2 закл, Value: 8</li>
+//      <li><code>href="/MapObjects/Shrine_Of_Magic_3.(AdvMapShrineShared).xdb#xpointer(/AdvMapShrineShared)"</code> — т3 закл, Value: 12</li>
+//    </ul>
+//  </details>
+//
+//  <details>
+//    <summary>&lt;NewTreasuryBuildings&gt; — банки стартовой зоны (охраняются, зависят от <code>TreasureBuildingPoints</code>)</summary>
+//    <ul>
+//      <li><code>href="/MapObjects/Crypt.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — склеп, Value: 5</li>
+//      <li><code>href="/MapObjects/GargoyleStonevault.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — гаргулятник, Value: 5</li>
+//      <li><code>href="/MapObjects/DwarvenTreasury.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — гномник, Value: 10</li>
+//      <li><code>href="/MapObjects/Universe_mod/Demonbank.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — бесятник, Value: 10</li>
+//      <li><code>href="/MapObjects/Elemantal_Stockpile.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — элемник, Value: 10</li>
+//      <li><code>href="/MapObjects/Universe_mod/Monasterybank.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — монастырь, Value: 10</li>
+//    </ul>
+//  </details>
+//
+//  <details>
+//    <summary>&lt;NewBuffBuildings&gt; — средние банки и утопии (охраняются, зависят от <code>TreasureBuildingPoints</code>)</summary>
+//    <ul>
+//      <li><code>href="/MapObjects/Elemantal_Stockpile.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — элемник, Value: 10</li>
+//      <li><code>href="/MapObjects/Universe_mod/Monasterybank.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — монастырь, Value: 10</li>
+//      <li><code>href="/MapObjects/MagiVault.xdb#xpointer(/AdvMapBuildingShared)"</code> — магятник, Value: 15</li>
+//      <li><code>href="/MapObjects/TreantThicket.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — энтятник, Value: 15</li>
+//      <li><code>href="/MapObjects/WitchBank.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — кровавый храм, Value: 15</li>
+//      <li><code>href="/MapObjects/Universe_mod/NecroEstate.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — некрятник, Value: 15</li>
+//      <li><code>href="/MapObjects/Universe_mod/OrcDeposit.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — орчатник, Value: 35</li>
+//      <li><code>href="/MapObjects/Dragon_Utopia.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — утопа драконов, Value: 40</li>
+//    </ul>
+//  </details>
+//
+//</details>
+message TerrainBuildingsConfig {
+  google.protobuf.BoolValue ClearBuildings = 1; // нужно ли очистить все здания в этой секции
+  repeated string BuildingsToDelete = 2; // массив строковых названий объектов которые нужно удалить
+  repeated int32 BuildingsToAdd = 3; //  массив айдишников зданий из секции ShopBuildingConfigs для добавления
+  google.protobuf.BoolValue AddCreatureBanksPool = 4; // нужно добавить здания сгенерированные в секции CreatureBanksPool
+}
+
+message CreatureBanksPool {
+  google.protobuf.BoolValue NonPlayerFactions = 1; // нужно использовать банки фракций не занятых игроками
+  google.protobuf.BoolValue PlayerFactions = 2; // нужно использовать банки фракций занятые игроками
+  IntValueConfig BanksAmount = 3; // количество банков добавляемых в пул
+}
+
+//<details>
+//  <summary>Секции зданий шаблона (полный список)</summary>
+//
+//  <details>
+//    <summary>&lt;NewLuckMoraleBuildings&gt; — здания удачи, морали и передвижения (не охраняются)</summary>
+//    <p>Плотность регулируется параметром <code>LuckMoralBuildingsDensity</code>:</p>
+//    <ul>
+//      <li><code>href="/MapObjects/Faerie_Ring.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Fountain_Of_Fortune.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Idol_Of_Fortune.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Temple.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Rally_Flag.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/H5A2/RandomSancutuary.xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/H5A2/ShamanOfNommads.xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Fountain_Of_Youth.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Universe_mod/LakeofScarlettSwan.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Universe_mod/LakeofMermaids.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//      <li><code>href="/MapObjects/Stables.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code></li>
+//    </ul>
+//  </details>
+//
+//  <details>
+//    <summary>&lt;NewShopBuildings&gt; — магазины (охраняются, ставятся по <code>ShopPoints</code>)</summary>
+//    <ul>
+//      <li><code>href="/MapObjects/Special/ElementalConflux.xdb#xpointer(/AdvMapDwellingShared)"</code> — слияние стихий, Value: 5</li>
+//      <li><code>href="/MapObjects/Objects-All-Terra/War_Machine_Factory.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — мастерская машин, Value: 5</li>
+//      <li><code>href="/MapObjects/H5A2/House_Of_Astrologer.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — башня астролога, Value: 10</li>
+//      <li><code>href="/MapObjects/Special/RefugeeCamp.xdb#xpointer(/AdvMapDwellingShared)"</code> — рефьюга, Value: 15</li>
+//      <li><code>href="/MapObjects/H5A2/SpellShop.xdb#xpointer(/AdvMapBuildingShared)"</code> — Библиотека заклинаний, Value: 15</li>
+//      <li><code>href="/MapObjects/Black_Market.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — Рынок артефактов, Value: 25</li>
+//    </ul>
+//  </details>
+//
+//  <details>
+//    <summary>&lt;NewResourceGivers&gt; — здания ресурсов (не охраняются, зависят от <code>ResourceBuildingsDensity</code>)</summary>
+//    <ul>
+//      <li><code>href="/MapObjects/Mystical_Garden.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — гном (5 гемов или 500 золота)</li>
+//      <li><code>href="/MapObjects/Windmill.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — мельница</li>
+//      <li><code>href="/MapObjects/Universe_mod/EnchantedTreasure.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — сокровищница на 1000 золота</li>
+//    </ul>
+//  </details>
+//
+//  <details>
+//    <summary>&lt;NewUpgradeBuildings&gt; — здания характеристик (охраняются, ставятся по <code>UpgBuildingsDensity</code>)</summary>
+//    <ul>
+//      <li><code>href="/MapObjects/Mercenary_Camp.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 1 напа, Value: 6</li>
+//      <li><code>href="/MapObjects/Marletto_Tower.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 1 дефа, Value: 6</li>
+//      <li><code>href="/MapObjects/Garden_Of_Revelation.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 1 знания, Value: 6</li>
+//      <li><code>href="/MapObjects/Star_Axis.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 1 колды, Value: 6</li>
+//      <li><code>href="/MapObjects/WarAcademy.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 1 напа или дефа, Value: 8</li>
+//      <li><code>href="/MapObjects/Magic_Spring.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — магический источник (+30 маны?), Value: 10</li>
+//      <li><code>href="/MapObjects/Tree_of_Knowledge.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — лвлап?, Value: 14</li>
+//      <li><code>href="/MapObjects/SchoolofMagic.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 2 маг стата на выбор, Value: 16</li>
+//      <li><code>href="/MapObjects/Arena.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 2 боевых стата на выбор, Value: 16</li>
+//      <li><code>href="/MapObjects/LibraryOfEnlightenment.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — 2 колды и знания, Value: 24</li>
+//    </ul>
+//  </details>
+//
+//  <details>
+//    <summary>&lt;NewShrines&gt; — святилища заклинаний (не охраняются, зависят от <code>ShrinePoints</code>)</summary>
+//    <ul>
+//      <li><code>href="/MapObjects/Shrine_Of_Magic_1.(AdvMapShrineShared).xdb#xpointer(/AdvMapShrineShared)"</code> — т1 закл, Value: 4</li>
+//      <li><code>href="/MapObjects/Shrine_Of_Magic_2.(AdvMapShrineShared).xdb#xpointer(/AdvMapShrineShared)"</code> — т2 закл, Value: 8</li>
+//      <li><code>href="/MapObjects/Shrine_Of_Magic_3.(AdvMapShrineShared).xdb#xpointer(/AdvMapShrineShared)"</code> — т3 закл, Value: 12</li>
+//    </ul>
+//  </details>
+//
+//  <details>
+//    <summary>&lt;NewTreasuryBuildings&gt; — банки стартовой зоны (охраняются, зависят от <code>TreasureBuildingPoints</code>)</summary>
+//    <ul>
+//      <li><code>href="/MapObjects/Crypt.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — склеп, Value: 5</li>
+//      <li><code>href="/MapObjects/GargoyleStonevault.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — гаргулятник, Value: 5</li>
+//      <li><code>href="/MapObjects/DwarvenTreasury.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — гномник, Value: 10</li>
+//      <li><code>href="/MapObjects/Universe_mod/Demonbank.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — бесятник, Value: 10</li>
+//      <li><code>href="/MapObjects/Elemantal_Stockpile.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — элемник, Value: 10</li>
+//      <li><code>href="/MapObjects/Universe_mod/Monasterybank.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — монастырь, Value: 10</li>
+//    </ul>
+//  </details>
+//
+//  <details>
+//    <summary>&lt;NewBuffBuildings&gt; — средние банки и утопии (охраняются, зависят от <code>TreasureBuildingPoints</code>)</summary>
+//    <ul>
+//      <li><code>href="/MapObjects/Elemantal_Stockpile.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — элемник, Value: 10</li>
+//      <li><code>href="/MapObjects/Universe_mod/Monasterybank.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — монастырь, Value: 10</li>
+//      <li><code>href="/MapObjects/MagiVault.xdb#xpointer(/AdvMapBuildingShared)"</code> — магятник, Value: 15</li>
+//      <li><code>href="/MapObjects/TreantThicket.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — энтятник, Value: 15</li>
+//      <li><code>href="/MapObjects/WitchBank.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — кровавый храм, Value: 15</li>
+//      <li><code>href="/MapObjects/Universe_mod/NecroEstate.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — некрятник, Value: 15</li>
+//      <li><code>href="/MapObjects/Universe_mod/OrcDeposit.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — орчатник, Value: 35</li>
+//      <li><code>href="/MapObjects/Dragon_Utopia.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)"</code> — утопа драконов, Value: 40</li>
+//    </ul>
+//  </details>
+//
+//</details>
+// Начиная с поля CreatureBuilding допустима только одна вариация настройки т.е. нукжно заполнять только один из полей. По умолчанию считается первое если заполнить несколько
+message CustomBuildingConfig {
+  int32 Id = 1; // уникальный ID здания
+  int64 Value = 2; // велью здания
+  int64 GuardStrenght = 3; // размер охраны
+  TemplateGenerationEnums.BuildingTextureConfig BuildingTexture = 4; // какая текстура будет использоваться для здания если применимо
+  oneof BuildingType {
+    CreatureBuildingConfig CreatureBuilding = 5; // банк существ
+    google.protobuf.StringValue XdbRef = 6; // ссылка на объект в игре, должна использоваться достоверная href из файлов игры
+    PandoraBoxConfig PandoraBox = 7; // коробка
+    ResourceBuildingConfig ResourceGiver = 8; // здание для выдачи ресурсов
+    ScriptBuildingConfig ScriptBuilding = 9; // одно из кастомных зданий без дополнительных настроек
+    MageEyeConfig MageEye = 10; // здание для открытия тумана войны по заданным координатам
+    RunicChestConfig RunicChest = 11;  // объект с выдачей рун герою
+
+    DefaultBuildingConfig DefaultBuilding = 99;  // вариант объекта по умолчанию без кастомизации (текстура тоже будет взята из дефолтного объекта)
+    CreatureBankConfig MjoBankConfig = 100; // это вариант здания который будет использован для специальной генерации объектов с настройками в секции CreatureBanksPool и добавлен специальной галочкой AddCreatureBanksPool.
+  }
+}
+
+// <details>
+//  <summary>Показать список существ</summary>
+//  <pre>
+//Крестьяне : CREATURE_PEASANT  
+//Ополченцы : CREATURE_MILITIAMAN  
+//Лучники : CREATURE_ARCHER  
+//Арбалетчики : CREATURE_MARKSMAN  
+//Мечники : CREATURE_FOOTMAN  
+//Латники : CREATURE_SWORDSMAN  
+//Грифоны : CREATURE_GRIFFIN  
+//Королевские грифоны : CREATURE_ROYAL_GRIFFIN  
+//Монахи : CREATURE_PRIEST  
+//Инквизиторы : CREATURE_CLERIC  
+//Рыцари : CREATURE_CAVALIER  
+//Паладины : CREATURE_PALADIN  
+//Ангелы : CREATURE_ANGEL  
+//Архангелы : CREATURE_ARCHANGEL  
+//Бесы : CREATURE_FAMILIAR  
+//Черти : CREATURE_IMP  
+//Демоны : CREATURE_DEMON  
+//Огненные демоны : CREATURE_HORNED_DEMON  
+//Адские гончие : CREATURE_HELL_HOUND  
+//Церберы : CREATURE_CERBERI  
+//Суккубы : CREATURE_SUCCUBUS  
+//Демонессы : CREATURE_INFERNAL_SUCCUBUS  
+//Адские жеребцы : CREATURE_NIGHTMARE  
+//Кошмары : CREATURE_FRIGHTFUL_NIGHTMARE  
+//Пещерные демоны : CREATURE_PIT_FIEND  
+//Пещерные владыки : CREATURE_BALOR  
+//Дьяволы : CREATURE_DEVIL  
+//Архидьяволы : CREATURE_ARCHDEVIL  
+//Костяные воины : CREATURE_SKELETON  
+//Костяные лучники : CREATURE_SKELETON_ARCHER  
+//Зомби : CREATURE_WALKING_DEAD  
+//Чумные зомби : CREATURE_ZOMBIE  
+//Привидения : CREATURE_MANES  
+//Призраки : CREATURE_GHOST  
+//Вампиры : CREATURE_VAMPIRE  
+//Высшие вампиры : CREATURE_VAMPIRE_LORD  
+//Личи : CREATURE_LICH  
+//Архиличи : CREATURE_DEMILICH  
+//Умертвия : CREATURE_WIGHT  
+//Вестники смерти : CREATURE_WRAITH  
+//Костяные драконы : CREATURE_BONE_DRAGON  
+//Призрачные драконы : CREATURE_SHADOW_DRAGON  
+//Феи : CREATURE_PIXIE  
+//Дриады : CREATURE_SPRITE  
+//Танцующие с клинками : CREATURE_BLADE_JUGGLER  
+//Танцующие со смертью : CREATURE_WAR_DANCER  
+//Эльфийские лучники : CREATURE_WOOD_ELF  
+//Мастера лука : CREATURE_GRAND_ELF  
+//Друиды : CREATURE_DRUID  
+//Верховные друиды : CREATURE_DRUID_ELDER  
+//Единороги : CREATURE_UNICORN  
+//Боевые единороги : CREATURE_WAR_UNICORN  
+//Энты : CREATURE_TREANT  
+//Древние энты : CREATURE_TREANT_GUARDIAN  
+//Зеленые драконы : CREATURE_GREEN_DRAGON  
+//Изумрудные драконы : CREATURE_GOLD_DRAGON  
+//Гремлины : CREATURE_GREMLIN  
+//Старшие гремлины : CREATURE_MASTER_GREMLIN  
+//Каменные горгульи : CREATURE_STONE_GARGOYLE  
+//Обсидиановые горгульи : CREATURE_OBSIDIAN_GARGOYLE  
+//Железные големы : CREATURE_IRON_GOLEM  
+//Стальные големы : CREATURE_STEEL_GOLEM  
+//Маги : CREATURE_MAGI  
+//Архимаги : CREATURE_ARCH_MAGI  
+//Джинны : CREATURE_GENIE  
+//Султаны джиннов : CREATURE_MASTER_GENIE  
+//Принцессы ракшас : CREATURE_RAKSHASA  
+//Раджи ракшас : CREATURE_RAKSHASA_RUKH  
+//Колоссы : CREATURE_GIANT  
+//Титаны : CREATURE_TITAN  
+//Лазутчики : CREATURE_SCOUT  
+//Ассасины : CREATURE_ASSASSIN  
+//Бестии : CREATURE_WITCH  
+//Фурии : CREATURE_BLOOD_WITCH  
+//Минотавры : CREATURE_MINOTAUR  
+//Минотавры-стражи : CREATURE_MINOTAUR_KING  
+//Наездники на ящерах : CREATURE_RIDER  
+//Темные всадники : CREATURE_RAVAGER  
+//Гидры : CREATURE_HYDRA  
+//Пещерные гидры : CREATURE_CHAOS_HYDRA  
+//Сумеречные ведьмы : CREATURE_MATRON  
+//Владычицы тени : CREATURE_MATRIARCH  
+//Сумеречные драконы : CREATURE_DEEP_DRAGON  
+//Черные драконы : CREATURE_BLACK_DRAGON  
+//Огненные элементали : CREATURE_FIRE_ELEMENTAL  
+//Водные элементали : CREATURE_WATER_ELEMENTAL  
+//Земные элементали : CREATURE_EARTH_ELEMENTAL  
+//Воздушные элементали : CREATURE_AIR_ELEMENTAL  
+//Рыцари смерти : CREATURE_DEATH_KNIGHT  
+//Фениксы : CREATURE_PHOENIX  
+//Защитники гор : CREATURE_DEFENDER  
+//Воители : CREATURE_STOUT_DEFENDER  
+//Метатели копья : CREATURE_AXE_FIGHTER  
+//Мастера копья : CREATURE_AXE_THROWER  
+//Наездники на медведях : CREATURE_BEAR_RIDER  
+//Хозяева медведей : CREATURE_BLACKBEAR_RIDER  
+//Костоломы : CREATURE_BROWLER  
+//Берсерки : CREATURE_BERSERKER  
+//Жрецы Рун : CREATURE_RUNE_MAGE  
+//Жрецы Арката : CREATURE_FLAME_MAGE  
+//Таны : CREATURE_THANE  
+//Ярлы : CREATURE_WARLORD  
+//Огненные драконы : CREATURE_FIRE_DRAGON  
+//Лавовые драконы : CREATURE_MAGMA_DRAGON  
+//Лендлорды : CREATURE_LANDLORD  
+//Стрелки : CREATURE_LONGBOWMAN  
+//Ревнитель веры : CREATURE_VINDICATOR  
+//Боевые грифоны : CREATURE_BATTLE_GRIFFIN  
+//Адепт : CREATURE_ZEALOT  
+//Рыцари Изабель : CREATURE_CHAMPION  
+//Серафим : CREATURE_SERAPH  
+//Волки : CREATURE_WOLF  
+//Мантикоры : CREATURE_MANTICORE  
+//Мумии : CREATURE_MUMMY  
+//Гоблины : CREATURE_GOBLIN  
+//Трапперы : CREATURE_GOBLIN_TRAPPER  
+//Кентавры : CREATURE_CENTAUR  
+//Кочевые кентавры : CREATURE_CENTAUR_NOMAD  
+//Орочьи воины : CREATURE_ORC_WARRIOR  
+//Орочьи бойцы : CREATURE_ORC_SLAYER  
+//Шаманки : CREATURE_SHAMAN  
+//Дочери неба : CREATURE_SHAMAN_WITCH  
+//Убийцы : CREATURE_ORCCHIEF_BUTCHER  
+//Палачи : CREATURE_ORCCHIEF_EXECUTIONER  
+//Виверны : CREATURE_WYVERN  
+//Темные виверны : CREATURE_WYVERN_POISONOUS  
+//Циклопы : CREATURE_CYCLOP  
+//Свободные циклопы : CREATURE_CYCLOP_UNTAMED  
+//Дьяволята : CREATURE_QUASIT  
+//Старшие демоны : CREATURE_HORNED_LEAPER  
+//Огненные гончие : CREATURE_FIREBREATHER_HOUND  
+//Искусительницы : CREATURE_SUCCUBUS_SEDUCER  
+//Кони преисподней : CREATURE_HELLMARE  
+//Пещерные отродья : CREATURE_PIT_SPAWN  
+//Архидемоны : CREATURE_ARCH_DEMON  
+//Ловчие : CREATURE_STALKER  
+//Мегеры : CREATURE_BLOOD_WITCH_2  
+//Минотавры-надсмотрщики : CREATURE_MINOTAUR_CAPTAIN  
+//Проворные наездники : CREATURE_BLACK_RIDER  
+//Темные гидры : CREATURE_ACIDIC_HYDRA  
+//Хозяйки ночи : CREATURE_SHADOW_MISTRESS  
+//Красные драконы : CREATURE_RED_DRAGON  
+//Нимфы : CREATURE_DRYAD  
+//Танцующие с ветром : CREATURE_BLADE_SINGER  
+//Лесные стрелки : CREATURE_SHARP_SHOOTER  
+//Старшие друиды : CREATURE_HIGH_DRUID  
+//Светлые единороги : CREATURE_WHITE_UNICORN  
+//Дикие энты : CREATURE_ANGER_TREANT  
+//Кристаллические драконы : CREATURE_RAINBOW_DRAGON  
+//Костяные воители : CREATURE_SKELETON_WARRIOR  
+//Гниющие зомби : CREATURE_DISEASE_ZOMBIE  
+//Духи : CREATURE_POLTERGEIST  
+//Князья вампиров : CREATURE_NOSFERATU  
+//Высшие личи : CREATURE_LICH_MASTER  
+//Баньши : CREATURE_BANSHEE  
+//Астральные драконы : CREATURE_HORROR_DRAGON  
+//Гремлины-вредители : CREATURE_GREMLIN_SABOTEUR  
+//Стихийные горгульи : CREATURE_MARBLE_GARGOYLE  
+//Обсидиановые големы : CREATURE_OBSIDIAN_GOLEM  
+//Боевые маги : CREATURE_COMBAT_MAGE  
+//Визири джиннов : CREATURE_DJINN_VIZIER  
+//Кшатрии ракшас : CREATURE_RAKSHASA_KSHATRI  
+//Громовержцы : CREATURE_STORM_LORD  
+//Горные стражи : CREATURE_STONE_DEFENDER  
+//Гарпунеры : CREATURE_HARPOONER  
+//Северные наездники : CREATURE_WHITE_BEAR_RIDER  
+//Воины Арката : CREATURE_BATTLE_RAGER  
+//Жрецы Пламени : CREATURE_FLAME_KEEPER  
+//Эрлы : CREATURE_THUNDER_THANE  
+//Драконы Арката : CREATURE_LAVA_DRAGON  
+//Колдуны гоблинов : CREATURE_GOBLIN_DEFILER  
+//Боевые кентавры : CREATURE_CENTAUR_MARADEUR  
+//Вармонгеры : CREATURE_ORC_WARMONGER  
+//Дочери земли : CREATURE_SHAMAN_HAG  
+//Вожаки : CREATURE_ORCCHIEF_CHIEFTAIN  
+//Паокаи : CREATURE_WYVERN_PAOKAI  
+//Кровоглазые циклопы : CREATURE_CYCLOP_BLOODEYED
+//  </pre>
+//</details>
+message CreatureBuildingConfig {
+  repeated int64 TiersPool = 1; // набор тиров, один из которых случайно будет выбран для генерации
+  google.protobuf.BoolValue NoGrades = 2; // добавлять ли негрейд
+  google.protobuf.BoolValue Grades = 3; // добавлять ли грейд
+  google.protobuf.BoolValue Neutrals = 4; // добавлять ли нейтралов
+  google.protobuf.BoolValue NonPLayerFactions = 5; // добавлять ли фракции игроков
+  google.protobuf.BoolValue PLayerFactions = 6; // добавлять ли фракции игроков
+  TemplateGenerationEnums.PlayerType PlayerType = 7; // фракции каких игроков нужно добавить
+  repeated string CreatureIds = 8; // массив существ, одно из которых будет выбрано — если указано, остальные параметры игнорируются
+  google.protobuf.DoubleValue CostMultiplier = 9; // множитель цены в золоте юнитов
+  google.protobuf.DoubleValue ResourcesMultiplier = 10; // множитель цены в ресурсах юнитов
+  google.protobuf.DoubleValue GrowMultiplier = 11; // множитель прироста юнитов
+
+  google.protobuf.BoolValue IsDwelling = 12; // Должен ли банк сгенерироваться в виде двеллинга
+}
+
+message PandoraBoxConfig {
+  repeated int64 GoldAmount = 1; // значения золота которые могут выпасть в коробке
+  repeated int64 ExpAmount = 2;  // значения экспы которые могут выпасть в коробке
+  repeated PandoraArtifactConfig Artifacts = 3; // артефакты которые могут выпасть в коробке
+  repeated PandoraCreatureConfig PandoraCreatureConfig = 4; // существа которые могут выпасть в коробке
+  repeated PandoraSpellConfig Spells = 5; // заклинания которые могут выпасть в коробке
+  repeated ResourcesConfig Resources = 6; // ресурсы которые могут выпасть 
+}
+
+message ScriptBuildingConfig {
+  TemplateGenerationEnums.ScriptBuilding ScriptBuilding = 1; // одно из кастомных зданий без дополнительных настроек
+}
+
+message DefaultBuildingConfig {
+  TemplateGenerationEnums.DefaultBuilding DefaultBuilding = 1;  // вариант объекта по умолчанию без кастомизации
+}
+
+message ResourceBuildingConfig {
+  repeated ResourcesConfig ResourcesConfigs = 1; // массив с вариантоми ресурсов которые могут выпасть
+}
+
+message RunicChestConfig {
+  repeated SpellTypeEnum.SpellType Runes = 1; // руны которые могут выпасть в коробке
+  repeated int64 RuneTiers = 2; // тиры рун которые могут выпасть в коробке
+  google.protobuf.Int64Value Count = 3; // количество рун которое может выпасть, по умолччанию 1
+  google.protobuf.Int64Value ExpAmount = 4; // количество экспы которое выдаётся герою не гному
+}
+
+message MageEyeConfig {
+  int64 CoordinateX = 1; // координата X для открытия тумана войны
+  int64 CoordinateY = 2; // координата Y для открытия тумана войны
+  google.protobuf.Int32Value Radius = 3; // радиус открытия тумана войны
+}
+
+message PandoraCreatureConfig {
+  repeated int64 TiersPool = 1; // набор тиров который может выпасть в коробке
+  google.protobuf.BoolValue NoGrades = 2; // добавлять ли негрейд
+  google.protobuf.BoolValue Grades = 3; // добавлять ли грейд
+  google.protobuf.BoolValue Neutrals = 4; // добавлять ли нейтралов
+  google.protobuf.BoolValue NonPlayerFactions = 5; // добавлять ли фракции игроков
+  google.protobuf.BoolValue PlayerFactions = 6; // добавлять ли фракции игроков
+  TemplateGenerationEnums.PlayerType PlayerType = 7; // фракции каких игроков нужно добавить
+  repeated string CreatureIds = 8; // массив существ которые нужно добавить.
+  google.protobuf.DoubleValue GrowMultiplier = 9; // множитель прироста юнитов
+}
+
+message PandoraArtifactConfig {
+  repeated ArtifactTypeEnum.ArtifactType Artifacts = 1; // артефакты которые могут выпасть в коробке
+  repeated ArtifactTypeEnum.ArtifactCategory ArtifactCategories = 2; // категории артефактов которые могут выпасть в коробке
+  repeated ArtifactTypeEnum.ArtifactSlot ArtifactSlots = 3; // в какие слоты могут выпасть артефакты
+  repeated IntValueConfig CostRanges = 4; // ценовой диапазон артефактов для выпадения
+  google.protobuf.Int64Value Count = 5; // количество артефакторв которые могут выпасть, по умолччанию 1
+}
+
+message PandoraSpellConfig {
+  repeated SpellTypeEnum.SpellType Spells = 1; // заклинания которые могут выпасть в коробке
+  repeated SpellTypeEnum.MagicSchool MagicSchools = 2; // школы заклинаний которые могут выпасть в коробке
+  repeated int64 MagicTiers = 3; // тиры заклинаний которые могут выпасть в коробке
+  repeated int64 RuneTiers = 4; // тиры рун которые могут выпасть в коробке
+  repeated int64 WarCryTiers = 5; // тиры боевых кличей которые могут выпасть в коробке
+  google.protobuf.Int64Value Count = 6; // количество заклинаний которые могут выпасть, по умолччанию 1
+}
+
+message CreatureBankConfig {
+  string Name = 1; // уникальное имя модели объекта, актуальные имена см. в конфиге MJO
+  repeated string CreaturesPool = 2; // массив ID существ, из которых будет выбран один случайный
+  repeated Common.StringArray GuardsPool = 3; // массив массивов существ для охраны, из которых будет выбран один вариант
+  google.protobuf.DoubleValue CreatureCostMultiplier = 4; // множитель цены существа в золоте
+  google.protobuf.DoubleValue CreatureResourcesMultiplier = 5; // множитель цены существа в ресурсах
+  google.protobuf.DoubleValue CreatureGrowMultiplier = 6; // множитель прироста существа
+  google.protobuf.DoubleValue GuardGrowMultiplier = 7; // множитель прироста охраны
+}
+
+message StartBuildingConfig {
+  google.protobuf.BoolValue ApplyAllTerrains = 1; // нужно применить настройку ко всем террейнам
+  TemplateGenerationEnums.TerrainType TerrainType = 2; // к какому террейну нужно применить настройку (only if ApplyAllTerrains = false)
+  repeated TemplateGenerationEnums.BuildingType Buildings = 3; // массив зданий для постройки, названия указаны в справочнике в конце документа
+  TemplateGenerationEnums.BuildingMode BuildingMode = 4; // К каким городам нужно применять настройку
+}
+
+message ScriptFeaturesConfig {
+  CastleCaptureModel CastleCaptureProps = 1; // включение победы по удержанию замка
+  GMRebuildModel GMRebuildProps = 2; // включение перестройки ГМа
+  GloballyDisabledBuildingsModel GloballyDisabledBuildingsProps = 3; // список отключённых зданий
+  ForcedFinalBattleModel ForcedFinalBattleProps = 4; // данные о принудительной финальной битве
+  repeated AdditionalStartCastle AdditionalStartCastles = 5; // данные о  дополнительных замках игроков
+}
+
+message CastleCaptureModel {
+  int64 CoordinateX = 1; // координата X замка для удержания
+  int64 CoordinateY = 2; // координата Y замка для удержания
+  google.protobuf.Int32Value SearchRadius = 3; // радиус поиска замка (по умолчанию 10)
+  int64 EventTimer = 4; // количество дней до срабатывания события
+  google.protobuf.BoolValue DisableFortifications = 5; // true — отключить фортификации замка
+  bool IsForcedFinalBattle = 6; // true - принудительная финалка по истечению таймера , false - удержания замка для победы
+}
+
+message AdditionalStartCastle {
+  int64 StartCoordinateX = 1; // координата X стартового замка
+  int64 StartCoordinateY = 2; // координата Y стартового замка
+  google.protobuf.Int32Value SearchRadius = 3; // радиус поиска стартового замка (по умолчанию 10)
+  int64 TargetCoordinateX = 4; // координата X дополнительного замка
+  int64 TargetCoordinateY = 5; // координата Y дополнительного замка
+  google.protobuf.Int32Value TargetSearchRadius = 6; // радиус поиска дополнительного замка (по умолчанию 10)
+}
+
+message ResourcesModel {
+  google.protobuf.Int64Value Wood = 1;     // стоимость в дереве
+  google.protobuf.Int64Value Ore = 2;      // стоимость в руде
+  google.protobuf.Int64Value Mercury = 3;  // стоимость в ртути
+  google.protobuf.Int64Value Sulfur = 4;   // стоимость в сере
+  google.protobuf.Int64Value Gem = 5;      // стоимость в самоцветах
+  google.protobuf.Int64Value Crystal = 6;  // стоимость в кристаллах
+  google.protobuf.Int64Value Gold = 7;     // стоимость в золоте
+}
+
+message GMRebuildModel {
+  int64 MinimalGMLevel = 1;        // минимальный уровень ГМа для активации
+  int64 MinimalWarCriesLevel = 2;  // минимальный уровень Кличницы для активации
+  ResourcesModel RebuildCost = 3;   // стоимость перестройки
+}
+
+message GloballyDisabledBuildingsModel {
+  repeated TemplateGenerationEnums.BuildingType Buildings = 1; // список отключённых зданий
+}
+
+message ForcedFinalBattleModel {
+  int64 Week = 1; // неделя, на которой должна состояться финальная битва
+  int64 Day = 2; // день, в который должна состояться финальная битва
+}
+
+message ZoneRandomizationConfig {
+  repeated Common.IntArray ZonesToSwap = 1; // набор айдишников зон где первый элемент массива может быть заменён на любой случайный указанный в массиве
+  google.protobuf.BoolValue IsSymmetricalSwap = 2; // работает только на ZonesToSwap, делает замену симметричное т.е. элементы будут свапнуты по тому же порядковому номеру во всех наборах зон
+  repeated int64 ZonesToRandomize = 3; // указанные зоны будут рандомизированы по координатам в случайном порядке
+}
+
+message StartSpellsByPlayer {
+  TemplateGenerationEnums.PlayerType PlayerType = 1; // игрок
+  repeated SpellTypeEnum.SpellType Spells = 2; // стартовые заклинания для этого игрока
+}
+
+message StartSpellsByRace {
+  Enums.CastleType CastleType = 1; // айди замка
+  repeated SpellTypeEnum.SpellType Spells = 2; // стартовые заклинания для героев этого замка
+}
+
+message StartSpellsByHero {
+  HeroTypeEnum.HeroType HeroType = 1; // айди героя
+  repeated SpellTypeEnum.SpellType Spells = 2; // стартовые заклинания для этого героя
+}
+
+message StartSpellsConfig {
+  repeated SpellTypeEnum.SpellType GlobalSpells = 1; // стартовые заклинания для любых героев на карте
+  repeated StartSpellsByPlayer SpellsByPlayers = 2; // стартовые заклинания для героев определенных игроков
+  repeated StartSpellsByRace SpellsByRaces = 3; // стартовые заклинания для героев определенных замков
+  repeated StartSpellsByHero SpellsByHeroes = 4; // стартовые заклинания для конкретных героев
+}
+
+message BannedBasesByClass {
+  TemplateGenerationEnums.HeroClassType Class = 1; // класс героя 
+  repeated TemplateGenerationEnums.SkillType Skills = 2; // забаненные базы для этого класса
+}
+
+message BasesBanModel {
+  repeated TemplateGenerationEnums.SkillType CommonBannedSkills = 1; // забаненные базы для всех героев
+  repeated BannedBasesByClass SkillsBannedForClass = 2; // забаненные базы для конкретных классов героев
+}

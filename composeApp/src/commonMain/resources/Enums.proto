@@ -1,0 +1,231 @@
+syntax = "proto3";
+package TemplateGenerationEnums;
+option optimize_for = SPEED;
+
+enum BuildingType {
+  T1 = 0; // Т1 двелл
+  T1G = 1; // Т1 гс
+  T2 = 2; // Т2 двелл
+  T2G = 3; // Т2 гс
+  T3 = 4; // Т3 двелл
+  T3G = 5; // Т3 гс
+  T4 = 6; // Т4 двелл
+  T4G = 7; // Т4 гс
+  T5 = 8; // Т5 двелл
+  T5G = 9; // Т5 гс
+  T6 = 10; // Т6 двелл
+  T6G = 11; // Т6 гс
+  T7 = 12; // Т7 двелл
+  T7G = 13; // Т7 гс
+  Tavern = 14; // Таверна
+  Forge = 15; // Кузница
+  Market1 = 16; // Рынок
+  Market2 = 17; // Склад
+  GM1 = 18; // Гм лвл 1
+  GM2 = 19; // Гм лвл 2
+  GM3 = 20; // Гм лвл 3
+  GM4 = 21; // Гм лвл 4
+  GM5 = 22; // Гм лвл 5
+  Fort1 = 23; // Форт
+  Fort2 = 24; // Цитадель
+  Fort3 = 25; // Замок
+  Gold1 = 26; // Дом старейшин
+  Gold2 = 27; // Ратуша
+  Gold3 = 28; // Магистрат
+  Gold4 = 29; // Капитолий
+  Asha = 30; // Здание за Слезу Асхи
+  HavenTrainingGrounds = 31; // Трен лвл 1
+  HavenHeroesMonument = 32; // Трен лвл 2
+  HavenStables = 33; // Конюшня
+  HavenFarms = 34; // Фермы на прирост крестьян
+  InfernoHellGates = 35; // +10% к гейтингу
+  InfernoDemonsGrow = 36; // Прирост демонов +2
+  InfernoHallOfHorror = 37; // Прирост коней +1
+  InfernoSacrificialPit = 38; // Жертвенная яма
+  NecromancyAmplifier = 39; // +1000 очков некромантии
+  NecromancyUnholyTemple = 40; // Конвертер нежити
+  NecromancyGraves = 41; // Прирост скелетов +6
+  NecromancyDragonTombstone = 42; // Прирост драконов +1
+  PreserveAvengerGuild = 43; // Гильдия мстителей
+  PreserveAvengerBrotherhood = 44; // Братство мстителей, +10% шанс прока заклятых
+  PreserveMysticPond = 45; // Пруд +ресурсы
+  PreserveSparklingFountain = 46; // Фонтан +удачи
+  PreserveBloomingGrove = 47; // Прирост фей
+  PreserveTreantSamplings = 48; // Прирост энтов
+  DungeonAltarOfElements = 49; // Элементальные цепочки
+  DungeonAltarOfPrimalChaos = 50; // +10% урона от цепочек
+  DungeonRitualPit = 51; // Ритуальная яма
+  DungeonTradePost = 52; // Лавка артефактов
+  DungeonHallOfIntrigue = 53; // +1 знания героям
+  AcademyLibrary = 54; // Библиотека
+  AcademyArcaneForge = 55; // Кузница миниартефактов
+  AcademyArtifactMerchant = 56; // Лавка артефактов
+  AcademyTreasureCave = 57; // +500 золота и прирост джиннов
+  FortressRunicShrine1 = 58; // Руны лвл 1
+  FortressRunicShrine2 = 59; // Руны лвл 2
+  FortressRunicShrine3 = 60; // Руны лвл 3
+  FortressArena = 61; // Прирост берсерков
+  FortressGuardPost = 62; // Сторожевая башня +отряд карликов
+  FortressStoneworks = 63; // Укрепленные стены
+  FortressRunicAcademy = 64; // Прирост жрецов рун
+  StrongholdHallOfTrial = 65; // Кличи лвл 1
+  StrongholdHallOfMastership = 66; // Кличи лвл 2
+  StrongholdHallOfMight = 67; // Кличи лвл 3
+  StrongholdGarbagePile = 68; // Прирост гоблинов
+  StrongholdTravellerShelter = 69; // Талисманы для походных артов
+  StrongholdPileOfOurFoes = 70; // Куча черепов +кровь на старте боя
+  StrongholdSlaveMarket = 71; // Рынок рабов
+}
+
+enum BuildingMode {
+  All = 0; //Здание будет построенно во всех городах фракции
+  StartCastle = 1; //Здание будет построенно только в стартовых городах игроков
+  NeutralCastle = 2; //Здание будет построенно только в нейтральных городах
+}
+
+enum BuildingTextureConfig {
+  BuildingTextureConfigNull = 0;
+  DefaultDwellingByTerrain = 1; // Двелинг в соответствии с террейном
+  DefaultDwellingByCreature = 2; // Двелинг в соотстветствии с юнитом
+  
+  NeutralCreatureBuilding = 3; // Здание нейтралов
+  TowerByCreature = 4; // Башня в соотстветствии с юнитом
+  TowerByTerrain = 5; // Башня в соответствии с террейном
+
+  TowerGates = 10; // Текстура портала
+  RunicChest = 11; // Рунная коробка
+  DwarvenCareer = 12; // Шахта с редкими ресурсами
+  WoodShelter = 13; // Склад дерева
+  OreShelter = 14; // Склад руды
+
+  RandomChest = 20; // Сундук с неизвестным наполнением
+  ArtsChest = 21; // Сундук с артефактом
+  GoldChest = 22; // Сундук с золотом
+  ExpChest = 23; // Сундук с экспой
+  ResourceChest = 24; // Сундук с реурсами
+  SpellsChest = 25; // Сундук с заклинаниями
+  
+  PandoraBox = 100; // ящик пандоры
+  Random = 101; // случайная текстура
+}
+
+enum TerrainType {
+  TerrainTypeNull = 0; // нет значения
+  FirstPlayer = 1; // террейн первого игрока
+  SecondPlayer = 2; // террейн второго игрока
+  Terrain1 = 3; // первый случайный свободный террейн
+  Terrain2 = 4; // второй случайный свободный террейн
+  Terrain3 = 5; // третий случайный свободный террейн
+  Terrain4 = 6; // четвёртый случайный свободный террейн
+  Terrain5 = 7; // пятый случайный свободный террейн
+  Terrain6 = 8; // шестой случайный свободный террейн
+}
+
+enum PlayerType {
+  Any = 0;  // любой игрок игроки
+  First = 1; // первый игрока
+  Second = 2; // второй игрока
+}
+
+enum HeroClassType {
+  None = 0;
+  Knight = 1; // Рыцарь
+  Demonlord = 2; // Повелитель демонов
+  Necromancer = 3;  // Некромант
+  Ranger = 4; // Рейнджер
+  Warlock = 5; // Чернокнижник
+  Wizard = 6; // Маг
+  Runemage = 7; // Рунный жрец
+  Barbarian = 8; // Варвар
+}
+
+enum SkillType {
+  NoSkill = 0;
+  Logistics = 1; // Логистика
+  WarMachines = 2; // Машины
+  Learning = 3; // Образование
+  Leadership = 4; // Лидерство
+  Luck = 5; // Удача
+  Offence = 6; // Нападение
+  Defence = 7; // Защита
+  Sorcery = 8; // Чародейство
+  DestructiveMagic = 9; // Магия Хаоса
+  DarkMagic = 10; // Магия Тьмы
+  LightMagic = 11; // Магия Света
+  SummoningMagic = 12; // Магия Призыва
+  Training = 13; // Контрудар
+  Gating = 14; // Открытие врат
+  Necromancy = 15; // Некромантия
+  Avenger = 16; // Мститель
+  Artificier = 17; // Мастер артефактов
+  Invocation = 18; // Неодолимая магия
+  Runelore = 151; // Магия рун
+  DemonicRage = 172; // Гнев крови
+  BarbarianLearning = 183; // Образование варвара
+  Voice = 187; // Кличи
+  ShatterDestructive = 191; // Приглушение Хаоса
+  ShatterDark = 195; // Приглушение Тьмы
+  ShatterLight = 199; // Приглушение Света
+  ShatterSummoning = 203; // Приглушение Призыва
+}
+
+enum ScriptBuilding {
+  TowerPortal = 0; // Портал перемещающий игрока к ближайшему родному городу
+}
+
+enum DefaultBuilding {
+  GoldChest5k = 0; // Сундук на 5k золота
+  GoldChest10k = 1; // Сундук на 10k золота
+  GoldChest15k = 2; // Сундук на 15k золота
+  GoldChest20k = 3; // Сундук на 20k золота
+
+  ExpChest5k = 4; // Сундук на 5k опыта
+  ExpChest10k = 5; // Сундук на 10k опыта
+  ExpChest15k = 6; // Сундук на 15k опыта
+  ExpChest20k = 7; // Сундук на 20k опыта
+
+  MinorArtChest = 8; // Сундук с малым артефактом
+  MajorArtChest = 9; // Сундук с большим артефактом
+  RelicArtChest = 10; // Сундук с реликтовым артефактом
+
+  FullDestructiveMagicChest = 11; // Сундук со всеми заклинаниями Разрушения (Все кличи для орка)
+  FullDarkMagicChest = 12; // Сундук со всеми заклинаниями Тьмы (Все кличи для орка)
+  FullLightMagicChest = 13; // Сундук со всеми заклинаниями Света (Все кличи для орка)
+  FullSummoningMagicChest = 14; // Сундук со всеми заклинаниями Призыва (Все кличи для орка)
+  FullAdventureMagicChest = 15; // Сундук со всеми заклинаниями Приключений (Все кличи для орка)
+  RandomFullMagicSchoolChest = 16; // Сундук со всеми заклинаниями случайной школы (Все кличи для орка)
+
+  FullT1MagicChest = 17; // Сундук со всеми заклинаниями 1 уровня (Т1 для орка)
+  FullT2MagicChest = 18; // Сундук со всеми заклинаниями 2 уровня (Т2 для орка)
+  FullT3MagicChest = 19; // Сундук со всеми заклинаниями 3 уровня (Т2 для орка)
+  FullT4MagicChest = 20; // Сундук со всеми заклинаниями 4 уровня (T3 для орка)
+  FullT5MagicChest = 21; // Сундук со всеми заклинаниями 5 уровня (T3 для орка)
+
+  RandomT1MagicChest = 22; // Сундук со случайным заклинанием 1 уровня (T1 для орка)
+  RandomT2MagicChest = 23; // Сундук со случайным заклинанием 2 уровня (T2 для орка)
+  RandomT3MagicChest = 24; // Сундук со случайным заклинанием 3 уровня (T2 для орка)
+  RandomT4MagicChest = 25; // Сундук со случайным заклинанием 4 уровня (T3 для орка)
+  RandomT5MagicChest = 26; // Сундук со случайным заклинанием 5 уровня (T3 для орка)
+
+  RandomT1CreatureBox = 27; // Ящик со случайным грейженным существом 1 ранга x3 прирост
+  RandomT2CreatureBox = 28; // Ящик со случайным грейженным существом 2 ранга x3 прирост
+  RandomT3CreatureBox = 29; // Ящик со случайным грейженным существом 3 ранга x3 прирост
+  RandomT4CreatureBox = 30; // Ящик со случайным грейженным существом 4 ранга x3 прирост
+  RandomT5CreatureBox = 31; // Ящик со случайным грейженным существом 5 ранга x3 прирост
+  RandomT6CreatureBox = 32; // Ящик со случайным грейженным существом 6 ранга x3 прирост
+  RandomT7CreatureBox = 33; // Ящик со случайным грейженным существом 7 ранга x3 прирост
+
+  HighTierRunicChest = 34; // Сундук с высокоуровневыми (т3-т5) рунами и 5к экспы герою не гнома
+  RandomRunicChest = 35; // Сундук со случайной руной и 3к экспы герою не гнома
+  T1RunicChest = 36; // Сундук с руной 1 ранга и 1к экспы герою не гнома
+  T2RunicChest = 37; // Сундук с руной 2 ранга и 2к экспы герою не гнома
+  T3RunicChest = 38; // Сундук с руной 3 ранга и 3к экспы герою не гнома
+  T4RunicChest = 39; // Сундук с руной 4 ранга и 4к экспы герою не гнома
+  T5RunicChest = 40; // Сундук с руной 5 ранга и 5к экспы герою не гнома
+
+  WoodGiver = 41; // Здание выдающее 5-10 дерева
+  OreGiver = 42; // Здание выдающее 5-10 руды
+  RareResourceGiver = 43; // Здание выдающее 5-10 случайного редкого ресурса
+
+  DefaultBuildingTowerPortal = 44; // Портал в родной город
+}
