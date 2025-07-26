@@ -1,411 +1,1110 @@
-import org.example.project.data.enums.CastleType
-import org.example.project.data.enums.BuildingTextureConfig
-import org.example.project.data.enums.DefaultBuilding
-import org.example.project.data.ScriptBuilding
-import org.example.project.data.enums.MagicSchool
-import org.example.project.data.enums.ArtifactSlot
-import org.example.project.data.enums.ArtifactCategory
-import org.example.project.data.enums.ArtifactType
-import org.example.project.data.enums.BuildingMode
-import org.example.project.data.enums.BuildingType
-import org.example.project.data.enums.PlayerType
-import org.example.project.data.enums.SkillType
-import org.example.project.data.enums.HeroClassType
-import org.example.project.data.enums.HeroType
-import org.example.project.data.enums.SpellType
-import org.example.project.data.enums.TerrainType
+import kotlinx.serialization.Serializable
 
-data class TemplateGenerationConfig(
-    val templateName: String,
-    val zones: List<ZoneGenerationConfig>,
-    val connections: List<ConnectionModel>,
-    val terrainConfigs: List<TerrainConfig>,
-    val startBuildingConfigs: List<StartBuildingConfig>,
-    val generalData: GeneralData,
-    val baseArmyMultiplier: Double?,
-    val armyMultipliers: Map<String, Double>,
-    val scriptFeaturesConfig: ScriptFeaturesConfig,
-    val entitiesBanConfig: EntitiesBanModel,
-    val startSpellsConfig: StartSpellsConfig,
-    val customBuildingConfigs: List<CustomBuildingConfig>,
-    val creatureBanksPool: CreatureBanksPool,
-    val zoneRandomizationConfig: ZoneRandomizationConfig
-)
-
-data class EntitiesBanModel(
-    val bannedHeroes: List<HeroType>,
-    val bannedSpells: List<SpellType>,
-    val bannedArtifacts: List<ArtifactType>,
-    val bannedBases: BasesBanModel,
-    val banMaradeur: Boolean?
-)
-
-data class GeneralData(
-    val mine1LevelGuardLevel: Int?,
-    val mine2LevelGuardLevel: Int?,
-    val mineGoldGuardLevel: Int?
-)
-
+//import kotlinx.serialization.Serializable
+//
+//@Serializable
+//data class TemplateGenerationConfig(
+//    val TemplateName: String,
+//    val Zones: List<ZoneGenerationConfig>,
+//    val Connections: List<ConnectionModel>,
+//    val TerrainConfigs: List<TerrainConfig>,
+//    val StartBuildingConfigs: List<StartBuildingConfig>,
+//    val GeneralData: GeneralData,
+//    val BaseArmyMultiplier: Double? = null,
+//    val ArmyMultipliers: Map<String, Double>,
+//    val ScriptFeaturesConfig: ScriptFeaturesConfig,
+//    val EntitiesBanConfig: EntitiesBanModel,
+//    val StartSpellsConfig: StartSpellsConfig,
+//    val CustomBuildingConfigs: List<CustomBuildingConfig>,
+//    val CreatureBanksPool: CreatureBanksPool,
+//    val ZoneRandomizationConfig: ZoneRandomizationConfig
+//)
+//
+//@Serializable
+//data class EntitiesBanModel(
+//    val BannedHeroes: List<HeroType>,
+//    val BannedSpells: List<SpellType>,
+//    val BannedArtifacts: List<ArtifactType>,
+//    val BannedBases: BasesBanModel,
+//    val BanMaradeur: Boolean? = null
+//)
+//
+//@Serializable
+//data class GeneralData(
+//    val Mine1LevelGuardLevel: Int? = null,
+//    val Mine2LevelGuardLevel: Int? = null,
+//    val MineGoldGuardLevel: Int? = null
+//)
+//
+@Serializable
 data class IntValueConfig(
-    val minValue: Int?,
-    val maxValue: Int?
-)
-
+    val MinValue: Int? = null,
+    val MaxValue: Int? = null
+){
+    constructor(value: Int) : this(value,value)
+}
+//
+@Serializable
 data class CreaturesConfiguration(
-    val replacementsCount: IntValueConfig,
-    val terrainFaction: Boolean?,
-    val nonPlayersFactions: Boolean?,
-    val noGrades: Boolean?,
-    val grades: Boolean?,
-    val neutrals: Boolean?,
-    val baseCostMultiplier: Double?,
-    val baseResourcesMultiplier: Double?,
-    val baseGrowMultiplier: Double?,
-    val creatureModifiers: List<CreatureModifier>,
-    val creatureTierReplacements: List<CreatureTierReplacement>,
-    val nonUniqueReplacements: Boolean?
+        val ReplacementsCount: IntValueConfig,
+        val TerrainFaction: Boolean? = null,
+        val NonPlayersFactions: Boolean? = null,
+        val NoGrades: Boolean? = null,
+        val Grades: Boolean? = null,
+        val Neutrals: Boolean? = null,
+        val BaseCostMultiplier: Double? = null,
+        val BaseResourcesMultiplier: Double? = null,
+        val BaseGrowMultiplier: Double? = null,
+        val CreatureModifiers: List<CreatureModifier>? = null,
+        val CreatureTierReplacements: List<CreatureTierReplacement>? = null,
+        val NonUniqueReplacements: Boolean? = null
 )
 
+@Serializable
 data class CreatureModifier(
-    val tier: Int,
-    val costMultiplier: Double?,
-    val resourcesMultiplier: Double?,
-    val growMultiplier: Double?
+        val Tier: Int,
+        val CostMultiplier: Double? = null,
+        val ResourcesMultiplier: Double? = null,
+        val GrowMultiplier: Double? = null
 )
 
+@Serializable
 data class CreatureTierReplacement(
-    val tier: Int,
-    val creatureIds: List<String>
+        val Tier: Int,
+        val CreatureIds: List<String>
 )
 
+
+@Serializable
 data class DwellingGenerationConfig(
-    val buildingTexture: BuildingTextureConfig,
-    val creaturesConfiguration: CreaturesConfiguration,
-    val generationType: GenerationType
-) {
-    sealed class GenerationType {
-        data class RandomDwellingConfig(
-            val minCount: Int,
-            val maxCount: Int,
-            val minTiersCount: Int?,
-            val maxTiersCount: Int?,
-            val uniformDistribution: Boolean?,
-            val allowedTiers: List<Long>,
-            val minCountPerTier: Int?,
-            val maxCountPerTier: Int?
-        ) : GenerationType()
+        val BuildingTexture: BuildingTextureConfig,
+        val CreaturesConfiguration: CreaturesConfiguration,
+        val RandomDwellingConfig: RandomDwellingConfig? = null,
+        val StaticDwellingConfigs: StaticDwellingConfigs? = null,
+        val DwellingByPointsConfig: DwellingByPointsConfig? = null,
+        val DependantDwellingConfig: DependantDwellingConfig? = null,
+)
 
-        data class StaticDwellingConfigs(
-            val dwellingValue: List<DwellingValue>
-        ) : GenerationType()
+ @Serializable
+data class RandomDwellingConfig(
+        val MinCount: Int,
+        val MaxCount: Int,
+        val MinTiersCount: Int? = null,
+        val MaxTiersCount: Int? = null,
+        val UniformDistribution: Boolean? = null,
+        val AllowedTiers: List<Long>,
+        val MinCountPerTier: Int? = null,
+        val MaxCountPerTier: Int? = null
+)
 
-        data class DwellingByPointsConfig(
-            val pointsCount: Long,
-            val dwellingPoints: DwellingValue,
-            val dwellingPointsByFaction: Map<String, DwellingValue>,
-            val minTiersCount: Int?,
-            val maxTiersCount: Int?,
-            val allowedTiers: List<Long>,
-            val minCountPerTier: DwellingValue,
-            val minCountPerTierByFaction: Map<String, DwellingValue>,
-            val maxCountPerTier: DwellingValue,
-            val maxCountPerTierByFaction: Map<String, DwellingValue>
-        ) : GenerationType()
+@Serializable
+data class StaticDwellingConfigs(
+    val DwellingValue: List<DwellingValue>
+)
 
-        data class DependantDwellingConfig(
-            val zoneId: Long,
-            val minCount: Int,
-            val maxCount: Int,
-            val minTiersCount: Int?,
-            val maxTiersCount: Int?,
-            val uniformDistribution: Boolean?,
-            val minCountPerTier: Int?,
-            val maxCountPerTier: Int?,
-            val isCopyMode: Boolean
-        ) : GenerationType()
-    }
-}
+@Serializable
+data class DwellingByPointsConfig(
+        val PointsCount: Long,
+    val DwellingPoints: DwellingValue,
+    val DwellingPointsByFaction: Map<String, DwellingValue>,
+    val MinTiersCount: Int? = null,
+    val MaxTiersCount: Int? = null,
+    val AllowedTiers: List<Long>,
+    val MinCountPerTier: DwellingValue,
+    val MinCountPerTierByFaction: Map<String, DwellingValue>,
+    val MaxCountPerTier: DwellingValue,
+    val MaxCountPerTierByFaction: Map<String, DwellingValue>
+)
 
+@Serializable
+data class DependantDwellingConfig(
+        val ZoneId: Long,
+        val MinCount: Int,
+        val MaxCount: Int,
+        val MinTiersCount: Int? = null,
+        val MaxTiersCount: Int? = null,
+        val UniformDistribution: Boolean? = null,
+        val MinCountPerTier: Int? = null,
+        val MaxCountPerTier: Int? = null,
+        val IsCopyMode: Boolean
+)
+
+@Serializable
 data class DwellingValue(
-    val t1: Int?,
-    val t2: Int?,
-    val t3: Int?,
-    val t4: Int?,
-    val t5: Int?,
-    val t6: Int?,
-    val t7: Int?
-)
-
-data class ResourcesConfig(
-    val wood: IntValueConfig,
-    val ore: IntValueConfig,
-    val mercury: IntValueConfig,
-    val crystals: IntValueConfig,
-    val sulfur: IntValueConfig,
-    val gems: IntValueConfig,
-    val gold: IntValueConfig
-)
-
-data class ZoneGenerationConfig(
-    val zoneId: Int,
-    val terrainType: TerrainType,
-    val mirrorZoneId: Int?,
-    val dwellingGenerationConfig: DwellingGenerationConfig?,
-    val mineGenerationConfig: ResourcesConfig?,
-    val abandonedMines: IntValueConfig?,
-    val upgBuildingsDensity: IntValueConfig?,
-    val treasureDensity: IntValueConfig?,
-    val treasureChestDensity: IntValueConfig?,
-    val prisons: IntValueConfig?,
-    val townGuardStrenght: IntValueConfig?,
-    val shopPoints: IntValueConfig?,
-    val shrinePoints: IntValueConfig?,
-    val luckMoralBuildingsDensity: IntValueConfig?,
-    val resourceBuildingsDensity: IntValueConfig?,
-    val treasureBuildingPoints: IntValueConfig?,
-    val treasureBlocksTotalValue: IntValueConfig?,
-    val denOfThieves: IntValueConfig?,
-    val redwoodObservatoryDensity: IntValueConfig?,
-    val size: IntValueConfig?,
-    val town: Boolean?,
-    val zoneStartPointX: IntValueConfig?,
-    val zoneStartPointY: IntValueConfig?,
-    val mainTownStartPointX: IntValueConfig?,
-    val mainTownStartPointY: IntValueConfig?,
-    val mainTownRotationDirection: IntValueConfig?,
-    val treasureBlocksScalingFromTownDist: Boolean?,
-    val distBetweenTreasureBlocks: IntValueConfig?
-)
-
-data class ConnectionModel(
-    val sourceZoneIndex: Int,
-    val destZoneIndex: Int,
-    val isMain: Boolean,
-    val removeConnection: Boolean?,
-    val twoWay: Boolean?,
-    val guardStrenght: Int?,
-    val guarded: Boolean?,
-    val wide: Boolean?,
-    val staticPos: Boolean?,
-    val startPointX: Int?,
-    val startPointY: Int?,
-    val minRadiusToSearch: Int?,
-    val maxRadiusToSearch: Int?,
-    val minRadiusToMain: Int?,
-    val maxRadiusToMain: Int?,
-    val roadType: Int?
-)
-
-data class TerrainConfig(
-    val terrainType: TerrainType,
-    val mirrorTerrainType: TerrainType,
-    val buildingsToDelete: List<String>,
-    val buildingsToAdd: List<Int>,
-    val newLuckMoraleBuildings: TerrainBuildingsConfig,
-    val newShopBuildings: TerrainBuildingsConfig,
-    val newResourceGivers: TerrainBuildingsConfig,
-    val newUpgradeBuildings: TerrainBuildingsConfig,
-    val newShrines: TerrainBuildingsConfig,
-    val newTreasuryBuildings: TerrainBuildingsConfig,
-    val newBuffBuildings: TerrainBuildingsConfig
-)
-
-data class TerrainBuildingsConfig(
-    val clearBuildings: Boolean?,
-    val buildingsToDelete: List<String>,
-    val buildingsToAdd: List<Int>,
-    val addCreatureBanksPool: Boolean?
-)
-
-data class CreatureBanksPool(
-    val nonPlayerFactions: Boolean?,
-    val playerFactions: Boolean?,
-    val banksAmount: IntValueConfig
-)
-
-data class CustomBuildingConfig(
-    val id: Int,
-    val value: Long,
-    val guardStrenght: Long,
-    val buildingTexture: BuildingTextureConfig,
-    val buildingType: BuildingType
-) {
-    sealed class BuildingType {
-        data class CreatureBuildingConfig(
-            val tiersPool: List<Long>,
-            val noGrades: Boolean?,
-            val grades: Boolean?,
-            val neutrals: Boolean?,
-            val nonPLayerFactions: Boolean?,
-            val pLayerFactions: Boolean?,
-            val playerType: PlayerType,
-            val creatureIds: List<String>,
-            val costMultiplier: Double?,
-            val resourcesMultiplier: Double?,
-            val growMultiplier: Double?,
-            val isDwelling: Boolean?
-        ) : BuildingType()
-
-        data class XdbRef(val value: String) : BuildingType()
-        data class PandoraBoxConfig(
-            val goldAmount: List<Long>,
-            val expAmount: List<Long>,
-            val artifacts: List<PandoraArtifactConfig>,
-            val pandoraCreatureConfig: List<PandoraCreatureConfig>,
-            val spells: List<PandoraSpellConfig>,
-            val resources: List<ResourcesConfig>
-        ) : BuildingType()
-
-        data class ScriptBuildingConfig(val scriptBuilding: ScriptBuilding) : BuildingType()
-        data class ResourceBuildingConfig(val resourcesConfigs: List<ResourcesConfig>) : BuildingType()
-        data class MageEyeConfig(
-            val coordinateX: Long,
-            val coordinateY: Long,
-            val radius: Int?
-        ) : BuildingType()
-
-        data class RunicChestConfig(
-            val runes: List<SpellType>,
-            val runeTiers: List<Long>,
-            val count: Int?,
-            val expAmount: Int?
-        ) : BuildingType()
-
-        data class DefaultBuildingConfig(val defaultBuilding: DefaultBuilding) : BuildingType()
-        data class CreatureBankConfig(
-            val name: String,
-            val creaturesPool: List<String>,
-            val guardsPool: List<List<String>>,
-            val creatureCostMultiplier: Double?,
-            val creatureResourcesMultiplier: Double?,
-            val creatureGrowMultiplier: Double?,
-            val guardGrowMultiplier: Double?
-        ) : BuildingType()
-    }
+    val T1: Int? = null,
+    val T2: Int? = null,
+    val T3: Int? = null,
+    val T4: Int? = null,
+    val T5: Int? = null,
+    val T6: Int? = null,
+    val T7: Int? = null
+){
+    fun isEmpty() = T1 == null && T2 == null && T3 == null && T4 == null && T5 == null && T6 == null && T7 == null
 }
-
-data class PandoraArtifactConfig(
-    val artifacts: List<ArtifactType>,
-    val artifactCategories: List<ArtifactCategory>,
-    val artifactSlots: List<ArtifactSlot>,
-    val costRanges: List<IntValueConfig>,
-    val count: Int?
+//
+@Serializable
+data class ResourcesConfig(
+    val Wood: IntValueConfig?,
+    val Ore: IntValueConfig?,
+    val Mercury: IntValueConfig?,
+    val Crystals: IntValueConfig?,
+    val Sulfur: IntValueConfig?,
+    val Gems: IntValueConfig?,
+    val Gold: IntValueConfig?
 )
-
-data class PandoraCreatureConfig(
-    val tiersPool: List<Long>,
-    val noGrades: Boolean?,
-    val grades: Boolean?,
-    val neutrals: Boolean?,
-    val nonPlayerFactions: Boolean?,
-    val playerFactions: Boolean?,
-    val playerType: PlayerType,
-    val creatureIds: List<String>,
-    val growMultiplier: Double?
+//
+//
+@Serializable
+data class ZoneGenerationConfig(
+        val ZoneId: Int,
+        val TerrainType: TerrainType,
+        val MirrorZoneId: Int? = null,
+        val DwellingGenerationConfig: DwellingGenerationConfig? = null,
+        val MineGenerationConfig: ResourcesConfig? = null,
+        val AbandonedMines: IntValueConfig? = null,
+        val UpgBuildingsDensity: IntValueConfig? = null,
+        val TreasureDensity: IntValueConfig? = null,
+        val TreasureChestDensity: IntValueConfig? = null,
+        val Prisons: IntValueConfig? = null,
+        val TownGuardStrenght: IntValueConfig? = null,
+        val ShopPoints: IntValueConfig? = null,
+        val ShrinePoints: IntValueConfig? = null,
+        val LuckMoralBuildingsDensity: IntValueConfig? = null,
+        val ResourceBuildingsDensity: IntValueConfig? = null,
+        val TreasureBuildingPoints: IntValueConfig? = null,
+        val TreasureBlocksTotalValue: IntValueConfig? = null,
+        val DenOfThieves: IntValueConfig? = null,
+        val RedwoodObservatoryDensity: IntValueConfig? = null,
+        val Size: IntValueConfig? = null,
+        val Town: Boolean? = null,
+        val ZoneStartPointX: IntValueConfig? = null,
+        val ZoneStartPointY: IntValueConfig? = null,
+        val MainTownStartPointX: IntValueConfig? = null,
+        val MainTownStartPointY: IntValueConfig? = null,
+        val MainTownRotationDirection: IntValueConfig? = null,
+        val TreasureBlocksScalingFromTownDist: Boolean? = null,
+        val DistBetweenTreasureBlocks: IntValueConfig? = null
 )
-
-data class PandoraSpellConfig(
-    val spells: List<SpellType>,
-    val magicSchools: List<MagicSchool>,
-    val magicTiers: List<Long>,
-    val runeTiers: List<Long>,
-    val warCryTiers: List<Long>,
-    val count: Int?
-)
-
-data class StartBuildingConfig(
-    val applyAllTerrains: Boolean?,
-    val terrainType: TerrainType,
-    val buildings: List<BuildingType>,
-    val buildingMode: BuildingMode
-)
-
-data class ScriptFeaturesConfig(
-    val castleCaptureProps: CastleCaptureModel,
-    val gmRebuildProps: GMRebuildModel,
-    val globallyDisabledBuildingsProps: GloballyDisabledBuildingsModel,
-    val forcedFinalBattleProps: ForcedFinalBattleModel,
-    val additionalStartCastles: List<AdditionalStartCastle>
-)
-
-data class CastleCaptureModel(
-    val coordinateX: Long,
-    val coordinateY: Long,
-    val searchRadius: Int?,
-    val eventTimer: Long,
-    val disableFortifications: Boolean?,
-    val isForcedFinalBattle: Boolean
-)
-
-data class AdditionalStartCastle(
-    val startCoordinateX: Long,
-    val startCoordinateY: Long,
-    val searchRadius: Int?,
-    val targetCoordinateX: Long,
-    val targetCoordinateY: Long,
-    val targetSearchRadius: Int?
-)
-
-data class ResourcesModel(
-    val wood: Int?,
-    val ore: Int?,
-    val mercury: Int?,
-    val sulfur: Int?,
-    val gem: Int?,
-    val crystal: Int?,
-    val gold: Int?
-)
-
-data class GMRebuildModel(
-    val minimalGMLevel: Long,
-    val minimalWarCriesLevel: Long,
-    val rebuildCost: ResourcesModel
-)
-
-data class GloballyDisabledBuildingsModel(
-    val buildings: List<BuildingType>
-)
-
-data class ForcedFinalBattleModel(
-    val week: Long,
-    val day: Long
-)
-
-data class ZoneRandomizationConfig(
-    val zonesToSwap: List<IntArray>,
-    val isSymmetricalSwap: Boolean?,
-    val zonesToRandomize: List<Long>
-)
-
-data class StartSpellsByPlayer(
-    val playerType: PlayerType,
-    val spells: List<SpellType>
-)
-
-data class StartSpellsByRace(
-    val castleType: CastleType,
-    val spells: List<SpellType>
-)
-
-data class StartSpellsByHero(
-    val heroType: HeroType,
-    val spells: List<SpellType>
-)
-
-data class StartSpellsConfig(
-    val globalSpells: List<SpellType>,
-    val spellsByPlayers: List<StartSpellsByPlayer>,
-    val spellsByRaces: List<StartSpellsByRace>,
-    val spellsByHeroes: List<StartSpellsByHero>
-)
-
-data class BannedBasesByClass(
-    val Class: HeroClassType,
-    val Skills: List<SkillType>
-)
-
-data class BasesBanModel(
-    val commonBannedSkills: List<SkillType>,
-    val skillsBannedForClass: List<BannedBasesByClass>
-)
-
+//
+//@Serializable
+//data class ConnectionModel(
+//    val SourceZoneIndex: Int,
+//    val DestZoneIndex: Int,
+//    val IsMain: Boolean,
+//    val RemoveConnection: Boolean? = null,
+//    val TwoWay: Boolean? = null,
+//    val GuardStrenght: Int? = null,
+//    val Guarded: Boolean? = null,
+//    val Wide: Boolean? = null,
+//    val StaticPos: Boolean? = null,
+//    val StartPointX: Int? = null,
+//    val StartPointY: Int? = null,
+//    val MinRadiusToSearch: Int? = null,
+//    val MaxRadiusToSearch: Int? = null,
+//    val MinRadiusToMain: Int? = null,
+//    val MaxRadiusToMain: Int? = null,
+//    val RoadType: Int? = null
+//)
+//
+//@Serializable
+//data class TerrainConfig(
+//    val TerrainType: TerrainType,
+//    val MirrorTerrainType: TerrainType,
+//    val BuildingsToDelete: List<String>,
+//    val BuildingsToAdd: List<Int>,
+//    val NewLuckMoraleBuildings: TerrainBuildingsConfig,
+//    val NewShopBuildings: TerrainBuildingsConfig,
+//    val NewResourceGivers: TerrainBuildingsConfig,
+//    val NewUpgradeBuildings: TerrainBuildingsConfig,
+//    val NewShrines: TerrainBuildingsConfig,
+//    val NewTreasuryBuildings: TerrainBuildingsConfig,
+//    val NewBuffBuildings: TerrainBuildingsConfig
+//)
+//
+//@Serializable
+//data class TerrainBuildingsConfig(
+//    val ClearBuildings: Boolean? = null,
+//    val BuildingsToDelete: List<String>,
+//    val BuildingsToAdd: List<Int>,
+//    val AddCreatureBanksPool: Boolean? = null
+//)
+//
+//@Serializable
+//data class CreatureBanksPool(
+//    val NonPlayerFactions: Boolean? = null,
+//    val PlayerFactions: Boolean? = null,
+//    val BanksAmount: IntValueConfig
+//)
+//
+//@Serializable
+//data class CustomBuildingConfig(
+//    val Id: Int,
+//    val Value: Long,
+//    val GuardStrenght: Long,
+//    val BuildingTexture: BuildingTextureConfig,
+//    val CreatureBuildingConfig: SealedBuildingType.CreatureBuildingConfig? = null,
+//    val XdbRef: SealedBuildingType.XdbRef? = null,
+//    val PandoraBoxConfig: SealedBuildingType.PandoraBoxConfig? = null,
+//    val ScriptBuildingConfig: SealedBuildingType.ScriptBuildingConfig? = null,
+//    val ResourceBuildingConfig: SealedBuildingType.ResourceBuildingConfig? = null,
+//    val MageEyeConfig: SealedBuildingType.MageEyeConfig? = null,
+//    val RunicChestConfig: SealedBuildingType.RunicChestConfig? = null,
+//    val DefaultBuildingConfig: SealedBuildingType.DefaultBuildingConfig? = null,
+//    val CreatureBankConfig: SealedBuildingType.CreatureBankConfig? = null,
+//)
+//
+//data class UiCustomBuildingConfig(
+//    val Id: Int,
+//    val Value: Long,
+//    val GuardStrenght: Long,
+//    val BuildingTexture: BuildingTextureConfig,
+//    val buildingType: BuildingType
+//)
+//
+//@Serializable
+//sealed class SealedBuildingType {
+//    @Serializable
+//    data class CreatureBuildingConfig(
+//        val TiersPool: List<Long>,
+//        val NoGrades: Boolean? = null,
+//        val Grades: Boolean? = null,
+//        val Neutrals: Boolean? = null,
+//        val NonPLayerFactions: Boolean? = null,
+//        val PLayerFactions: Boolean? = null,
+//        val PlayerType: PlayerType,
+//        val CreatureIds: List<String>,
+//        val CostMultiplier: Double? = null,
+//        val ResourcesMultiplier: Double? = null,
+//        val GrowMultiplier: Double? = null,
+//        val IsDwelling: Boolean? = null
+//    ) : SealedBuildingType()
+//
+//    @Serializable
+//    data class XdbRef(val Value: String) : SealedBuildingType()
+//
+//    @Serializable
+//    data class PandoraBoxConfig(
+//        val GoldAmount: List<Long>,
+//        val ExpAmount: List<Long>,
+//        val Artifacts: List<PandoraArtifactConfig>,
+//        val PandoraCreatureConfig: List<PandoraCreatureConfig>,
+//        val Spells: List<PandoraSpellConfig>,
+//        val Resources: List<ResourcesConfig>
+//    ) : SealedBuildingType()
+//
+//    @Serializable
+//    data class ScriptBuildingConfig(val ScriptBuilding: ScriptBuilding) : SealedBuildingType()
+//
+//    @Serializable
+//    data class ResourceBuildingConfig(val ResourcesConfigs: List<ResourcesConfig>) : SealedBuildingType()
+//
+//    @Serializable
+//    data class MageEyeConfig(
+//        val CoordinateX: Long,
+//        val CoordinateY: Long,
+//        val Radius: Int? = null
+//    ) : SealedBuildingType()
+//
+//    @Serializable
+//    data class RunicChestConfig(
+//        val Runes: List<SpellType>,
+//        val RuneTiers: List<Long>,
+//        val Count: Int? = null,
+//        val ExpAmount: Int? = null
+//    ) : SealedBuildingType()
+//
+//    @Serializable
+//    data class DefaultBuildingConfig(val DefaultBuilding: DefaultBuilding) : SealedBuildingType()
+//
+//    @Serializable
+//    data class CreatureBankConfig(
+//        val Name: String,
+//        val CreaturesPool: List<String>,
+//        val GuardsPool: List<List<String>>,
+//        val CreatureCostMultiplier: Double? = null,
+//        val CreatureResourcesMultiplier: Double? = null,
+//        val CreatureGrowMultiplier: Double? = null,
+//        val GuardGrowMultiplier: Double? = null
+//    ) : SealedBuildingType()
+//}
+//
+//@Serializable
+//data class PandoraArtifactConfig(
+//    val Artifacts: List<ArtifactType>,
+//    val ArtifactCategories: List<ArtifactCategory>,
+//    val ArtifactSlots: List<ArtifactSlot>,
+//    val CostRanges: List<IntValueConfig>,
+//    val Count: Int? = null
+//)
+//
+//@Serializable
+//data class PandoraCreatureConfig(
+//    val TiersPool: List<Long>,
+//    val NoGrades: Boolean? = null,
+//    val Grades: Boolean? = null,
+//    val Neutrals: Boolean? = null,
+//    val NonPlayerFactions: Boolean? = null,
+//    val PlayerFactions: Boolean? = null,
+//    val PlayerType: PlayerType,
+//    val CreatureIds: List<String>,
+//    val GrowMultiplier: Double? = null
+//)
+//
+//@Serializable
+//data class PandoraSpellConfig(
+//    val Spells: List<SpellType>,
+//    val MagicSchools: List<MagicSchool>,
+//    val MagicTiers: List<Long>,
+//    val RuneTiers: List<Long>,
+//    val WarCryTiers: List<Long>,
+//    val Count: Int? = null
+//)
+//
+//@Serializable
+//data class StartBuildingConfig(
+//    val ApplyAllTerrains: Boolean? = null,
+//    val TerrainType: TerrainType,
+//    val Buildings: List<BuildingType>,
+//    val BuildingMode: BuildingMode
+//)
+//
+//@Serializable
+//data class ScriptFeaturesConfig(
+//    val CastleCaptureProps: CastleCaptureModel,
+//    val GmRebuildProps: GMRebuildModel,
+//    val GloballyDisabledBuildingsProps: GloballyDisabledBuildingsModel,
+//    val ForcedFinalBattleProps: ForcedFinalBattleModel,
+//    val AdditionalStartCastles: List<AdditionalStartCastle>
+//)
+//
+//@Serializable
+//data class CastleCaptureModel(
+//    val CoordinateX: Long,
+//    val CoordinateY: Long,
+//    val SearchRadius: Int? = null,
+//    val EventTimer: Long,
+//    val DisableFortifications: Boolean? = null,
+//    val IsForcedFinalBattle: Boolean
+//)
+//
+//@Serializable
+//data class AdditionalStartCastle(
+//    val StartCoordinateX: Long,
+//    val StartCoordinateY: Long,
+//    val SearchRadius: Int? = null,
+//    val TargetCoordinateX: Long,
+//    val TargetCoordinateY: Long,
+//    val TargetSearchRadius: Int? = null
+//)
+//
+//@Serializable
+//data class ResourcesModel(
+//    val Wood: Int? = null,
+//    val Ore: Int? = null,
+//    val Mercury: Int? = null,
+//    val Sulfur: Int? = null,
+//    val Gem: Int? = null,
+//    val Crystal: Int? = null,
+//    val Gold: Int? = null
+//)
+//
+//@Serializable
+//data class GMRebuildModel(
+//    val MinimalGMLevel: Long,
+//    val MinimalWarCriesLevel: Long,
+//    val RebuildCost: ResourcesModel
+//)
+//
+//@Serializable
+//data class GloballyDisabledBuildingsModel(
+//    val Buildings: List<BuildingType>
+//)
+//
+//@Serializable
+//data class ForcedFinalBattleModel(
+//    val Week: Long,
+//    val Day: Long
+//)
+//
+//@Serializable
+//data class ZoneRandomizationConfig(
+//    val ZonesToSwap: List<IntArray>,
+//    val IsSymmetricalSwap: Boolean? = null,
+//    val ZonesToRandomize: List<Long>
+//)
+//
+//@Serializable
+//data class StartSpellsByPlayer(
+//    val PlayerType: PlayerType,
+//    val Spells: List<SpellType>
+//)
+//
+//@Serializable
+//data class StartSpellsByRace(
+//    val CastleType: CastleType,
+//    val Spells: List<SpellType>
+//)
+//
+//@Serializable
+//data class StartSpellsByHero(
+//    val HeroType: HeroType,
+//    val Spells: List<SpellType>
+//)
+//
+//@Serializable
+//data class StartSpellsConfig(
+//    val GlobalSpells: List<SpellType>,
+//    val SpellsByPlayers: List<StartSpellsByPlayer>,
+//    val SpellsByRaces: List<StartSpellsByRace>,
+//    val SpellsByHeroes: List<StartSpellsByHero>
+//)
+//
+//@Serializable
+//data class BannedBasesByClass(
+//    val Class: HeroClassType,
+//    val Skills: List<SkillType>
+//)
+//
+//@Serializable
+//data class BasesBanModel(
+//    val CommonBannedSkills: List<SkillType>,
+//    val SkillsBannedForClass: List<BannedBasesByClass>
+//)
+//
+//enum class ArtifactCategory(
+//    val number: Int,
+//    val description: String
+//) {
+//    MINOR(0, "Минор"),
+//    MAJOR(1, "Мажор"),
+//    RELIC(2, "Реликт"),
+//    GRAIL(3, "");
+//}
+//
+//enum class ArtifactSlot(
+//    val number: Int,
+//    val description: String
+//) {
+//    INVENTORY(0, "только в сумке"),
+//    PRIMARY(1, "оружие"),
+//    SECONDARY(2, "щит"),
+//    HEAD(3, "голова"),
+//    CHEST(4, "грудь"),
+//    NECK(5, "шея"),
+//    FINGER(6, "кольцо"),
+//    FEET(7, "сапоги"),
+//    SHOULDERS(8, "плечи"),
+//    MISC_SLOT(9, "карман");
+//}
+//
+//enum class ArtifactType(
+//    val number: Int,
+//    val description: String
+//) {
+//    None(0, ""),
+//    SwordOfRuins(1, "Меч мощи"),
+//    DwarfKingAxe(2, "Секира короля гномов"),
+//    WandOfSpell(3, "Палочка с заклинанием"),
+//    UnicornBow(4, "Лук из рога единорога"),
+//    TitansTrident(5, "Трезубец титанов"),
+//    StaffOfTheUnderworld(6, "Посох Преисподней"),
+//    Shackles(7, "Кандалы неизбежности"),
+//    FourLeafClover(8, "Четырехлистный клевер"),
+//    IceShield(9, "Ледяной щит"),
+//    Sextant(10, "Секстант морских эльфов"),
+//    CrownOfLion(11, "Корона льва"),
+//    CrownOfManyEyes(12, "Корона всевидящего"),
+//    ArmorOfForgottenHero(13, "Доспехи забытого героя"),
+//    BreastplateOfPower(14, "Нагрудник огромной мощи"),
+//    PedantOfMastery(15, "Кулон мастерства"),
+//    NecklaceOfLion(16, "Ошейник льва"),
+//    NecklaceOfBloodyClaw(17, "Ожерелье кровавого когтя"),
+//    EvercoldIcycle(18, "Кулон ледяных объятий"),
+//    NecklaceOfVictory(19, "Ожерелье победы"),
+//    RingOfLightningProtection(20, "Кольцо защиты от молний"),
+//    RingOfVitality(21, "Кольцо жизненной силы"),
+//    RingOfHaste(22, "Кольцо скорости"),
+//    NightmarishRing(23, "Кольцо сломленного духа"),
+//    BootsOfSwiftJourney(24, "Сапоги путешественника"),
+//    GoldenHorseshoe(25, "Золотая подкова"),
+//    BootsOfOpenRoad(26, "Сапоги открытого пути"),
+//    BootsOfMagicDefence(27, "Сапоги магической защиты"),
+//    EndlessSackOfGold(28, "Сумка бесконечного золота"),
+//    EndlessBagOfGold(29, "Мешочек бесконечного золота"),
+//    CapeOfLion(31, "Накидка с гривой льва"),
+//    PhoenixFeatherCape(32, "Накидка из перьев феникса"),
+//    CloakOfMourning(33, "Плащ смертоносной тени"),
+//    TurbanOfEnlightenment(34, "Тюрбан просвещения"),
+//    ChainMailOfEnlightenment(35, "Кольчуга просвещения"),
+//    DragonScaleArmor(36, "Доспех из чешуи дракона"),
+//    DragonScaleShield(37, "Щит из чешуи дракона"),
+//    DragonBoneGraves(38, "Поножи из кости дракона"),
+//    DragonWingMantle(39, "Мантия из крыльев дракона"),
+//    DragonTeethNecklace(40, "Ожерелье из зубов дракона"),
+//    DragonTalonCrown(41, "Корона из когтей дракона"),
+//    DragonEyeRing(42, "Кольцо глаз дракона"),
+//    DragonFlameTongue(43, "Пламенный язык дракона"),
+//    RobeOfSarIssa(44, "Халат Сар-Иссы"),
+//    StaffOfSarIssa(45, "Посох Сар-Иссы"),
+//    CrownOfSarIssa(46, "Корона Сар-Иссы"),
+//    RingOfSarIssa(47, "Кольцо Сар-Иссы"),
+//    DwarvenKingCuirass(48, "Кираса короля гномов"),
+//    DwarvenKingGreaves(49, "Поножи короля гномов"),
+//    DwarvenKingHelmet(50, "Шлем короля гномов"),
+//    DwarvenKingShield(51, "Щит короля гномов"),
+//    ScrollOfSpell(52, "Свиток с заклинанием"),
+//    NecromancerHelm(55, "Шлем некроманта"),
+//    ArmorOfValor(56, "Доспехи бесстрашия"),
+//    WindstriderBoots(57, "Сапоги странника"),
+//    Moonblade(58, "Лунный клинок"),
+//    RingOfCelerity(59, "Кольцо стремительности"),
+//    ElementalWaistband(60, "Кольцо элементалей"),
+//    EmeraldSlippers(61, "Изумрудные туфли"),
+//    CloakOfSylanna(62, "Плащ силанны"),
+//    CursedWaistband(63, "Проклятое кольцо"),
+//    TunicOfFlesh(64, "Туника из плоти"),
+//    RingOfCaution(65, "Кольцо предостережения"),
+//    HelmOfChaos(66, "Шлем хаоса"),
+//    PendantOfConflux(67, "Кулон поглощения"),
+//    SandalsOfBlessed(68, "Сандалии святого"),
+//    SandroCloak(69, "Плащ Сандро"),
+//    NecromancerRing(70, "Кольцо грешников"),
+//    NecromancerAmulet(71, "Амулет некроманта"),
+//    OgreClub(74, "Дубина людоеда"),
+//    OgreShield(75, "Щит людоеда"),
+//    TomeOfChaos(76, "Том магии Хаоса"),
+//    TomeOfLight(77, "Том магии Света"),
+//    TomeOfDark(78, "Том магии Тьмы"),
+//    TomeOfSummon(79, "Том магии Призыва"),
+//    BeginnerMagicStick(80, "Волшебная палочка новичка"),
+//    RunicAxe(81, "Рунный боевой топор"),
+//    RunicHarness(82, "Рунная боевая упряжь"),
+//    SkullOfMarkal(83, "Шлем Маркела"),
+//    BearhideWraps(84, "Тайные защитные покровы"),
+//    DwarvenHammer(85, "Гномий кузнечный молот"),
+//    RuneOfFlame(86, "Руна пламени"),
+//    TarotDesk(87, "Колода Таро"),
+//    CrownOfLeadership(88, "Корона лидерства"),
+//    MaskOfDoppelganger(89, "Маска справедливости"),
+//    EdgeOfBalance(90, "На грани равновесия"),
+//    RingOfMachines(91, "Кольцо родства с машинами"),
+//    HornOfPlenty(92, "Рог изобилия"),
+//    RingOfUnsummon(93, "Кольцо изгнания"),
+//    BookOfPower(94, "Том Силы"),
+//    TreebornQuiver(95, "Изумительный колчан"),
+//    RingOfSilence(97, "Кольцо безмолвия");
+//}
+enum class BuildingTextureConfig(
+    val number: Int,
+    val description: String
+) {
+    BuildingTextureConfigNull(0, ""),
+    DefaultDwellingByTerrain(1, "Двелинг в соответствии с террейном"),
+    DefaultDwellingByCreature(2, "Двелинг в соотстветствии с юнитом"),
+    NeutralCreatureBuilding(3, "Здание нейтралов"),
+    TowerByCreature(4, "Башня в соотстветствии с юнитом"),
+    TowerByTerrain(5, "Башня в соответствии с террейном"),
+    TowerGates(10, "Текстура портала"),
+    RunicChest(11, "Рунная коробка"),
+    DwarvenCareer(12, "Шахта с редкими ресурсами"),
+    WoodShelter(13, "Склад дерева"),
+    OreShelter(14, "Склад руды"),
+    RandomChest(20, "Сундук с неизвестным наполнением"),
+    ArtsChest(21, "Сундук с артефактом"),
+    GoldChest(22, "Сундук с золотом"),
+    ExpChest(23, "Сундук с экспой"),
+    ResourceChest(24, "Сундук с реурсами"),
+    SpellsChest(25, "Сундук с заклинаниями"),
+    PandoraBox(100, "ящик пандоры"),
+    Random(101, "случайная текстура");
+}
+//
+//enum class BuildingMode {
+//    All,
+//    StartCastle,
+//    NeutralCastle
+//}
+//enum class BuildingTexture {
+//    Default,
+//    HumansDwelling,
+//    InfernoDwelling,
+//    NecropolisDwelling,
+//    ElvesDwelling,
+//    LigaDwelling,
+//    MagesDwelling,
+//    DwarfsDwelling,
+//    HordeDwelling,
+//    NeutralCreatureTower,
+//    HumansTower,
+//    InfernoTower,
+//    NecropolisTower,
+//    ElvesTower,
+//    LigaTower,
+//    MagesTower,
+//    DwarfsTower,
+//    HordeTower,
+//    PandoraBox,
+//    ShopPointTower
+//}
+//
+//enum class BuildingType(
+//    val number: Int,
+//    val description: String
+//) {
+//    T1(0, "Т1 двелл"),
+//    T1G(1, "Т1 гс"),
+//    T2(2, "Т2 двелл"),
+//    T2G(3, "Т2 гс"),
+//    T3(4, "Т3 двелл"),
+//    T3G(5, "Т3 гс"),
+//    T4(6, "Т4 двелл"),
+//    T4G(7, "Т4 гс"),
+//    T5(8, "Т5 двелл"),
+//    T5G(9, "Т5 гс"),
+//    T6(10, "Т6 двелл"),
+//    T6G(11, "Т6 гс"),
+//    T7(12, "Т7 двелл"),
+//    T7G(13, "Т7 гс"),
+//    Tavern(14, "Таверна"),
+//    Forge(15, "Кузница"),
+//    Market1(16, "Рынок"),
+//    Market2(17, "Склад"),
+//    GM1(18, "Гм лвл 1"),
+//    GM2(19, "Гм лвл 2"),
+//    GM3(20, "Гм лвл 3"),
+//    GM4(21, "Гм лвл 4"),
+//    GM5(22, "Гм лвл 5"),
+//    Fort1(23, "Форт"),
+//    Fort2(24, "Цитадель"),
+//    Fort3(25, "Замок"),
+//    Gold1(26, "Дом старейшин"),
+//    Gold2(27, "Ратуша"),
+//    Gold3(28, "Магистрат"),
+//    Gold4(29, "Капитолий"),
+//    Asha(30, "Здание за Слезу Асхи"),
+//    HavenTrainingGrounds(31, "Трен лвл 1"),
+//    HavenHeroesMonument(32, "Трен лвл 2"),
+//    HavenStables(33, "Конюшня"),
+//    HavenFarms(34, "Фермы на прирост крестьян"),
+//    InfernoHellGates(35, "+10% к гейтингу"),
+//    InfernoDemonsGrow(36, "Прирост демонов +2"),
+//    InfernoHallOfHorror(37, "Прирост коней +1"),
+//    InfernoSacrificialPit(38, "Жертвенная яма"),
+//    NecromancyAmplifier(39, "+1000 очков некромантии"),
+//    NecromancyUnholyTemple(40, "Конвертер нежити"),
+//    NecromancyGraves(41, "Прирост скелетов +6"),
+//    NecromancyDragonTombstone(42, "Прирост драконов +1"),
+//    PreserveAvengerGuild(43, "Гильдия мстителей"),
+//    PreserveAvengerBrotherhood(44, "Братство мстителей, +10% шанс прока заклятых"),
+//    PreserveMysticPond(45, "Пруд +ресурсы"),
+//    PreserveSparklingFountain(46, "Фонтан +удачи"),
+//    PreserveBloomingGrove(47, "Прирост фей"),
+//    PreserveTreantSamplings(48, "Прирост энтов"),
+//    DungeonAltarOfElements(49, "Элементальные цепочки"),
+//    DungeonAltarOfPrimalChaos(50, "+10% урона от цепочек"),
+//    DungeonRitualPit(51, "Ритуальная яма"),
+//    DungeonTradePost(52, "Лавка артефактов"),
+//    DungeonHallOfIntrigue(53, "+1 знания героям"),
+//    AcademyLibrary(54, "Библиотека"),
+//    AcademyArcaneForge(55, "Кузница миниартефактов"),
+//    AcademyArtifactMerchant(56, "Лавка артефактов"),
+//    AcademyTreasureCave(57, "+500 золота и прирост джиннов"),
+//    FortressRunicShrine1(58, "Руны лвл 1"),
+//    FortressRunicShrine2(59, "Руны лвл 2"),
+//    FortressRunicShrine3(60, "Руны лвл 3"),
+//    FortressArena(61, "Прирост берсерков"),
+//    FortressGuardPost(62, "Сторожевая башня +отряд карликов"),
+//    FortressStoneworks(63, "Укрепленные стены"),
+//    FortressRunicAcademy(64, "Прирост жрецов рун"),
+//    StrongholdHallOfTrial(65, "Кличи лвл 1"),
+//    StrongholdHallOfMastership(66, "Кличи лвл 2"),
+//    StrongholdHallOfMight(67, "Кличи лвл 3"),
+//    StrongholdGarbagePile(68, "Прирост гоблинов"),
+//    StrongholdTravellerShelter(69, "Талисманы для походных артов"),
+//    StrongholdPileOfOurFoes(70, "Куча черепов +кровь на старте боя"),
+//    StrongholdSlaveMarket(71, "Рынок рабов");
+//}
+//
+//enum class CastleType(val number: Int) {
+//    UNDEFINED(0),
+//    HUMANS(1),
+//    INFERNO(2),
+//    NECROPOLIS(3),
+//    ELVES(4),
+//    LIGA(5),
+//    MAGES(6),
+//    DWARFS(7),
+//    HORDE(8),
+//    RANDOM(9);
+//}
+//
+//enum class DefaultBuilding(
+//    val number: Int,
+//    val description: String
+//) {
+//    GoldChest5k(0, "Сундук на 5k золота"),
+//    GoldChest10k(1, "Сундук на 10k золота"),
+//    GoldChest15k(2, "Сундук на 15k золота"),
+//    GoldChest20k(3, "Сундук на 20k золота"),
+//    ExpChest5k(4, "Сундук на 5k опыта"),
+//    ExpChest10k(5, "Сундук на 10k опыта"),
+//    ExpChest15k(6, "Сундук на 15k опыта"),
+//    ExpChest20k(7, "Сундук на 20k опыта"),
+//    MinorArtChest(8, "Сундук с малым артефактом"),
+//    MajorArtChest(9, "Сундук с большим артефактом"),
+//    RelicArtChest(10, "Сундук с реликтовым артефактом"),
+//    FullDestructiveMagicChest(11, "Сундук со всеми заклинаниями Разрушения (Все кличи для орка)"),
+//    FullDarkMagicChest(12, "Сундук со всеми заклинаниями Тьмы (Все кличи для орка)"),
+//    FullLightMagicChest(13, "Сундук со всеми заклинаниями Света (Все кличи для орка)"),
+//    FullSummoningMagicChest(14, "Сундук со всеми заклинаниями Призыва (Все кличи для орка)"),
+//    FullAdventureMagicChest(15, "Сундук со всеми заклинаниями Приключений (Все кличи для орка)"),
+//    RandomFullMagicSchoolChest(16, "Сундук со всеми заклинаниями случайной школы (Все кличи для орка)"),
+//    FullT1MagicChest(17, "Сундук со всеми заклинаниями 1 уровня (Т1 для орка)"),
+//    FullT2MagicChest(18, "Сундук со всеми заклинаниями 2 уровня (Т2 для орка)"),
+//    FullT3MagicChest(19, "Сундук со всеми заклинаниями 3 уровня (Т2 для орка)"),
+//    FullT4MagicChest(20, "Сундук со всеми заклинаниями 4 уровня (T3 для орка)"),
+//    FullT5MagicChest(21, "Сундук со всеми заклинаниями 5 уровня (T3 для орка)"),
+//    RandomT1MagicChest(22, "Сундук со случайным заклинанием 1 уровня (T1 для орка)"),
+//    RandomT2MagicChest(23, "Сундук со случайным заклинанием 2 уровня (T2 для орка)"),
+//    RandomT3MagicChest(24, "Сундук со случайным заклинанием 3 уровня (T2 для орка)"),
+//    RandomT4MagicChest(25, "Сундук со случайным заклинанием 4 уровня (T3 для орка)"),
+//    RandomT5MagicChest(26, "Сундук со случайным заклинанием 5 уровня (T3 для орка)"),
+//    RandomT1CreatureBox(27, "Ящик со случайным грейженным существом 1 ранга x3 прирост"),
+//    RandomT2CreatureBox(28, "Ящик со случайным грейженным существом 2 ранга x3 прирост"),
+//    RandomT3CreatureBox(29, "Ящик со случайным грейженным существом 3 ранга x3 прирост"),
+//    RandomT4CreatureBox(30, "Ящик со случайным грейженным существом 4 ранга x3 прирост"),
+//    RandomT5CreatureBox(31, "Ящик со случайным грейженным существом 5 ранга x3 прирост"),
+//    RandomT6CreatureBox(32, "Ящик со случайным грейженным существом 6 ранга x3 прирост"),
+//    RandomT7CreatureBox(33, "Ящик со случайным грейженным существом 7 ранга x3 прирост"),
+//    HighTierRunicChest(34, "Сундук с высокоуровневыми (т3-т5) рунами и 5к экспы герою не гнома"),
+//    RandomRunicChest(35, "Сундук со случайной руной и 3к экспы герою не гнома"),
+//    T1RunicChest(36, "Сундук с руной 1 ранга и 1к экспы герою не гнома"),
+//    T2RunicChest(37, "Сундук с руной 2 ранга и 2к экспы герою не гнома"),
+//    T3RunicChest(38, "Сундук с руной 3 ранга и 3к экспы герою не гнома"),
+//    T4RunicChest(39, "Сундук с руной 4 ранга и 4к экспы герою не гнома"),
+//    T5RunicChest(40, "Сундук с руной 5 ранга и 5к экспы герою не гнома"),
+//    WoodGiver(41, "Здание выдающее 5-10 дерева"),
+//    OreGiver(42, "Здание выдающее 5-10 руды"),
+//    RareResourceGiver(43, "Здание выдающее 5-10 случайного редкого ресурса"),
+//    DefaultBuildingTowerPortal(44, "Портал в родной город");
+//}
+//
+//enum class HeroClassType(
+//    val number: Int,
+//    val description: String
+//) {
+//    NONE(0, ""),
+//    KNIGHT(1, "Рыцарь"),
+//    DEMONLORD(2, "Повелитель демонов"),
+//    NECROMANCER(3, "Некромант"),
+//    RANGER(4, "Рейнджер"),
+//    WARLOCK(5, "Чернокнижник"),
+//    WIZARD(6, "Маг"),
+//    RUNEMAGE(7, "Рунный жрец"),
+//    BARBARIAN(8, "Варвар");
+//}
+//
+//enum class HeroType(
+//    val number: Int,
+//    val description: String
+//) {
+//    NotSelected(0, ""),
+//    Brand(1, "Бранд"),
+//    Bersy(2, "Ибба"),
+//    Egil(3, "Эрлинг"),
+//    Ottar(4, "Хельмар"),
+//    Una(5, "Инга"),
+//    Ingvar(6, "Ингвар"),
+//    Skeggy(7, "Карли"),
+//    Vegeyr(8, "Свея"),
+//    Metlirn(9, "Анвэн"),
+//    Diraya(10, "Дираэль"),
+//    Gillion(11, "Гильраэн"),
+//    Ossir(12, "Оссир"),
+//    Nadaur(13, "Таланар"),
+//    Elleshar(14, "Винраэль"),
+//    Linaas(15, "Вингаэль"),
+//    Itil(16, "Ильфина"),
+//    Hero3(17, "Гаруна"),
+//    Hero4(18, "Гошак"),
+//    Hero7(19, "Хаггеш"),
+//    Hero9(20, "Киган"),
+//    Hero1(21, "Краг"),
+//    Hero6(22, "Шак-Карукат"),
+//    Hero8(23, "Тилсек"),
+//    Hero2(24, "Аргат"),
+//    Orrin(25, "Дугал"),
+//    Nathaniel(26, "Эллайна"),
+//    Ving(27, "Айрис"),
+//    Sarge(28, "Аксель"),
+//    Mardigo(29, "Ласло"),
+//    Maeve(30, "Мив"),
+//    Brem(31, "Рутгер"),
+//    Christian(32, "Витторио"),
+//    Efion(33, "Аластор"),
+//    Deleb(34, "Дэлеб"),
+//    Calid(35, "Грол"),
+//    Grok(36, "Грок"),
+//    Oddrema(37, "Джезебет"),
+//    Marder(38, "Марбас"),
+//    Jazaz(39, "Ниброс"),
+//    Nymus(40, "Нимус"),
+//    Eruina(41, "Эрин"),
+//    Menel(42, "Кифра"),
+//    Dalom(43, "Летос"),
+//    Inagost(44, "Синитар"),
+//    Ferigl(45, "Соргалл"),
+//    Ohtarig(46, "Вайшан"),
+//    Almegir(47, "Ирбет"),
+//    Urunir(48, "Иранна"),
+//    Faiz(49, "Фаиз"),
+//    Tan(50, "Джалиб"),
+//    Havez(51, "Хафиз"),
+//    Sufi(52, "Ора"),
+//    Razzak(53, "Нархиз"),
+//    Nur(54, "Назир"),
+//    Astral(55, "Нура"),
+//    Isher(56, "Раззак"),
+//    Nemor(57, "Дейдра"),
+//    Gles(58, "Каспар"),
+//    Tamika(59, "Лукреция"),
+//    Muscip(60, "Наадир"),
+//    Straker(61, "Орсон"),
+//    Effig(62, "Равенна"),
+//    Pelt(63, "Влад"),
+//    Aberrar(64, "Золтан"),
+//    Rolf(65, ""),
+//    Tolgar(66, ""),
+//    Vulfsten(67, ""),
+//    Hangvul(93, ""),
+//    Alaron(68, ""),
+//    Faidaen(69, ""),
+//    Tieru(70, ""),
+//    Gotai(71, ""),
+//    Kurak(72, ""),
+//    Kudjin(73, ""),
+//    Kuniak(94, ""),
+//    Alarik(74, ""),
+//    Dunkan(75, ""),
+//    Isabel(76, ""),
+//    Valeria(77, ""),
+//    Nikolas_Hum(95, ""),
+//    Godrik(96, ""),
+//    Frida(98, ""),
+//    Agrail(78, ""),
+//    Biara(79, ""),
+//    Orlando(80, ""),
+//    Vlastelin(81, ""),
+//    Illaia(82, ""),
+//    Railag(83, ""),
+//    Shadia(84, ""),
+//    Tralsai(85, ""),
+//    Maahir(86, ""),
+//    Sairus(87, ""),
+//    Zehir(88, ""),
+//    Temkhan(97, ""),
+//    Arantir(89, ""),
+//    Markel(90, ""),
+//    Nikolas(91, ""),
+//    Ornella(92, ""),
+//    Davius55(1000, ""),
+//    Emilia55(1001, ""),
+//    Gurvilin55(1002, ""),
+//    Josephine55(1003, ""),
+//    Minasli55(1004, ""),
+//    Rissa55(1005, ""),
+//    Theodorus55(1006, ""),
+//    Agbeth55(1007, ""),
+//    Darkstorm55(1008, ""),
+//    Kastore55(1009, ""),
+//    Ranleth55(1010, ""),
+//    Sephinroth55(1011, ""),
+//    Sylsai55(1012, ""),
+//    Bart55(1013, ""),
+//    Haegeir55(1014, ""),
+//    Hedwig55(1015, ""),
+//    Maximus55(1016, ""),
+//    Tazar55(1017, ""),
+//    Uland55(1018, ""),
+//    Benedikt55(1019, ""),
+//    Bertrand55(1020, ""),
+//    Gabrielle55(1021, ""),
+//    Jeddite55(1022, ""),
+//    Laszlo55(1023, ""),
+//    Lorenzo55(1024, ""),
+//    Orlando55(1025, ""),
+//    Ash55(1026, ""),
+//    Calh55(1027, ""),
+//    Calid55(1028, ""),
+//    Harkenraz55(1029, ""),
+//    Malustar55(1030, ""),
+//    Zydar55(1031, ""),
+//    Aislinn55(1032, ""),
+//    Archilus55(1033, ""),
+//    Giovanni55(1034, ""),
+//    Nimbus55(1035, ""),
+//    Sandro55(1036, ""),
+//    Thant55(1037, ""),
+//    Vidomina55(1038, ""),
+//    Xerxon55(1039, ""),
+//    Elleshar55(1040, ""),
+//    Gem55(1041, ""),
+//    Ivor55(1042, ""),
+//    Jenova55(1043, ""),
+//    Kyrre55(1044, ""),
+//    Melodia55(1045, ""),
+//    Mephala55(1046, ""),
+//    Tieru55(1047, ""),
+//    Azar55(1048, ""),
+//    CragHack55(1049, ""),
+//    Erika55(1050, ""),
+//    Kraal55(1051, ""),
+//    Matewa55(1052, ""),
+//    Mukha55(1053, ""),
+//    Shiva55(1054, ""),
+//    Zouleika55(1055, "");
+//}
+//enum class MagicSchool(
+//    val number: Int,
+//    val description: String
+//) {
+//    DESTRUCTIVE(0, "Хаос"),
+//    DARK(1, "Тьма"),
+//    LIGHT(2, "Свет"),
+//    SUMMONING(3, "Призыв"),
+//    ADVENTURE(4, "Контроль"),
+//    RUNIC(5, "Руны гномов"),
+//    WARCRIES(6, "Кличи орков"),
+//    SPECIAL(7, "Абилки существ/героев и технические спеллы");
+//}
+//
+//enum class PlayerType(
+//    val number: Int,
+//    val description: String
+//) {
+//    ANY(0, "любой игрок игроки"),
+//    FIRST(1, "первый игрока"),
+//    SECOND(2, "второй игрока");
+//}
+//enum class ScriptBuilding(
+//    val number: Int,
+//    val description: String
+//) {
+//    TowerPortal(
+//        number = 0,
+//        description = "Портал перемещающий игрока к ближайшему родному городу"
+//    ),
+//}
+//
+//enum class SkillType(
+//    val number: Int,
+//    val description: String
+//) {
+//    NO_SKILL(0, ""),
+//    LOGISTICS(1, "Логистика"),
+//    WAR_MACHINES(2, "Машины"),
+//    LEARNING(3, "Образование"),
+//    LEADERSHIP(4, "Лидерство"),
+//    LUCK(5, "Удача"),
+//    OFFENCE(6, "Нападение"),
+//    DEFENCE(7, "Защита"),
+//    SORCERY(8, "Чародейство"),
+//    DESTRUCTIVE_MAGIC(9, "Магия Хаоса"),
+//    DARK_MAGIC(10, "Магия Тьмы"),
+//    LIGHT_MAGIC(11, "Магия Света"),
+//    SUMMONING_MAGIC(12, "Магия Призыва"),
+//    TRAINING(13, "Контрудар"),
+//    GATING(14, "Открытие врат"),
+//    NECROMANCY(15, "Некромантия"),
+//    AVENGER(16, "Мститель"),
+//    ARTIFICIER(17, "Мастер артефактов"),
+//    INVOCATION(18, "Неодолимая магия"),
+//    RUNELORE(151, "Магия рун"),
+//    DEMONIC_RAGE(172, "Гнев крови"),
+//    BARBARIAN_LEARNING(183, "Образование варвара"),
+//    VOICE(187, "Кличи"),
+//    SHATTER_DESTRUCTIVE(191, "Приглушение Хаоса"),
+//    SHATTER_DARK(195, "Приглушение Тьмы"),
+//    SHATTER_LIGHT(199, "Приглушение Света"),
+//    SHATTER_SUMMONING(203, "Приглушение Призыва");
+//}
+//enum class SpellType(
+//    val number: Int,
+//    val description: String
+//) {
+//    None(0, ""),
+//    MagicArrow(1, "Магическая стрела"),
+//    MagicFist(2, "Магический кулак"),
+//    LightningBolt(3, "Молния"),
+//    IceBolt(4, "Льдина"),
+//    Fireball(5, "Огненный шар"),
+//    FrostRing(6, "Кольцо холода"),
+//    ChainLightning(7, "Цепь молний"),
+//    MeteorShower(8, "Метеоритный дождь"),
+//    Implosion(9, "Шок земли"),
+//    Armageddon(10, "Армагеддон"),
+//    Curse(11, "Ослабление"),
+//    Slow(12, "Замедление"),
+//    DisruptingRay(13, "Разрушающий луч"),
+//    Plague(14, "Чума"),
+//    Weakness(15, "Немощность"),
+//    Forgetfullness(17, "Рассеянность"),
+//    Berserk(18, "Берсерк"),
+//    Blind(19, "Ослепление"),
+//    Hypnotize(20, "Подчинение"),
+//    UnholyWord(21, "Нечестивое слово"),
+//    Bless(23, "Божественная сила"),
+//    Haste(24, "Ускорение"),
+//    Stoneskin(25, "Каменная кожа"),
+//    Dispel(26, "Снятие чар"),
+//    Bloodlust(28, "Карающий удар"),
+//    DeflectArrows(29, "Уклонение"),
+//    Antimagic(31, "Антимагия"),
+//    Teleport(32, "Телепорт"),
+//    CelestialShield(34, "Небесный щит"),
+//    HolyWord(35, "Святое слово"),
+//    LandMine(38, "Огненная ловушка"),
+//    WaspSwarm(39, "Призыв осиного роя"),
+//    Phantom(40, "Создание фантома"),
+//    Earthquake(41, "Землетрясение"),
+//    AnimateDead(42, "Поднятие мертвых"),
+//    SummonElementals(43, "Призыв элементалей"),
+//    Resurrect(48, "Воскрешение"),
+//    SummonBoat(49, "Вызов корабля"),
+//    DimensionDoor(50, "Астральные врата"),
+//    TownPortal(51, "Портал в город"),
+//    SummonCreatures(234, "Вызов подкреплений"),
+//    ConjurePhoenix(235, "Призыв феникса"),
+//    Firewall(236, "Огненная стена"),
+//    StoneSpikes(237, "Каменные шипы"),
+//    Sorrow(277, "Скорбь"),
+//    Vampirism(278, "Вампиризм"),
+//    DeepFreeze(279, "Останавливающий холод"),
+//    Regeneration(280, "Регенерация"),
+//    DivineVengeance(281, "Божественная месть"),
+//    ArcaneCrystal(282, "Магический кристалл"),
+//    SummonHive(283, "Призыв улья"),
+//    BladeBarrier(284, "Стена мечей"),
+//    SummonAirElementals(378, "Призыв элементалей воздуха"),
+//    SummonEarthElementals(379, "Призыв элементалей земли"),
+//    SummonFireElementals(380, "Призыв элементалей огня"),
+//    SummonWaterElementals(381, "Призыв элементалей воды");
+//}
+//
+//enum class TemplateType(val number: Int, val description: String) {
+//    Uni_S(0, ""),
+//    Jebus(1, ""),
+//    Moon(2, "")
+//}
+//
+@Serializable
+enum class TerrainType {
+    FirstPlayer,//(0, "террейн первого игрока"),
+    SecondPlayer,//(1, "террейн второго игрока"),
+    Terrain1,//(2, "первый случайный свободный террейн"),
+    Terrain2,//(3, "второй случайный свободный террейн"),
+    Terrain3,//(4, "третий случайный свободный террейн"),
+    Terrain4,//(5, "четвёртый случайный свободный террейн"),
+    Terrain5,//(6, "пятый случайный свободный террейн"),
+    Terrain6,//(7, "шестой случайный свободный террейн")
+}

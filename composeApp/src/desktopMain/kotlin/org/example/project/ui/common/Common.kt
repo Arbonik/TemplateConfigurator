@@ -1,24 +1,29 @@
 package org.example.project.ui.common
 
-import androidx.compose.foundation.layout.Box
+import IntValueConfig
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Checkbox
+import androidx.compose.material.TextField
+import androidx.compose.material3.*
+import androidx.compose.material3.Text
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
-
+import androidx.compose.ui.text.input.TextFieldValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -97,4 +102,99 @@ fun DecimalInputField(
             keyboardType = KeyboardType.Decimal,
         ),
     )
+}
+
+
+@Composable
+fun IntValueConfigEditor(
+    config: IntValueConfig?,
+    onConfigChanged: (IntValueConfig?) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var isRandom by remember { mutableStateOf(config?.MinValue != config?.MaxValue) }
+    var minValueText by remember {
+        mutableStateOf(TextFieldValue(config?.MinValue?.toString() ?: ""))
+    }
+    var maxValueText by remember {
+        mutableStateOf(TextFieldValue(config?.MaxValue?.toString() ?: ""))
+    }
+
+    Column(modifier = modifier) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = 8.dp)
+        ) {
+            Checkbox(
+                checked = isRandom,
+                onCheckedChange = {
+                    isRandom = it
+                    if (!it) {
+                        // Если рандом выключен, копируем minValue в maxValue
+                        maxValueText = minValueText
+                        updateConfig(
+                            minValueText.text,
+                            minValueText.text,
+                            onConfigChanged
+                        )
+                    } else {
+                        // Если рандом включен, сохраняем текущие значения
+                        updateConfig(
+                            minValueText.text,
+                            maxValueText.text,
+                            onConfigChanged
+                        )
+                    }
+                }
+            )
+            Text("Рандом")
+        }
+
+        if (isRandom) {
+            // Режим рандома - два поля ввода
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                TextField(
+                    value = minValueText,
+                    onValueChange = {
+                        minValueText = it
+                        updateConfig(it.text, maxValueText.text, onConfigChanged)
+                    },
+                    label = { Text("Min значение") },
+                    modifier = Modifier.weight(1f)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                TextField(
+                    value = maxValueText,
+                    onValueChange = {
+                        maxValueText = it
+                        updateConfig(minValueText.text, it.text, onConfigChanged)
+                    },
+                    label = { Text("Max значение") },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        } else {
+            // Одиночный режим - одно поле ввода
+            TextField(
+                value = minValueText,
+                onValueChange = {
+                    minValueText = it
+                    maxValueText = it
+                    updateConfig(it.text, it.text, onConfigChanged)
+                },
+                label = { Text("Значение") },
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
+private fun updateConfig(
+    minText: String,
+    maxText: String,
+    onConfigChanged: (IntValueConfig) -> Unit
+) {
+    val minValue = minText.toIntOrNull()
+    val maxValue = maxText.toIntOrNull()
+
+    onConfigChanged(IntValueConfig(minValue, maxValue))
 }

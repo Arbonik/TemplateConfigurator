@@ -1,18 +1,17 @@
 package org.example.project.data.enums
 
 enum class CastleType(val number: Int) {
-    UNDEFINED(0),
-    HUMANS(1),
-    INFERNO(2),
-    NECROPOLIS(3),
-    ELVES(4),
-    LIGA(5),
-    MAGES(6),
-    DWARFS(7),
-    HORDE(8),
-    RANDOM(9);
-
+    Undefined(0),
+    Humans(1),
+    Inferno(2),
+    Necropolis(3),
+    Elves(4),
+    Liga(5),
+    Mages(6),
+    Dwarfs(7),
+    Horde(8),
+    Random(9);
     companion object {
-        fun fromNumber(number: Int): CastleType? = values().find { it.number == number }
+        val available = listOf(Humans, Inferno, Necropolis, Elves, Liga, Mages, Dwarfs, Horde)
     }
 }

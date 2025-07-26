@@ -46,156 +46,156 @@ data class AppState(
     val connections: List<Connection>
 )
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
-fun main() = application {
-    // Состояние приложения
-    val undoStack = remember { mutableStateListOf<AppState>() }
-    val redoStack = remember { mutableStateListOf<AppState>() }
-    var appState by remember { mutableStateOf(AppState(emptyList(), emptyList())) }
-    var nextCircleId by remember { mutableStateOf(1) }
-    var nextConnectionId by remember { mutableStateOf(1) }
-
-    // Выбранные элементы
-    var selectedCircleId by remember { mutableStateOf<Int?>(null) }
-    var selectedConnectionId by remember { mutableStateOf<Int?>(null) }
-    var draggedCircleId by remember { mutableStateOf<Int?>(null) }
-
-    // Настройки UI
-    var showSettings by remember { mutableStateOf(false) }
-    var currentColor by remember { mutableStateOf(Color.Blue) }
-    var currentRadius by remember { mutableStateOf(40f) }
-    var currentLabel by remember { mutableStateOf("") }
-    var connectionWidth by remember { mutableStateOf(2f) }
-
-    // Сохраняем состояние в историю
-    fun saveState() {
-        undoStack.add(
-            appState.copy(
-                circles = appState.circles.map { it.copy() },
-                connections = appState.connections.map { it.copy() }
-            ))
-        redoStack.clear()
-    }
-
-    // Отмена действия
-    fun undo() {
-        if (undoStack.isNotEmpty()) {
-            redoStack.add(appState)
-            appState = undoStack.removeLast()
-        }
-    }
-
-    // Повтор действия
-    fun redo() {
-        if (redoStack.isNotEmpty()) {
-            undoStack.add(appState)
-            appState = redoStack.removeLast()
-        }
-    }
-
-    // Удаление выбранных элементов
-    fun deleteSelected() {
-        saveState()
-
-        selectedCircleId?.let { circleId ->
-            appState = appState.copy(
-                circles = appState.circles.filter { it.id != circleId },
-                connections = appState.connections.filter {
-                    it.fromId != circleId && it.toId != circleId
-                }
-            )
-            selectedCircleId = null
-        }
-
-        selectedConnectionId?.let { connectionId ->
-            appState = appState.copy(
-                connections = appState.connections.filter { it.id != connectionId }
-            )
-            selectedConnectionId = null
-        }
-    }
-
-
-
-    Window(
-        onCloseRequest = ::exitApplication,
-        title = "Advanced Circle Connector",
-        onKeyEvent = { keyEvent ->
-            when {
-                (keyEvent.isCtrlPressed && keyEvent.key == Key.Z) -> {
-                    undo()
-                    true
-                }
-
-                (keyEvent.isCtrlPressed && keyEvent.key == Key.Y) -> {
-                    redo()
-                    true
-                }
-
-                (keyEvent.key == Key.Delete) -> {
-                    deleteSelected()
-                    true
-                }
-
-                else -> false
-            }
-        }
-    ) {
-        MaterialTheme {
-            Box(modifier = Modifier.fillMaxSize()) {
-                // Основное поле для рисования
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.White)
-                        .pointerInput(Unit) {
-                            // ... (обработка жестов остается без изменений)
-                        }
-                ) {
-                    Canvas(modifier = Modifier.fillMaxSize()) {
-                        // Сначала рисуем соединения
-                        appState.connections.groupBy { it.fromId to it.toId }.forEach { (key, connections) ->
-                            val (fromId, toId) = key
-                            val fromCircle = appState.circles.find { it.id == fromId }
-                            val toCircle = appState.circles.find { it.id == toId }
-
-                            if (fromCircle != null && toCircle != null) {
-                                val totalConnections = connections.size
-                                connections.forEachIndexed { index, connection ->
-                                    val isFirstConnection = index == 0
-                                    val curvature = if (isFirstConnection) 0f else 0.3f * (index + 1) / 2f
-
-                                    drawConnection(
-                                        from = fromCircle.center,
-                                        to = toCircle.center,
-                                        connection = connection,
-                                        curvature = curvature,
-                                        isSelected = connection.id == selectedConnectionId,
-                                        isFirstConnection = isFirstConnection
-                                    )
-                                }
-                            }
-                        }
-
-                        // Затем рисуем круги (чтобы они были поверх соединений)
-                        appState.circles.forEach { circle ->
-                            drawCircle(
-                                color = circle.color,
-                                center = circle.center,
-                                radius = circle.radius,
-                                style = Stroke(width = if (circle.id == selectedCircleId) 5f else 3f)
-                            )
-
-                            if (circle.label.isNotBlank()) {
-                                // ... (логика отрисовки текста)
-                            }
-                        }
-                    }
-                }
-
-                // ... (панель управления остается без изменений)
-            }
-        }
+//@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
+//fun main() = application {
+//    // Состояние приложения
+//    val undoStack = remember { mutableStateListOf<AppState>() }
+//    val redoStack = remember { mutableStateListOf<AppState>() }
+//    var appState by remember { mutableStateOf(AppState(emptyList(), emptyList())) }
+//    var nextCircleId by remember { mutableStateOf(1) }
+//    var nextConnectionId by remember { mutableStateOf(1) }
+//
+//    // Выбранные элементы
+//    var selectedCircleId by remember { mutableStateOf<Int?>(null) }
+//    var selectedConnectionId by remember { mutableStateOf<Int?>(null) }
+//    var draggedCircleId by remember { mutableStateOf<Int?>(null) }
+//
+//    // Настройки UI
+//    var showSettings by remember { mutableStateOf(false) }
+//    var currentColor by remember { mutableStateOf(Color.Blue) }
+//    var currentRadius by remember { mutableStateOf(40f) }
+//    var currentLabel by remember { mutableStateOf("") }
+//    var connectionWidth by remember { mutableStateOf(2f) }
+//
+//    // Сохраняем состояние в историю
+//    fun saveState() {
+//        undoStack.add(
+//            appState.copy(
+//                circles = appState.circles.map { it.copy() },
+//                connections = appState.connections.map { it.copy() }
+//            ))
+//        redoStack.clear()
+//    }
+//
+//    // Отмена действия
+//    fun undo() {
+//        if (undoStack.isNotEmpty()) {
+//            redoStack.add(appState)
+//            appState = undoStack.removeLast()
+//        }
+//    }
+//
+//    // Повтор действия
+//    fun redo() {
+//        if (redoStack.isNotEmpty()) {
+//            undoStack.add(appState)
+//            appState = redoStack.removeLast()
+//        }
+//    }
+//
+//    // Удаление выбранных элементов
+//    fun deleteSelected() {
+//        saveState()
+//
+//        selectedCircleId?.let { circleId ->
+//            appState = appState.copy(
+//                circles = appState.circles.filter { it.id != circleId },
+//                connections = appState.connections.filter {
+//                    it.fromId != circleId && it.toId != circleId
+//                }
+//            )
+//            selectedCircleId = null
+//        }
+//
+//        selectedConnectionId?.let { connectionId ->
+//            appState = appState.copy(
+//                connections = appState.connections.filter { it.id != connectionId }
+//            )
+//            selectedConnectionId = null
+//        }
+//    }
+//
+//
+//
+//    Window(
+//        onCloseRequest = ::exitApplication,
+//        title = "Advanced Circle Connector",
+//        onKeyEvent = { keyEvent ->
+//            when {
+//                (keyEvent.isCtrlPressed && keyEvent.key == Key.Z) -> {
+//                    undo()
+//                    true
+//                }
+//
+//                (keyEvent.isCtrlPressed && keyEvent.key == Key.Y) -> {
+//                    redo()
+//                    true
+//                }
+//
+//                (keyEvent.key == Key.Delete) -> {
+//                    deleteSelected()
+//                    true
+//                }
+//
+//                else -> false
+//            }
+//        }
+//    ) {
+//        MaterialTheme {
+//            Box(modifier = Modifier.fillMaxSize()) {
+//                // Основное поле для рисования
+//                Box(
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .background(Color.White)
+//                        .pointerInput(Unit) {
+//                            // ... (обработка жестов остается без изменений)
+//                        }
+//                ) {
+//                    Canvas(modifier = Modifier.fillMaxSize()) {
+//                        // Сначала рисуем соединения
+//                        appState.connections.groupBy { it.fromId to it.toId }.forEach { (key, connections) ->
+//                            val (fromId, toId) = key
+//                            val fromCircle = appState.circles.find { it.id == fromId }
+//                            val toCircle = appState.circles.find { it.id == toId }
+//
+//                            if (fromCircle != null && toCircle != null) {
+//                                val totalConnections = connections.size
+//                                connections.forEachIndexed { index, connection ->
+//                                    val isFirstConnection = index == 0
+//                                    val curvature = if (isFirstConnection) 0f else 0.3f * (index + 1) / 2f
+//
+//                                    drawConnection(
+//                                        from = fromCircle.center,
+//                                        to = toCircle.center,
+//                                        connection = connection,
+//                                        curvature = curvature,
+//                                        isSelected = connection.id == selectedConnectionId,
+//                                        isFirstConnection = isFirstConnection
+//                                    )
+//                                }
+//                            }
+//                        }
+//
+//                        // Затем рисуем круги (чтобы они были поверх соединений)
+//                        appState.circles.forEach { circle ->
+//                            drawCircle(
+//                                color = circle.color,
+//                                center = circle.center,
+//                                radius = circle.radius,
+//                                style = Stroke(width = if (circle.id == selectedCircleId) 5f else 3f)
+//                            )
+//
+//                            if (circle.label.isNotBlank()) {
+//                                // ... (логика отрисовки текста)
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                // ... (панель управления остается без изменений)
+//            }
+//        }
 //
 //    Window(
 //        onCloseRequest = ::exitApplication,
@@ -519,8 +519,8 @@ fun main() = application {
 //            }
 //        }
 //    }
-    }
-}
+//    }
+//}
 
     // Компонент выбора цвета
     @Composable
