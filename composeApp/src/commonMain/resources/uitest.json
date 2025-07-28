@@ -1,0 +1,370 @@
+{
+  "TemplateName": "template_1",
+  "Zones": [
+    {
+      "ZoneId": 1,
+      "TerrainType": "FirstPlayer",
+      "MirrorZoneId": 2,
+      "DwellingGenerationConfig": {
+        "BuildingTexture": "DefaultDwellingByTerrain",
+        "CreaturesConfiguration": {
+          "ReplacementsCount": {
+            "MinValue": 1,
+            "MaxValue": 3
+          },
+          "TerrainFaction": true,
+          "NonPlayersFactions": false,
+          "Grades": true,
+          "BaseCostMultiplier": 1.2,
+          "CreatureModifiers": [
+            {
+              "Tier": 1,
+              "CostMultiplier": 1.1,
+              "GrowMultiplier": 1.0
+            },
+            {
+              "Tier": 2,
+              "ResourcesMultiplier": 1.2
+            }
+          ],
+          "CreatureTierReplacements": [
+            {
+              "Tier": 1,
+              "CreatureIds": ["creature_1", "creature_2"]
+            }
+          ]
+        },
+        "RandomDwellingConfig": {
+          "MinCount": 2,
+          "MaxCount": 5,
+          "MinTiersCount": 1,
+          "MaxTiersCount": 3,
+          "UniformDistribution": false,
+          "AllowedTiers": [1, 2, 3],
+          "MinCountPerTier": 1,
+          "MaxCountPerTier": 2
+        }
+      },
+      "MineGenerationConfig": {
+        "Wood": {
+          "MinValue": 100,
+          "MaxValue": 200
+        },
+        "Ore": {
+          "MinValue": 100,
+          "MaxValue": 200
+        },
+        "Mercury": {
+          "MinValue": 5,
+          "MaxValue": 10
+        },
+        "Crystals": {
+          "MinValue": 5,
+          "MaxValue": 10
+        },
+        "Sulfur": {
+          "MinValue": 5,
+          "MaxValue": 10
+        },
+        "Gems": {
+          "MinValue": 3,
+          "MaxValue": 7
+        },
+        "Gold": {
+          "MinValue": 1000,
+          "MaxValue": 2000
+        }
+      },
+      "AbandonedMines": {
+        "MinValue": 1,
+        "MaxValue": 3
+      },
+      "TreasureDensity": {
+        "MinValue": 5,
+        "MaxValue": 10
+      },
+      "Prisons": {
+        "MinValue": 1,
+        "MaxValue": 2
+      },
+      "TownGuardStrenght": {
+        "MinValue": 10,
+        "MaxValue": 20
+      },
+      "Size": {
+        "MinValue": 50,
+        "MaxValue": 70
+      },
+      "Town": true,
+      "ZoneStartPointX": {
+        "MinValue": 10,
+        "MaxValue": 20
+      },
+      "ZoneStartPointY": {
+        "MinValue": 10,
+        "MaxValue": 20
+      }
+    },
+    {
+      "ZoneId": 3,
+      "TerrainType": "Terrain2",
+      "DwellingGenerationConfig": {
+        "BuildingTexture": "NeutralCreatureBuilding",
+        "CreaturesConfiguration": {
+          "ReplacementsCount": {
+            "MinValue": 0,
+            "MaxValue": 2
+          },
+          "Neutrals": true,
+          "NoGrades": true,
+          "BaseGrowMultiplier": 0.8,
+          "CreatureTierReplacements": [
+            {
+              "Tier": 3,
+              "CreatureIds": ["neutral_creature_1", "neutral_creature_2"]
+            },
+            {
+              "Tier": 4,
+              "CreatureIds": ["neutral_creature_3"]
+            }
+          ],
+          "NonUniqueReplacements": true
+        },
+        "StaticDwellingConfigs": {
+          "DwellingValue": [
+            {
+              "T1": 10,
+              "T2": 5,
+              "T3": 3
+            },
+            {
+              "T4": 2,
+              "T5": 1
+            }
+          ]
+        }
+      },
+      "MineGenerationConfig": {
+        "Wood": {
+          "MinValue": 50,
+          "MaxValue": 100
+        },
+        "Ore": {
+          "MinValue": 50,
+          "MaxValue": 100
+        },
+        "Gold": {
+          "MinValue": 500,
+          "MaxValue": 1000
+        }
+      },
+      "TreasureChestDensity": {
+        "MinValue": 3,
+        "MaxValue": 6
+      },
+      "ResourceBuildingsDensity": {
+        "MinValue": 2,
+        "MaxValue": 4
+      },
+      "TreasureBuildingPoints": {
+        "MinValue": 1,
+        "MaxValue": 3
+      },
+      "Size": {
+        "MinValue": 40,
+        "MaxValue": 60
+      },
+      "Town": false,
+      "TreasureBlocksScalingFromTownDist": true,
+      "DistBetweenTreasureBlocks": {
+        "MinValue": 5,
+        "MaxValue": 8
+      }
+    }
+  ],
+  "Connections": [
+    {
+      "SourceZoneIndex": 1,
+      "DestZoneIndex": 2,
+      "IsMain": true,
+      "RemoveConnection": false,
+      "TwoWay": true,
+      "GuardStrenght": 3,
+      "Guarded": true,
+      "Wide": false,
+      "StaticPos": true,
+      "StartPointX": 100,
+      "StartPointY": 200,
+      "MinRadiusToSearch": 50,
+      "MaxRadiusToSearch": 150,
+      "MinRadiusToMain": 10,
+      "MaxRadiusToMain": 100,
+      "RoadType": 1
+    },
+    {
+      "SourceZoneIndex": 2,
+      "DestZoneIndex": 3,
+      "IsMain": false,
+      "RemoveConnection": null,
+      "TwoWay": false,
+      "GuardStrenght": null,
+      "Guarded": false,
+      "Wide": true,
+      "StaticPos": null,
+      "StartPointX": null,
+      "StartPointY": null,
+      "MinRadiusToSearch": null,
+      "MaxRadiusToSearch": null,
+      "MinRadiusToMain": null,
+      "MaxRadiusToMain": null,
+      "RoadType": 2
+    },
+    {
+      "SourceZoneIndex": 3,
+      "DestZoneIndex": 1,
+      "IsMain": true,
+      "RemoveConnection": true,
+      "TwoWay": null,
+      "GuardStrenght": 5,
+      "Guarded": null,
+      "Wide": null,
+      "StaticPos": false,
+      "StartPointX": 300,
+      "StartPointY": 400,
+      "MinRadiusToSearch": 20,
+      "MaxRadiusToSearch": 200,
+      "MinRadiusToMain": null,
+      "MaxRadiusToMain": null,
+      "RoadType": null
+    },
+    {
+      "SourceZoneIndex": 4,
+      "DestZoneIndex": 5,
+      "IsMain": false,
+      "RemoveConnection": false,
+      "TwoWay": true,
+      "GuardStrenght": null,
+      "Guarded": true,
+      "Wide": false,
+      "StaticPos": null,
+      "StartPointX": null,
+      "StartPointY": null,
+      "MinRadiusToSearch": null,
+      "MaxRadiusToSearch": null,
+      "MinRadiusToMain": null,
+      "MaxRadiusToMain": null,
+      "RoadType": 3
+    },
+    {
+      "SourceZoneIndex": 5,
+      "DestZoneIndex": 1,
+      "IsMain": true,
+      "RemoveConnection": null,
+      "TwoWay": null,
+      "GuardStrenght": 2,
+      "Guarded": false,
+      "Wide": true,
+      "StaticPos": true,
+      "StartPointX": 150,
+      "StartPointY": 250,
+      "MinRadiusToSearch": 30,
+      "MaxRadiusToSearch": 180,
+      "MinRadiusToMain": 5,
+      "MaxRadiusToMain": 80,
+      "RoadType": 1
+    }
+  ],
+  "TerrainConfigs": [
+    {
+      "TerrainType": "FirstPlayer",
+      "MirrorTerrainType": "SecondPlayer",
+      "BuildingsToDelete": ["building1", "building2"],
+      "BuildingsToAdd": [101, 102, 103],
+      "NewLuckMoraleBuildings": {
+        "ClearBuildings": true,
+        "BuildingsToDelete": ["old_luck_building"],
+        "BuildingsToAdd": [201, 202],
+        "AddCreatureBanksPool": false
+      },
+      "NewShopBuildings": {
+        "BuildingsToDelete": [],
+        "BuildingsToAdd": [301]
+      }
+    },
+    {
+      "TerrainType": "Terrain1",
+      "BuildingsToDelete": ["building3", "building4"],
+      "BuildingsToAdd": [104, 105],
+      "NewResourceGivers": {
+        "ClearBuildings": false,
+        "BuildingsToDelete": ["old_resource_building"],
+        "BuildingsToAdd": [401, 402, 403],
+        "AddCreatureBanksPool": true
+      },
+      "NewUpgradeBuildings": {
+        "BuildingsToDelete": ["old_upgrade"],
+        "BuildingsToAdd": [501]
+      }
+    },
+    {
+      "TerrainType": "Terrain2",
+      "MirrorTerrainType": "Terrain3",
+      "BuildingsToDelete": [],
+      "BuildingsToAdd": [106],
+      "NewShrines": {
+        "BuildingsToAdd": [601]
+      },
+      "NewTreasuryBuildings": {
+        "ClearBuildings": true,
+        "BuildingsToAdd": [701, 702]
+      }
+    },
+    {
+      "TerrainType": "Terrain4",
+      "BuildingsToDelete": ["building5"],
+      "BuildingsToAdd": [],
+      "NewBuffBuildings": {
+        "BuildingsToDelete": ["old_buff"],
+        "BuildingsToAdd": [801, 802, 803]
+      }
+    },
+    {
+      "TerrainType": "Terrain6",
+      "BuildingsToDelete": ["building6", "building7", "building8"],
+      "BuildingsToAdd": [107, 108]
+    }
+  ],
+  "StartBuildingConfigs": [
+    {
+      "id": "start_building_1"
+    }
+  ],
+  "GeneralData": {
+    "id": "general_data_1"
+  },
+  "BaseArmyMultiplier": 1.5,
+  "ArmyMultipliers": {
+    "unit_type_1": 1.2,
+    "unit_type_2": 0.8
+  },
+  "ScriptFeaturesConfig": {
+    "id": "script_features_1"
+  },
+  "EntitiesBanConfig": {
+    "id": "entities_ban_1"
+  },
+  "StartSpellsConfig": {
+    "id": "start_spells_1"
+  },
+  "CustomBuildingConfigs": [
+    {
+      "id": "custom_building_1"
+    }
+  ],
+  "CreatureBanksPool": {
+    "id": "creature_banks_1"
+  },
+  "ZoneRandomizationConfig": {
+    "id": "zone_randomization_1"
+  }
+}

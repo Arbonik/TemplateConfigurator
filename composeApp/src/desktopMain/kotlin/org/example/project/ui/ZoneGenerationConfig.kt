@@ -23,6 +23,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
 import org.example.project.data.enums.Creature
+import org.example.project.ui.MyListItem
 import org.example.project.ui.dwellingGenerationConfig.DependantDwellingConfigEditor
 import org.example.project.ui.dwellingGenerationConfig.DwellingValueEditor
 
@@ -51,6 +52,7 @@ fun ZoneGenerationConfigEditor(
                         TerrainType = TerrainType.FirstPlayer
                     )
                     onZonesUpdated(zones + newZone)
+                    selectedZoneIndex = zones.lastIndex
                 },
                 enabled = true
             ) {
@@ -64,6 +66,7 @@ fun ZoneGenerationConfigEditor(
                     selectedIndex = it1,
                     onZoneSelected = { index -> selectedZoneIndex = index },
                     deleteZone = {
+                        selectedZoneIndex = if (zones.size == 1) null else 0
                         onZonesUpdated(
                             zones - it
                         )
@@ -106,55 +109,27 @@ private fun ZoneList(
 ) {
     LazyColumn(modifier = modifier) {
         items(zones) { zone ->
-            ZoneListItem(
-                zone = zone,
+            MyListItem(
+                item = zone,
                 isSelected = zones.indexOf(zone) == selectedIndex,
                 onClick = { onZoneSelected(zones.indexOf(zone)) },
-                deleteZone = deleteZone
+                deleteZone = deleteZone,
+                content = {
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text(
+                            text = "Zone ${it.ZoneId}",
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                        Text(
+                            text = it.TerrainType.toString(),
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    }
+                },
+                modifier = Modifier
             )
-        }
-    }
-}
-
-@Composable
-private fun ZoneListItem(
-    zone: ZoneGenerationConfig,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-    deleteZone: (ZoneGenerationConfig) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val backgroundColor = if (isSelected) {
-        MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
-    } else {
-        MaterialTheme.colorScheme.background
-    }
-
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        color = backgroundColor,
-        onClick = onClick
-    ) {
-        Row {
-            Column(
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Text(
-                    text = "Zone ${zone.ZoneId}",
-                    style = MaterialTheme.typography.labelMedium
-                )
-                Text(
-                    text = zone.TerrainType.toString(),
-                    style = MaterialTheme.typography.labelMedium
-                )
-            }
-            Spacer(Modifier.weight(1f))
-            Button(
-                onClick = { deleteZone(zone) },
-                modifier = Modifier.align(Alignment.CenterVertically)
-            ) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete")
-            }
         }
     }
 }

@@ -40,61 +40,62 @@ import kotlinx.serialization.Serializable
 data class IntValueConfig(
     val MinValue: Int? = null,
     val MaxValue: Int? = null
-){
-    constructor(value: Int) : this(value,value)
+) {
+    constructor(value: Int) : this(value, value)
 }
+
 //
 @Serializable
 data class CreaturesConfiguration(
-        val ReplacementsCount: IntValueConfig,
-        val TerrainFaction: Boolean? = null,
-        val NonPlayersFactions: Boolean? = null,
-        val NoGrades: Boolean? = null,
-        val Grades: Boolean? = null,
-        val Neutrals: Boolean? = null,
-        val BaseCostMultiplier: Double? = null,
-        val BaseResourcesMultiplier: Double? = null,
-        val BaseGrowMultiplier: Double? = null,
-        val CreatureModifiers: List<CreatureModifier>? = null,
-        val CreatureTierReplacements: List<CreatureTierReplacement>? = null,
-        val NonUniqueReplacements: Boolean? = null
+    val ReplacementsCount: IntValueConfig,
+    val TerrainFaction: Boolean? = null,
+    val NonPlayersFactions: Boolean? = null,
+    val NoGrades: Boolean? = null,
+    val Grades: Boolean? = null,
+    val Neutrals: Boolean? = null,
+    val BaseCostMultiplier: Double? = null,
+    val BaseResourcesMultiplier: Double? = null,
+    val BaseGrowMultiplier: Double? = null,
+    val CreatureModifiers: List<CreatureModifier>? = null,
+    val CreatureTierReplacements: List<CreatureTierReplacement>? = null,
+    val NonUniqueReplacements: Boolean? = null
 )
 
 @Serializable
 data class CreatureModifier(
-        val Tier: Int,
-        val CostMultiplier: Double? = null,
-        val ResourcesMultiplier: Double? = null,
-        val GrowMultiplier: Double? = null
+    val Tier: Int,
+    val CostMultiplier: Double? = null,
+    val ResourcesMultiplier: Double? = null,
+    val GrowMultiplier: Double? = null
 )
 
 @Serializable
 data class CreatureTierReplacement(
-        val Tier: Int,
-        val CreatureIds: List<String>
+    val Tier: Int,
+    val CreatureIds: List<String>
 )
 
 
 @Serializable
 data class DwellingGenerationConfig(
-        val BuildingTexture: BuildingTextureConfig,
-        val CreaturesConfiguration: CreaturesConfiguration,
-        val RandomDwellingConfig: RandomDwellingConfig? = null,
-        val StaticDwellingConfigs: StaticDwellingConfigs? = null,
-        val DwellingByPointsConfig: DwellingByPointsConfig? = null,
-        val DependantDwellingConfig: DependantDwellingConfig? = null,
+    val BuildingTexture: BuildingTextureConfig,
+    val CreaturesConfiguration: CreaturesConfiguration,
+    val RandomDwellingConfig: RandomDwellingConfig? = null,
+    val StaticDwellingConfigs: StaticDwellingConfigs? = null,
+    val DwellingByPointsConfig: DwellingByPointsConfig? = null,
+    val DependantDwellingConfig: DependantDwellingConfig? = null,
 )
 
- @Serializable
+@Serializable
 data class RandomDwellingConfig(
-        val MinCount: Int,
-        val MaxCount: Int,
-        val MinTiersCount: Int? = null,
-        val MaxTiersCount: Int? = null,
-        val UniformDistribution: Boolean? = null,
-        val AllowedTiers: List<Long>,
-        val MinCountPerTier: Int? = null,
-        val MaxCountPerTier: Int? = null
+    val MinCount: Int,
+    val MaxCount: Int,
+    val MinTiersCount: Int? = null,
+    val MaxTiersCount: Int? = null,
+    val UniformDistribution: Boolean? = null,
+    val AllowedTiers: List<Long>,
+    val MinCountPerTier: Int? = null,
+    val MaxCountPerTier: Int? = null
 )
 
 @Serializable
@@ -104,7 +105,7 @@ data class StaticDwellingConfigs(
 
 @Serializable
 data class DwellingByPointsConfig(
-        val PointsCount: Long,
+    val PointsCount: Long,
     val DwellingPoints: DwellingValue,
     val DwellingPointsByFaction: Map<String, DwellingValue>,
     val MinTiersCount: Int? = null,
@@ -118,15 +119,15 @@ data class DwellingByPointsConfig(
 
 @Serializable
 data class DependantDwellingConfig(
-        val ZoneId: Long,
-        val MinCount: Int,
-        val MaxCount: Int,
-        val MinTiersCount: Int? = null,
-        val MaxTiersCount: Int? = null,
-        val UniformDistribution: Boolean? = null,
-        val MinCountPerTier: Int? = null,
-        val MaxCountPerTier: Int? = null,
-        val IsCopyMode: Boolean
+    val ZoneId: Long,
+    val MinCount: Int,
+    val MaxCount: Int,
+    val MinTiersCount: Int? = null,
+    val MaxTiersCount: Int? = null,
+    val UniformDistribution: Boolean? = null,
+    val MinCountPerTier: Int? = null,
+    val MaxCountPerTier: Int? = null,
+    val IsCopyMode: Boolean
 )
 
 @Serializable
@@ -138,9 +139,10 @@ data class DwellingValue(
     val T5: Int? = null,
     val T6: Int? = null,
     val T7: Int? = null
-){
+) {
     fun isEmpty() = T1 == null && T2 == null && T3 == null && T4 == null && T5 == null && T6 == null && T7 == null
 }
+
 //
 @Serializable
 data class ResourcesConfig(
@@ -152,82 +154,156 @@ data class ResourcesConfig(
     val Gems: IntValueConfig?,
     val Gold: IntValueConfig?
 )
+
 //
 //
 @Serializable
 data class ZoneGenerationConfig(
-        val ZoneId: Int,
-        val TerrainType: TerrainType,
-        val MirrorZoneId: Int? = null,
-        val DwellingGenerationConfig: DwellingGenerationConfig? = null,
-        val MineGenerationConfig: ResourcesConfig? = null,
-        val AbandonedMines: IntValueConfig? = null,
-        val UpgBuildingsDensity: IntValueConfig? = null,
-        val TreasureDensity: IntValueConfig? = null,
-        val TreasureChestDensity: IntValueConfig? = null,
-        val Prisons: IntValueConfig? = null,
-        val TownGuardStrenght: IntValueConfig? = null,
-        val ShopPoints: IntValueConfig? = null,
-        val ShrinePoints: IntValueConfig? = null,
-        val LuckMoralBuildingsDensity: IntValueConfig? = null,
-        val ResourceBuildingsDensity: IntValueConfig? = null,
-        val TreasureBuildingPoints: IntValueConfig? = null,
-        val TreasureBlocksTotalValue: IntValueConfig? = null,
-        val DenOfThieves: IntValueConfig? = null,
-        val RedwoodObservatoryDensity: IntValueConfig? = null,
-        val Size: IntValueConfig? = null,
-        val Town: Boolean? = null,
-        val ZoneStartPointX: IntValueConfig? = null,
-        val ZoneStartPointY: IntValueConfig? = null,
-        val MainTownStartPointX: IntValueConfig? = null,
-        val MainTownStartPointY: IntValueConfig? = null,
-        val MainTownRotationDirection: IntValueConfig? = null,
-        val TreasureBlocksScalingFromTownDist: Boolean? = null,
-        val DistBetweenTreasureBlocks: IntValueConfig? = null
+    val ZoneId: Int,
+    val TerrainType: TerrainType,
+    val MirrorZoneId: Int? = null,
+    val DwellingGenerationConfig: DwellingGenerationConfig? = null,
+    val MineGenerationConfig: ResourcesConfig? = null,
+    val AbandonedMines: IntValueConfig? = null,
+    val UpgBuildingsDensity: IntValueConfig? = null,
+    val TreasureDensity: IntValueConfig? = null,
+    val TreasureChestDensity: IntValueConfig? = null,
+    val Prisons: IntValueConfig? = null,
+    val TownGuardStrenght: IntValueConfig? = null,
+    val ShopPoints: IntValueConfig? = null,
+    val ShrinePoints: IntValueConfig? = null,
+    val LuckMoralBuildingsDensity: IntValueConfig? = null,
+    val ResourceBuildingsDensity: IntValueConfig? = null,
+    val TreasureBuildingPoints: IntValueConfig? = null,
+    val TreasureBlocksTotalValue: IntValueConfig? = null,
+    val DenOfThieves: IntValueConfig? = null,
+    val RedwoodObservatoryDensity: IntValueConfig? = null,
+    val Size: IntValueConfig? = null,
+    val Town: Boolean? = null,
+    val ZoneStartPointX: IntValueConfig? = null,
+    val ZoneStartPointY: IntValueConfig? = null,
+    val MainTownStartPointX: IntValueConfig? = null,
+    val MainTownStartPointY: IntValueConfig? = null,
+    val MainTownRotationDirection: IntValueConfig? = null,
+    val TreasureBlocksScalingFromTownDist: Boolean? = null,
+    val DistBetweenTreasureBlocks: IntValueConfig? = null
 )
-//
-//@Serializable
-//data class ConnectionModel(
-//    val SourceZoneIndex: Int,
-//    val DestZoneIndex: Int,
-//    val IsMain: Boolean,
-//    val RemoveConnection: Boolean? = null,
-//    val TwoWay: Boolean? = null,
-//    val GuardStrenght: Int? = null,
-//    val Guarded: Boolean? = null,
-//    val Wide: Boolean? = null,
-//    val StaticPos: Boolean? = null,
-//    val StartPointX: Int? = null,
-//    val StartPointY: Int? = null,
-//    val MinRadiusToSearch: Int? = null,
-//    val MaxRadiusToSearch: Int? = null,
-//    val MinRadiusToMain: Int? = null,
-//    val MaxRadiusToMain: Int? = null,
-//    val RoadType: Int? = null
-//)
-//
-//@Serializable
-//data class TerrainConfig(
-//    val TerrainType: TerrainType,
-//    val MirrorTerrainType: TerrainType,
-//    val BuildingsToDelete: List<String>,
-//    val BuildingsToAdd: List<Int>,
-//    val NewLuckMoraleBuildings: TerrainBuildingsConfig,
-//    val NewShopBuildings: TerrainBuildingsConfig,
-//    val NewResourceGivers: TerrainBuildingsConfig,
-//    val NewUpgradeBuildings: TerrainBuildingsConfig,
-//    val NewShrines: TerrainBuildingsConfig,
-//    val NewTreasuryBuildings: TerrainBuildingsConfig,
-//    val NewBuffBuildings: TerrainBuildingsConfig
-//)
-//
-//@Serializable
-//data class TerrainBuildingsConfig(
-//    val ClearBuildings: Boolean? = null,
-//    val BuildingsToDelete: List<String>,
-//    val BuildingsToAdd: List<Int>,
-//    val AddCreatureBanksPool: Boolean? = null
-//)
+
+@Serializable
+data class ConnectionModel(
+    val SourceZoneIndex: Int,
+    val DestZoneIndex: Int,
+    val IsMain: Boolean,
+    val RemoveConnection: Boolean? = null,
+    val TwoWay: Boolean? = null,
+    val GuardStrenght: Int? = null,
+    val Guarded: Boolean? = null,
+    val Wide: Boolean? = null,
+    val StaticPos: Boolean? = null,
+    val StartPointX: Int? = null,
+    val StartPointY: Int? = null,
+    val MinRadiusToSearch: Int? = null,
+    val MaxRadiusToSearch: Int? = null,
+    val MinRadiusToMain: Int? = null,
+    val MaxRadiusToMain: Int? = null,
+    val RoadType: Int? = null
+)
+
+@Serializable
+data class TerrainConfig(
+    val TerrainType: TerrainType,
+    val MirrorTerrainType: TerrainType? = null,
+    val BuildingsToDelete: List<String> = listOf(),
+    val BuildingsToAdd: List<Int> = listOf(),
+    val NewLuckMoraleBuildings: TerrainBuildingsConfig? = null,
+    val NewShopBuildings: TerrainBuildingsConfig? = null,
+    val NewResourceGivers: TerrainBuildingsConfig? = null,
+    val NewUpgradeBuildings: TerrainBuildingsConfig? = null,
+    val NewShrines: TerrainBuildingsConfig? = null,
+    val NewTreasuryBuildings: TerrainBuildingsConfig? = null,
+    val NewBuffBuildings: TerrainBuildingsConfig? = null
+)
+
+@Serializable
+data class TerrainBuildingsConfig(
+    val ClearBuildings: Boolean? = null,
+    val BuildingsToDelete: List<String> = listOf(),
+    val BuildingsToAdd: List<Int> = listOf(),
+    val AddCreatureBanksPool: Boolean? = null
+) {
+    fun objects(name: String) = when (name) {
+        "NewLuckMoraleBuildings" -> listOf(
+            MapBuilding.FAERIE_RING,
+            MapBuilding.FOUNTAIN_OF_FORTUNE,
+            MapBuilding.IDOL_OF_FORTUNE,
+            MapBuilding.TEMPLE,
+            MapBuilding.RALLY_FLAG,
+            MapBuilding.RANDOM_SANCTUARY,
+            MapBuilding.SHAMAN_OF_NOMMADS,
+            MapBuilding.FOUNTAIN_OF_YOUTH,
+            MapBuilding.LAKE_OF_SCARLETT_SWAN,
+            MapBuilding.LAKE_OF_MERMAIDS,
+            MapBuilding.STABLES,
+        )
+
+        "NewShopBuildings" -> listOf(
+            MapBuilding.ELEMENTAL_CONFLUX,
+            MapBuilding.WAR_MACHINE_FACTORY,
+            MapBuilding.HOUSE_OF_ASTROLOGER,
+            MapBuilding.REFUGEE_CAMP,
+            MapBuilding.SPELL_SHOP,
+            MapBuilding.BLACK_MARKET,
+        )
+
+        "NewResourceGivers" -> listOf(
+            MapBuilding.MYSTICAL_GARDEN,
+            MapBuilding.WINDMILL,
+            MapBuilding.ENCHANTED_TREASURE,
+
+            )
+
+        "NewUpgradeBuildings" -> listOf(
+            MapBuilding.MERCENARY_CAMP,
+            MapBuilding.MARLETTO_TOWER,
+            MapBuilding.GARDEN_OF_REVELATION,
+            MapBuilding.STAR_AXIS,
+            MapBuilding.WAR_ACADEMY,
+            MapBuilding.MAGIC_SPRING,
+            MapBuilding.TREE_OF_KNOWLEDGE,
+            MapBuilding.SCHOOL_OF_MAGIC,
+            MapBuilding.ARENA,
+            MapBuilding.LIBRARY_OF_ENLIGHTENMENT,
+        )
+
+        "NewShrines" -> listOf(
+            MapBuilding.SHRINE_OF_MAGIC_1,
+            MapBuilding.SHRINE_OF_MAGIC_2,
+            MapBuilding.SHRINE_OF_MAGIC_3,
+        )
+
+        "NewTreasuryBuildings" -> listOf(
+            MapBuilding.CRYPT,
+            MapBuilding.GARGOYLE_STONEVAULT,
+            MapBuilding.DWARVEN_TREASURY,
+            MapBuilding.DEMONBANK,
+            MapBuilding.ELEMENTAL_STOCKPILE,
+            MapBuilding.MONASTERYBANK,
+        )
+        "NewBuffBuildings" -> listOf(
+            MapBuilding.ELEMENTAL_STOCKPILE,
+            MapBuilding.MONASTERYBANK,
+            MapBuilding.MAGIC_SPRING,
+            MapBuilding.TREANT_THICKET,
+            MapBuilding.WITCH_BANK,
+            MapBuilding.NECRO_ESTATE,
+            MapBuilding.ORC_DEPOSIT,
+            MapBuilding.DRAGON_UTOPIA,
+        )
+
+        else -> emptyList()
+    }
+}
+
 //
 //@Serializable
 //data class CreatureBanksPool(
@@ -618,6 +694,7 @@ enum class BuildingTextureConfig(
     PandoraBox(100, "ящик пандоры"),
     Random(101, "случайная текстура");
 }
+
 //
 //enum class BuildingMode {
 //    All,
@@ -1107,4 +1184,239 @@ enum class TerrainType {
     Terrain4,//(5, "четвёртый случайный свободный террейн"),
     Terrain5,//(6, "пятый случайный свободный террейн"),
     Terrain6,//(7, "шестой случайный свободный террейн")
+}
+
+enum class MapBuilding(
+    val id: String,
+    val russianName: String,
+    val value: Int? = null
+) {
+    // Luck/Moral Buildings
+    FAERIE_RING(
+        "/MapObjects/Faerie_Ring.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Волшебное кольцо"
+    ),
+    FOUNTAIN_OF_FORTUNE(
+        "/MapObjects/Fountain_Of_Fortune.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Фонтан удачи"
+    ),
+    IDOL_OF_FORTUNE(
+        "/MapObjects/Idol_Of_Fortune.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Идол удачи"
+    ),
+    TEMPLE(
+        "/MapObjects/Temple.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Храм"
+    ),
+    RALLY_FLAG(
+        "/MapObjects/Rally_Flag.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Знамя сбора"
+    ),
+    RANDOM_SANCTUARY(
+        "/MapObjects/H5A2/RandomSancutuary.xdb#xpointer(/AdvMapBuildingShared)",
+        "Случайное святилище"
+    ),
+    SHAMAN_OF_NOMMADS(
+        "/MapObjects/H5A2/ShamanOfNommads.xdb#xpointer(/AdvMapBuildingShared)",
+        "Шаман кочевников"
+    ),
+    FOUNTAIN_OF_YOUTH(
+        "/MapObjects/Fountain_Of_Youth.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Фонтан молодости"
+    ),
+    LAKE_OF_SCARLETT_SWAN(
+        "/MapObjects/Universe_mod/LakeofScarlettSwan.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Озеро алых лебедей"
+    ),
+    LAKE_OF_MERMAIDS(
+        "/MapObjects/Universe_mod/LakeofMermaids.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Озеро русалок"
+    ),
+    STABLES(
+        "/MapObjects/Stables.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Конюшни"
+    ),
+
+    // Shop Buildings
+    ELEMENTAL_CONFLUX(
+        "/MapObjects/Special/ElementalConflux.xdb#xpointer(/AdvMapDwellingShared)",
+        "Слияние стихий",
+        5
+    ),
+    WAR_MACHINE_FACTORY(
+        "/MapObjects/Objects-All-Terra/War_Machine_Factory.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Мастерская машин",
+        5
+    ),
+    HOUSE_OF_ASTROLOGER(
+        "/MapObjects/H5A2/House_Of_Astrologer.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Башня астролога",
+        10
+    ),
+    REFUGEE_CAMP(
+        "/MapObjects/Special/RefugeeCamp.xdb#xpointer(/AdvMapDwellingShared)",
+        "Лагерь беженцев",
+        15
+    ),
+    SPELL_SHOP(
+        "/MapObjects/H5A2/SpellShop.xdb#xpointer(/AdvMapBuildingShared)",
+        "Библиотека заклинаний",
+        15
+    ),
+    BLACK_MARKET(
+        "/MapObjects/Black_Market.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Рынок артефактов",
+        25
+    ),
+
+    // Resource Givers
+    MYSTICAL_GARDEN(
+        "/MapObjects/Mystical_Garden.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Мистический сад"
+    ),
+    WINDMILL(
+        "/MapObjects/Windmill.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Ветряная мельница"
+    ),
+    ENCHANTED_TREASURE(
+        "/MapObjects/Universe_mod/EnchantedTreasure.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Зачарованная сокровищница"
+    ),
+
+    // Upgrade Buildings
+    MERCENARY_CAMP(
+        "/MapObjects/Mercenary_Camp.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Лагерь наёмников",
+        6
+    ),
+    MARLETTO_TOWER(
+        "/MapObjects/Marletto_Tower.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Башня Марлетто",
+        6
+    ),
+    GARDEN_OF_REVELATION(
+        "/MapObjects/Garden_Of_Revelation.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Сад откровений",
+        6
+    ),
+    STAR_AXIS(
+        "/MapObjects/Star_Axis.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Звёздная ось",
+        6
+    ),
+    WAR_ACADEMY(
+        "/MapObjects/WarAcademy.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Военная академия",
+        8
+    ),
+    MAGIC_SPRING(
+        "/MapObjects/Magic_Spring.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Магический источник",
+        10
+    ),
+    TREE_OF_KNOWLEDGE(
+        "/MapObjects/Tree_of_Knowledge.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Древо познания",
+        14
+    ),
+    SCHOOL_OF_MAGIC(
+        "/MapObjects/SchoolofMagic.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Школа магии",
+        16
+    ),
+    ARENA(
+        "/MapObjects/Arena.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Арена",
+        16
+    ),
+    LIBRARY_OF_ENLIGHTENMENT(
+        "/MapObjects/LibraryOfEnlightenment.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Библиотека просветления",
+        24
+    ),
+
+    // Shrines
+    SHRINE_OF_MAGIC_1(
+        "/MapObjects/Shrine_Of_Magic_1.(AdvMapShrineShared).xdb#xpointer(/AdvMapShrineShared)",
+        "Святилище магии 1 уровня",
+        4
+    ),
+    SHRINE_OF_MAGIC_2(
+        "/MapObjects/Shrine_Of_Magic_2.(AdvMapShrineShared).xdb#xpointer(/AdvMapShrineShared)",
+        "Святилище магии 2 уровня",
+        8
+    ),
+    SHRINE_OF_MAGIC_3(
+        "/MapObjects/Shrine_Of_Magic_3.(AdvMapShrineShared).xdb#xpointer(/AdvMapShrineShared)",
+        "Святилище магии 3 уровня",
+        12
+    ),
+
+    // Treasury Buildings
+    CRYPT(
+        "/MapObjects/Crypt.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Склеп",
+        5
+    ),
+    GARGOYLE_STONEVAULT(
+        "/MapObjects/GargoyleStonevault.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Гаргулятник",
+        5
+    ),
+    DWARVEN_TREASURY(
+        "/MapObjects/DwarvenTreasury.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Гномий банк",
+        10
+    ),
+    DEMONBANK(
+        "/MapObjects/Universe_mod/Demonbank.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Демонический банк",
+        10
+    ),
+    ELEMENTAL_STOCKPILE(
+        "/MapObjects/Elemantal_Stockpile.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Элементальный склад",
+        10
+    ),
+    MONASTERYBANK(
+        "/MapObjects/Universe_mod/Monasterybank.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Монастырский банк",
+        10
+    ),
+
+    // Buff Buildings
+    MAGI_VAULT(
+        "/MapObjects/MagiVault.xdb#xpointer(/AdvMapBuildingShared)",
+        "Магический банк",
+        15
+    ),
+    TREANT_THICKET(
+        "/MapObjects/TreantThicket.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Энтовый банк",
+        15
+    ),
+    WITCH_BANK(
+        "/MapObjects/WitchBank.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Кровавый храм",
+        15
+    ),
+    NECRO_ESTATE(
+        "/MapObjects/Universe_mod/NecroEstate.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Некромантический банк",
+        15
+    ),
+    ORC_DEPOSIT(
+        "/MapObjects/Universe_mod/OrcDeposit.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Орочий банк",
+        35
+    ),
+    DRAGON_UTOPIA(
+        "/MapObjects/Dragon_Utopia.(AdvMapBuildingShared).xdb#xpointer(/AdvMapBuildingShared)",
+        "Драконья утопия",
+        40
+    );
+
+    companion object {
+        fun fromId(id: String): MapBuilding? = values().find { it.id == id }
+    }
 }

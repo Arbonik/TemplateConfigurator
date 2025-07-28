@@ -22,12 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import kotlinx.serialization.Serializable
+import org.example.project.ui.ConnectionModelEditor
+import org.example.project.ui.TerrainConfigSection
 
 @Serializable
 data class TemplateGenerationConfig(
     val TemplateName: String,
-    val Zones: List<ZoneGenerationConfig>,
-    val Connections: List<ConnectionModel>,
+        val Zones: List<ZoneGenerationConfig>,
+        val Connections: List<ConnectionModel>,
     val TerrainConfigs: List<TerrainConfig>,
     val StartBuildingConfigs: List<StartBuildingConfig>,
     val GeneralData: GeneralData,
@@ -41,12 +43,6 @@ data class TemplateGenerationConfig(
     val ZoneRandomizationConfig: ZoneRandomizationConfig
 )
 
-// Заглушки для моделей данных
-@Serializable
-data class ConnectionModel(val id: String)
-
-@Serializable
-data class TerrainConfig(val id: String)
 
 @Serializable
 data class StartBuildingConfig(val id: String)
@@ -136,8 +132,19 @@ fun TemplateConfigEditor(
                         }
                     )
 
-                    is NavigationItem.Connections -> ConnectionsSection(config.Connections)
-                    is NavigationItem.Terrain -> TerrainSection(config.TerrainConfigs)
+                    is NavigationItem.Connections -> ConnectionsSection(
+                        config.Connections,
+                        config.Zones,
+                        onConnectionsUpdated = { it ->
+                            onConfigChanged(config.copy(Connections = it))
+                        }
+                    )
+                    is NavigationItem.Terrain -> TerrainConfigSection(
+                        terrains = config.TerrainConfigs,
+                        onTerrainsChanged = {
+                            onConfigChanged(config.copy(TerrainConfigs = it))
+                        }
+                    )
                     is NavigationItem.StartBuildings -> StartBuildingsSection(config.StartBuildingConfigs)
                     is NavigationItem.Army -> ArmySection(config.BaseArmyMultiplier, config.ArmyMultipliers)
                     is NavigationItem.ScriptFeatures -> ScriptFeaturesSection(config.ScriptFeaturesConfig)
@@ -278,21 +285,16 @@ private fun GeneralConfigSection(data: GeneralData) {
 }
 
 @Composable
-private fun ZonesSection(zones: List<ZoneGenerationConfig>) {
-    Text("Zones Configuration Section")
-    // Реализация формы для Zones
-}
-
-@Composable
-private fun ConnectionsSection(connections: List<ConnectionModel>) {
-    Text("Connections Configuration Section")
-    // Реализация формы для Connections
-}
-
-@Composable
-private fun TerrainSection(terrains: List<TerrainConfig>) {
-    Text("Terrain Configuration Section")
-    // Реализация формы для TerrainConfigs
+private fun ConnectionsSection(
+    connections: List<ConnectionModel>,
+    zones: List<ZoneGenerationConfig>,
+    onConnectionsUpdated: (List<ConnectionModel>) -> Unit,
+) {
+    ConnectionModelEditor(
+        connections = connections,
+        zones = zones,
+        onConnectionaUpdated = onConnectionsUpdated
+    )
 }
 
 @Composable
