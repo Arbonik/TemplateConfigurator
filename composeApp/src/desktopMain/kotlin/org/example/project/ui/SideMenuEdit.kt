@@ -4,8 +4,12 @@ package org.example.project.ui
 import TerrainBuildingsConfig
 import TerrainConfig
 import TerrainType
+import ZoneRandomizationConfig
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -15,9 +19,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.example.project.ui.common.EnumDropdown
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.ui.window.Dialog
 
 @Composable
 fun TerrainConfigSection(
@@ -442,143 +452,277 @@ fun TerrainBuildingsConfigEditor(
     }
 }
 
-//
-//@Composable
-//fun ZoneRandomizationConfigSection(
-//    randomization: ZoneRandomizationConfig?,
-//    onRandomizationChanged: (ZoneRandomizationConfig?) -> Unit
-//) {
-//    Column(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
-//        Text("Zone Randomization Configuration", style = MaterialTheme.typography.headlineMedium)
-//
-//        if (randomization == null) {
-//            Button(
-//                onClick = {
-//                    onRandomizationChanged(
-//                        ZoneRandomizationConfig(
-//                            ZonesToSwap = emptyList(),
-//                            IsSymmetricalSwap = false,
-//                            ZonesToRandomize = 0
-//                        )
-//                    )
-//                },
-//                modifier = Modifier.padding(16.dp)
-//            ) {
-//                Text("Enable Zone Randomization")
-//            }
-//        } else {
-//            Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-//                Column(modifier = Modifier.padding(16.dp)) {
-//                    // Zones to Swap
-//                    Text("Zones to Swap", style = MaterialTheme.typography.titleMedium)
-//
-//                    var newZoneToSwap by remember { mutableStateOf("") }
-//                    Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
-//                        OutlinedTextField(
-//                            value = newZoneToSwap,
-//                            onValueChange = { newZoneToSwap = it },
-//                            label = { Text("Add Zone ID") },
-//                            modifier = Modifier.weight(1f),
-//                            keyboardOptions = KeyboardOptions.Default.copy(
-//                                keyboardType = KeyboardType.Number
-//                            )
-//                        )
-//                        Button(
-//                            onClick = {
-//                                newZoneToSwap.toIntOrNull()?.let { zoneId ->
-//                                    if (!randomization.ZonesToSwap.contains(zoneId)) {
-//                                        onRandomizationChanged(
-//                                            randomization.copy(
-//                                                ZonesToSwap = randomization.ZonesToSwap + zoneId
-//                                            )
-//                                        )
-//                                        newZoneToSwap = ""
-//                                    }
-//                                }
-//                            },
-//                            modifier = Modifier.padding(start = 8.dp)
-//                        ) {
-//                            Text("Add")
-//                        }
-//                    }
-//
-//                    // Current zones to swap
-//                    if (randomization.ZonesToSwap.isNotEmpty()) {
-//                        FlowRow(
-//                            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-//                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-//                        ) {
-//                            randomization.ZonesToSwap.forEach { zoneId ->
-//                                InputChip(
-//                                    onClick = {},
-//                                    label = { Text(zoneId.toString()) },
-//                                    trailingIcon = {
-//                                        IconButton(
-//                                            onClick = {
-//                                                onRandomizationChanged(
-//                                                    randomization.copy(
-//                                                        ZonesToSwap = randomization.ZonesToSwap - zoneId
-//                                                    )
-//                                                )
-//                                            }
-//                                        ) {
-//                                            Icon(Icons.Default.Close, contentDescription = "Remove")
-//                                        }
-//                                    },
-//                                    selected = false,
-//                                    modifier = Modifier.padding(2.dp)
-//                                )
-//                            }
-//                        }
-//                    } else {
-//                        Text(
-//                            "No zones selected for swapping",
-//                            style = MaterialTheme.typography.bodySmall,
-//                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-//                        )
-//                    }
-//
-//                    // Symmetrical swap option
-//                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 8.dp)) {
-//                        Checkbox(
-//                            checked = randomization.IsSymmetricalSwap,
-//                            onCheckedChange = { newValue ->
-//                                onRandomizationChanged(randomization.copy(IsSymmetricalSwap = newValue))
-//                            }
-//                        )
-//                        Text("Symmetrical Swap", modifier = Modifier.padding(start = 8.dp))
-//                    }
-//
-//                    // Zones to Randomize
-//                    OutlinedTextField(
-//                        value = randomization.ZonesToRandomize.toString(),
-//                        onValueChange = { newValue ->
-//                            newValue.toLongOrNull()?.let { count ->
-//                                onRandomizationChanged(randomization.copy(ZonesToRandomize = count))
-//                            }
-//                        },
-//                        label = { Text("Number of Zones to Randomize") },
-//                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-//                        keyboardOptions = KeyboardOptions.Default.copy(
-//                            keyboardType = KeyboardType.Number
-//                        )
-//                    )
-//
-//                    // Disable button
-//                    Button(
-//                        onClick = { onRandomizationChanged(null) },
-//                        colors = ButtonDefaults.buttonColors(
-//                            containerColor = MaterialTheme.colorScheme.errorContainer
-//                        ),
-//                        modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
-//                    ) {
-//                        Text("Disable Randomization")
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
+@Composable
+fun ZoneRandomizationConfigEditor(
+    config: ZoneRandomizationConfig,
+    onConfigChanged: (ZoneRandomizationConfig) -> Unit,
+    modifier: Modifier = Modifier,
+    availableZoneIds: List<Int> = emptyList() // List of available zone IDs for selection
+) {
+    var showZoneSelectionDialog by remember { mutableStateOf<ZoneSelectionContext?>(null) }
+
+    LazyColumn(
+        modifier = modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        item {
+            Text("Zone Randomization Configuration", style = MaterialTheme.typography.headlineSmall)
+        }
+
+        // Zones to Swap section
+        item {
+            Text("Zones to Swap", style = MaterialTheme.typography.titleMedium)
+            Text(
+                "First element in each array can be swapped with any other in the same array",
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+
+        items(config.ZonesToSwap) { zoneArray ->
+            ZoneArrayEditor(
+                zoneArray = zoneArray.toList(),
+                onEditClicked = {
+                    showZoneSelectionDialog = ZoneSelectionContext.ZonesToSwap(zoneArray)
+                },
+                onRemoveClicked = {
+                    onConfigChanged(config.copy(
+                        ZonesToSwap = config.ZonesToSwap.filter { it !== zoneArray }
+                    ))
+                }
+            )
+        }
+
+        item {
+            Button(
+                onClick = {
+                    val newArray = intArrayOf()
+                    onConfigChanged(config.copy(
+                        ZonesToSwap = config.ZonesToSwap + newArray
+                    ))
+                    showZoneSelectionDialog = ZoneSelectionContext.ZonesToSwap(newArray)
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Add Zone Swap Group")
+            }
+        }
+
+        // Symmetrical Swap toggle
+        item {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Switch(
+                    checked = config.IsSymmetricalSwap ?: false,
+                    onCheckedChange = { isChecked ->
+                        onConfigChanged(config.copy(IsSymmetricalSwap = isChecked))
+                    },
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                Column {
+                    Text("Symmetrical Swap", style = MaterialTheme.typography.titleMedium)
+                    Text(
+                        "Swaps will be symmetric across all zone groups",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
+        }
+
+        // Zones to Randomize section
+        item {
+            Text("Zones to Randomize", style = MaterialTheme.typography.titleMedium)
+            Text(
+                "These zones will be randomized by coordinates",
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+
+        items(config.ZonesToRandomize) { zoneId ->
+            ZoneIdItem(
+                zoneId = zoneId,
+                onRemoveClicked = {
+                    onConfigChanged(config.copy(
+                        ZonesToRandomize = config.ZonesToRandomize.filter { it != zoneId }
+                    ))
+                }
+            )
+        }
+
+        item {
+            Button(
+                onClick = {
+                    showZoneSelectionDialog = ZoneSelectionContext.ZonesToRandomize
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Add Zone to Randomize")
+            }
+        }
+    }
+
+    // Zone selection dialog
+    showZoneSelectionDialog?.let { context ->
+        ZoneSelectionDialog(
+            availableZoneIds = availableZoneIds,
+            onDismiss = { showZoneSelectionDialog = null },
+            onConfirm = { selectedIds ->
+                when (context) {
+                    is ZoneSelectionContext.ZonesToSwap -> {
+                        val updatedZones = config.ZonesToSwap.map {
+                            if (it === context.array) selectedIds.toIntArray() else it
+                        }
+                        onConfigChanged(config.copy(ZonesToSwap = updatedZones))
+                    }
+                    ZoneSelectionContext.ZonesToRandomize -> {
+                        val updatedZones = config.ZonesToRandomize + selectedIds.map { it.toLong() }
+                        onConfigChanged(config.copy(ZonesToRandomize = updatedZones))
+                    }
+                }
+                showZoneSelectionDialog = null
+            },
+            initialSelection = when (context) {
+                is ZoneSelectionContext.ZonesToSwap -> context.array.toList()
+                ZoneSelectionContext.ZonesToRandomize -> emptyList()
+            }
+        )
+    }
+}
+
+@Composable
+private fun ZoneArrayEditor(
+    zoneArray: List<Int>,
+    onEditClicked: () -> Unit,
+    onRemoveClicked: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        shape = MaterialTheme.shapes.medium,
+        tonalElevation = 1.dp,
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(12.dp)
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                if (zoneArray.isEmpty()) {
+                    Text("Empty group", style = MaterialTheme.typography.bodySmall)
+                } else {
+                    Text(zoneArray.joinToString(", "), style = MaterialTheme.typography.bodyMedium)
+                }
+            }
+
+            Button(
+                onClick = onEditClicked,
+                modifier = Modifier.padding(end = 8.dp)
+            ) {
+                Text("Edit")
+            }
+
+            IconButton(onClick = onRemoveClicked) {
+                Icon(Icons.Default.Delete, contentDescription = "Remove")
+            }
+        }
+    }
+}
+
+@Composable
+private fun ZoneIdItem(
+    zoneId: Long,
+    onRemoveClicked: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        shape = MaterialTheme.shapes.medium,
+        tonalElevation = 1.dp,
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(12.dp)
+        ) {
+            Text(zoneId.toString(), style = MaterialTheme.typography.bodyMedium)
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(onClick = onRemoveClicked) {
+                Icon(Icons.Default.Delete, contentDescription = "Remove")
+            }
+        }
+    }
+}
+
+@Composable
+private fun ZoneSelectionDialog(
+    availableZoneIds: List<Int>,
+    initialSelection: List<Int>,
+    onDismiss: () -> Unit,
+    onConfirm: (List<Int>) -> Unit,
+) {
+    var selectedIds by remember { mutableStateOf(initialSelection.toSet()) }
+
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = MaterialTheme.shapes.large,
+            modifier = Modifier.widthIn(min = 280.dp, max = 560.dp)
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text("Select Zone IDs", style = MaterialTheme.typography.headlineSmall)
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                LazyColumn(
+                    modifier = Modifier.heightIn(max = 400.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(availableZoneIds) { zoneId ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Checkbox(
+                                checked = selectedIds.contains(zoneId),
+                                onCheckedChange = { isChecked ->
+                                    selectedIds = if (isChecked) {
+                                        selectedIds + zoneId
+                                    } else {
+                                        selectedIds - zoneId
+                                    }
+                                }
+                            )
+                            Text(zoneId.toString(), modifier = Modifier.padding(start = 8.dp))
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(
+                        onClick = onDismiss,
+                        modifier = Modifier.padding(end = 8.dp)
+                    ) {
+                        Text("Cancel")
+                    }
+                    Button(
+                        onClick = { onConfirm(selectedIds.toList()) }
+                    ) {
+                        Text("Confirm")
+                    }
+                }
+            }
+        }
+    }
+}
+
+private sealed interface ZoneSelectionContext {
+    data class ZonesToSwap(val array: IntArray) : ZoneSelectionContext
+    object ZonesToRandomize : ZoneSelectionContext
+}
+
 //
 //@Composable
 //fun GeneralDataConfigSection(

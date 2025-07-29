@@ -22,8 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import kotlinx.serialization.Serializable
+import org.example.project.ui.BansConfigSection
 import org.example.project.ui.ConnectionModelEditor
 import org.example.project.ui.TerrainConfigSection
+import org.example.project.ui.ZoneRandomizationConfigEditor
 
 @Serializable
 data class TemplateGenerationConfig(
@@ -36,7 +38,7 @@ data class TemplateGenerationConfig(
     val BaseArmyMultiplier: Double? = null,
     val ArmyMultipliers: Map<String, Double>,
     val ScriptFeaturesConfig: ScriptFeaturesConfig,
-    val EntitiesBanConfig: EntitiesBanModel,
+    val EntitiesBanConfig: EntitiesBanModel = EntitiesBanModel(),
     val StartSpellsConfig: StartSpellsConfig,
     val CustomBuildingConfigs: List<CustomBuildingConfig>,
     val CreatureBanksPool: CreatureBanksPool,
@@ -54,9 +56,6 @@ data class GeneralData(val id: String)
 data class ScriptFeaturesConfig(val id: String)
 
 @Serializable
-data class EntitiesBanModel(val id: String)
-
-@Serializable
 data class StartSpellsConfig(val id: String)
 
 @Serializable
@@ -64,9 +63,6 @@ data class CustomBuildingConfig(val id: String)
 
 @Serializable
 data class CreatureBanksPool(val id: String)
-
-@Serializable
-data class ZoneRandomizationConfig(val id: String)
 
 // Модель для пунктов навигации
 sealed class NavigationItem(
@@ -148,11 +144,20 @@ fun TemplateConfigEditor(
                     is NavigationItem.StartBuildings -> StartBuildingsSection(config.StartBuildingConfigs)
                     is NavigationItem.Army -> ArmySection(config.BaseArmyMultiplier, config.ArmyMultipliers)
                     is NavigationItem.ScriptFeatures -> ScriptFeaturesSection(config.ScriptFeaturesConfig)
-                    is NavigationItem.BannedEntities -> BannedEntitiesSection(config.EntitiesBanConfig)
+                    is NavigationItem.BannedEntities -> BansConfigSection(
+                        config.EntitiesBanConfig,
+                        onBansChanged = { it -> onConfigChanged(config.copy(EntitiesBanConfig = it)) }
+                    )
                     is NavigationItem.StartSpells -> StartSpellsSection(config.StartSpellsConfig)
                     is NavigationItem.CustomBuildings -> CustomBuildingsSection(config.CustomBuildingConfigs)
                     is NavigationItem.CreatureBanks -> CreatureBanksSection(config.CreatureBanksPool)
-                    is NavigationItem.ZoneRandomization -> ZoneRandomizationSection(config.ZoneRandomizationConfig)
+                    is NavigationItem.ZoneRandomization -> ZoneRandomizationConfigEditor(
+                        config.ZoneRandomizationConfig,
+                        onConfigChanged = {
+                            onConfigChanged(config.copy(ZoneRandomizationConfig = it))
+                        },
+                        availableZoneIds = config.Zones.map { it.ZoneId }
+                    )
                 }
             }
         }
@@ -316,12 +321,6 @@ private fun ScriptFeaturesSection(config: ScriptFeaturesConfig) {
 }
 
 @Composable
-private fun BannedEntitiesSection(config: EntitiesBanModel) {
-    Text("Banned Entities Configuration Section")
-    // Реализация формы для EntitiesBanModel
-}
-
-@Composable
 private fun StartSpellsSection(config: StartSpellsConfig) {
     Text("Start Spells Configuration Section")
     // Реализация формы для StartSpellsConfig
@@ -337,10 +336,4 @@ private fun CustomBuildingsSection(configs: List<CustomBuildingConfig>) {
 private fun CreatureBanksSection(pool: CreatureBanksPool) {
     Text("Creature Banks Pool Configuration Section")
     // Реализация формы для CreatureBanksPool
-}
-
-@Composable
-private fun ZoneRandomizationSection(config: ZoneRandomizationConfig) {
-    Text("Zone Randomization Configuration Section")
-    // Реализация формы для ZoneRandomizationConfig
 }

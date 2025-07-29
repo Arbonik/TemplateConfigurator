@@ -365,6 +365,12 @@
     "id": "creature_banks_1"
   },
   "ZoneRandomizationConfig": {
-    "id": "zone_randomization_1"
+    "ZonesToSwap": [
+      [1, 2],
+      [3, 4],
+      [5, 6]
+    ],
+    "IsSymmetricalSwap": true,
+    "ZonesToRandomize": [10, 20, 30, 40]
   }
 }
