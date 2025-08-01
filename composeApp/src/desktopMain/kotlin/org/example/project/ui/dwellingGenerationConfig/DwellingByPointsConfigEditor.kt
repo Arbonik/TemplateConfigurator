@@ -71,7 +71,7 @@ fun DwellingByPointsConfigScreen(
 
         SectionTitle("Faction-Specific Settings")
         FactionSpecificEditors(
-            factions = CastleType.available.map { it.name },
+            factions = CastleType.entries.map { it.name },
             dwellingPoints = config.DwellingPointsByFaction,
             minCounts = config.MinCountPerTierByFaction,
             maxCounts = config.MaxCountPerTierByFaction,

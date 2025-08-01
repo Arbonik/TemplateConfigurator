@@ -3,40 +3,49 @@ import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowColumn
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import kotlinx.serialization.Serializable
+import org.example.project.ui.ArmySection
 import org.example.project.ui.BansConfigSection
 import org.example.project.ui.ConnectionModelEditor
+import org.example.project.ui.GeneralDataEditor
 import org.example.project.ui.TerrainConfigSection
 import org.example.project.ui.ZoneRandomizationConfigEditor
+
 
 @Serializable
 data class TemplateGenerationConfig(
     val TemplateName: String,
-        val Zones: List<ZoneGenerationConfig>,
-        val Connections: List<ConnectionModel>,
+    val Zones: List<ZoneGenerationConfig>,
+    val Connections: List<ConnectionModel>,
     val TerrainConfigs: List<TerrainConfig>,
     val StartBuildingConfigs: List<StartBuildingConfig>,
     val GeneralData: GeneralData,
     val BaseArmyMultiplier: Double? = null,
-    val ArmyMultipliers: Map<String, Double>,
+    val multipliers: Map<String, Double> = mapOf(),
     val ScriptFeaturesConfig: ScriptFeaturesConfig,
     val EntitiesBanConfig: EntitiesBanModel = EntitiesBanModel(),
     val StartSpellsConfig: StartSpellsConfig,
@@ -44,19 +53,6 @@ data class TemplateGenerationConfig(
     val CreatureBanksPool: CreatureBanksPool,
     val ZoneRandomizationConfig: ZoneRandomizationConfig
 )
-
-
-@Serializable
-data class StartBuildingConfig(val id: String)
-
-@Serializable
-data class GeneralData(val id: String)
-
-@Serializable
-data class ScriptFeaturesConfig(val id: String)
-
-@Serializable
-data class StartSpellsConfig(val id: String)
 
 @Serializable
 data class CustomBuildingConfig(val id: String)
@@ -120,7 +116,11 @@ fun TemplateConfigEditor(
                     .padding(16.dp)
             ) {
                 when (currentScreen) {
-                    is NavigationItem.General -> GeneralConfigSection(config.GeneralData)
+                    is NavigationItem.General -> GeneralDataEditor(
+                        config.GeneralData,
+                        onSave = { onConfigChanged(config.copy(GeneralData = it)) },
+                    )
+
                     is NavigationItem.Zones -> ZoneGenerationConfigEditor(
                         config.Zones,
                         onZonesUpdated = { it ->
@@ -135,20 +135,50 @@ fun TemplateConfigEditor(
                             onConfigChanged(config.copy(Connections = it))
                         }
                     )
+
                     is NavigationItem.Terrain -> TerrainConfigSection(
                         terrains = config.TerrainConfigs,
                         onTerrainsChanged = {
                             onConfigChanged(config.copy(TerrainConfigs = it))
                         }
                     )
-                    is NavigationItem.StartBuildings -> StartBuildingsSection(config.StartBuildingConfigs)
-                    is NavigationItem.Army -> ArmySection(config.BaseArmyMultiplier, config.ArmyMultipliers)
-                    is NavigationItem.ScriptFeatures -> ScriptFeaturesSection(config.ScriptFeaturesConfig)
+
+                    is NavigationItem.StartBuildings -> StartBuildingConfigEditor(
+                        configs = config.StartBuildingConfigs,
+                        onConfigsUpdated = {
+                            onConfigChanged(config.copy(StartBuildingConfigs = it))
+                        }
+                    )
+
+                    is NavigationItem.Army -> ArmySection(
+                        baseMultiplier = config.BaseArmyMultiplier,
+                        multipliers = config.multipliers,
+                        onChangeBaseMultiplier = {
+                            onConfigChanged(config.copy(BaseArmyMultiplier = it))
+                        },
+                        onChangeMultiplier = {
+                            onConfigChanged(config.copy(multipliers = it))
+                        }
+                    )
+
+                    is NavigationItem.ScriptFeatures -> ScriptFeaturesConfigEditor(
+                        config = config.ScriptFeaturesConfig,
+                        onConfigChanged = {
+                            onConfigChanged(config.copy(ScriptFeaturesConfig = it))
+                        }
+                    )
+
                     is NavigationItem.BannedEntities -> BansConfigSection(
                         config.EntitiesBanConfig,
                         onBansChanged = { it -> onConfigChanged(config.copy(EntitiesBanConfig = it)) }
                     )
-                    is NavigationItem.StartSpells -> StartSpellsSection(config.StartSpellsConfig)
+
+                    is NavigationItem.StartSpells -> StartSpellsConfigEditor(
+                        config = config.StartSpellsConfig,
+                        onConfigChanged = {
+                            onConfigChanged(config.copy(StartSpellsConfig = it))
+                        }
+                    )
                     is NavigationItem.CustomBuildings -> CustomBuildingsSection(config.CustomBuildingConfigs)
                     is NavigationItem.CreatureBanks -> CreatureBanksSection(config.CreatureBanksPool)
                     is NavigationItem.ZoneRandomization -> ZoneRandomizationConfigEditor(
@@ -285,8 +315,7 @@ private fun LanguageSwitcher() {
 // Заглушки для секций конфигурации
 @Composable
 private fun GeneralConfigSection(data: GeneralData) {
-    Text("General Configuration Section")
-    // Реализация формы для GeneralData
+
 }
 
 @Composable
@@ -303,18 +332,6 @@ private fun ConnectionsSection(
 }
 
 @Composable
-private fun StartBuildingsSection(buildings: List<StartBuildingConfig>) {
-    Text("Start Buildings Configuration Section")
-    // Реализация формы для StartBuildingConfigs
-}
-
-@Composable
-private fun ArmySection(baseMultiplier: Double?, multipliers: Map<String, Double>) {
-    Text("Army Multipliers Configuration Section")
-    // Реализация формы для армии
-}
-
-@Composable
 private fun ScriptFeaturesSection(config: ScriptFeaturesConfig) {
     Text("Script Features Configuration Section")
     // Реализация формы для ScriptFeaturesConfig
@@ -323,7 +340,7 @@ private fun ScriptFeaturesSection(config: ScriptFeaturesConfig) {
 @Composable
 private fun StartSpellsSection(config: StartSpellsConfig) {
     Text("Start Spells Configuration Section")
-    // Реализация формы для StartSpellsConfig
+
 }
 
 @Composable

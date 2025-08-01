@@ -28,6 +28,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.ui.window.Dialog
+import org.example.project.ui.common.DecimalInputField
 
 @Composable
 fun TerrainConfigSection(
@@ -1447,39 +1448,6 @@ fun <T> ChipGroup(
 //// Similar implementations for other sections (ArmyConfigSection, ConnectionsConfigSection, etc.)
 //// Each would follow the same pattern as the ZonesConfigSection with appropriate editors for their data structures
 //
-//@Composable
-//fun ArmyConfigSection(
-//    baseMultiplier: Double?,
-//    multipliers: ArmyMultipliersEntry,
-//    onBaseMultiplierChanged: (Double?) -> Unit,
-//    onMultipliersChanged: (ArmyMultipliersEntry) -> Unit
-//) {
-//    Column(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
-//        Text("Army Multipliers", style = MaterialTheme.typography.headlineMedium)
-//
-//        DecimalInputField(
-//            value = baseMultiplier.toString(),
-//            title = "Base Army Multiplier",
-//            onValueChange = { newValue ->
-//                onBaseMultiplierChanged(newValue.toDoubleOrNull())
-//            },
-//            modifier = Modifier.fillMaxWidth().padding(8.dp)
-//        )
-//
-//        multipliers.forEach { (faction, multiplier) ->
-//            DecimalInputField(
-//                value = multiplier.toString(),
-//                onValueChange = { newValue ->
-//                    val newMultiplier = newValue.toDoubleOrNull()
-//                    multipliers[faction] = newMultiplier
-//                    onMultipliersChanged(multipliers)
-//                },
-//                title = "$faction Multiplier",
-//                modifier = Modifier.fillMaxWidth().padding(8.dp)
-//            )
-//        }
-//    }
-//}
 //
 //@Composable
 //fun CreatureBuildingConfigEditor(

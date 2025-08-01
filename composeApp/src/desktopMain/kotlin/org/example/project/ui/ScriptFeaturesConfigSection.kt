@@ -1,364 +1,577 @@
-//package org.example.project.ui
-//
-//import androidx.compose.foundation.layout.Arrangement
-//import androidx.compose.foundation.layout.Column
-//import androidx.compose.foundation.layout.Row
-//import androidx.compose.foundation.layout.fillMaxWidth
-//import androidx.compose.foundation.layout.padding
-//import androidx.compose.foundation.rememberScrollState
-//import androidx.compose.foundation.text.KeyboardOptions
-//import androidx.compose.foundation.verticalScroll
-//import androidx.compose.material.icons.Icons
-//import androidx.compose.material.icons.filled.Delete
-//import androidx.compose.material3.Button
-//import androidx.compose.material3.Card
-//import androidx.compose.material3.Checkbox
-//import androidx.compose.material3.Icon
-//import androidx.compose.material3.IconButton
-//import androidx.compose.material3.MaterialTheme
-//import androidx.compose.material3.OutlinedTextField
-//import androidx.compose.material3.Text
-//import androidx.compose.runtime.Composable
-//import androidx.compose.runtime.getValue
-//import androidx.compose.runtime.mutableStateOf
-//import androidx.compose.runtime.remember
-//import androidx.compose.runtime.setValue
-//import androidx.compose.ui.Alignment
-//import androidx.compose.ui.Modifier
-//import androidx.compose.ui.text.input.KeyboardType
-//import androidx.compose.ui.unit.dp
-//import org.example.project.data.CastleCaptureProps
-//import org.example.project.data.ForcedFinalBattleModel
-//import org.example.project.data.GMRebuildCost
-//import org.example.project.data.GMRebuildModel
-//import org.example.project.data.GloballyDisabledBuildingsProps
-//import org.example.project.data.ScriptFeaturesConfig
-//import org.example.project.data.enums.BuildingType
-//import org.example.project.ui.common.DecimalInputField
-//import org.example.project.ui.components.PickerDialog
-//
-//
-//@Composable
-//fun ScriptFeaturesConfigSection(
-//    scripts: ScriptFeaturesConfig,
-//    onScriptsChanged: (ScriptFeaturesConfig) -> Unit
-//) {
-//    Column(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
-//        Text("Script Features Configuration", style = MaterialTheme.typography.headlineMedium)
-//
-//        // Castle Capture Props
-//        Text(
-//            "Castle Capture", style = MaterialTheme.typography.titleLarge,
-//            modifier = Modifier.padding(top = 16.dp)
-//        )
-//        CastleCaptureEditor(
-//            props = scripts.CastleCaptureProps,
-//            onPropsChanged = { newProps ->
-//                onScriptsChanged(scripts.copy(CastleCaptureProps = newProps))
-//            }
-//        )
-//
-//        // GM Rebuild Props
-//        Text(
-//            "GM Rebuild", style = MaterialTheme.typography.titleLarge,
-//            modifier = Modifier.padding(top = 24.dp)
-//        )
-//        GMRebuildEditor(
-//            props = scripts.GMRebuildProps,
-//            onPropsChanged = { newProps ->
-//                onScriptsChanged(scripts.copy(GMRebuildProps = newProps))
-//            },
-//            onDelete = {
-//                onScriptsChanged(scripts.copy(GMRebuildProps = null))
-//            }
-//        )
-//
-//        // Globally Disabled Buildings
-//        Text(
-//            "Disabled Buildings", style = MaterialTheme.typography.titleLarge,
-//            modifier = Modifier.padding(top = 24.dp)
-//        )
-//        GloballyDisabledBuildingsEditor(
-//            props = scripts.GloballyDisabledBuildingsProps,
-//            onPropsChanged = { newProps ->
-//                onScriptsChanged(scripts.copy(GloballyDisabledBuildingsProps = newProps))
-//            },
-//            onDelete = {
-//                onScriptsChanged(scripts.copy(GloballyDisabledBuildingsProps = null))
-//            }
-//        )
-//
-//        // Forced Final Battle
-//        Text(
-//            "Final Battle", style = MaterialTheme.typography.titleLarge,
-//            modifier = Modifier.padding(top = 24.dp)
-//        )
-//        ForcedFinalBattleEditor(
-//            props = scripts.ForcedFinalBattleProps,
-//            onPropsChanged = { newProps ->
-//                onScriptsChanged(scripts.copy(ForcedFinalBattleProps = newProps))
-//            },
-//            onDelete = {
-//                onScriptsChanged(scripts.copy(ForcedFinalBattleProps = null))
-//            }
-//        )
-//    }
-//}
-//
-//
-//@Composable
-//fun ForcedFinalBattleEditor(
-//    props: ForcedFinalBattleModel?,
-//    onPropsChanged: (ForcedFinalBattleModel) -> Unit,
-//    onDelete: () -> Unit
-//) {
-//    if (props != null) {
-//        Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-//            Column(modifier = Modifier.padding(16.dp)) {
-//                Row(
-//                    horizontalArrangement = Arrangement.SpaceBetween,
-//                    modifier = Modifier.fillMaxWidth()
-//                ) {
-//                    Text("Final Battle Settings", style = MaterialTheme.typography.titleMedium)
-//                    IconButton(onClick = onDelete) {
-//                        Icon(Icons.Default.Delete, contentDescription = "Delete")
-//                    }
-//                }
-//
-//                // Week and Day
-//                Row(modifier = Modifier.fillMaxWidth()) {
-//                    DecimalInputField(
-//                        value = props.Week.toString(),
-//                        title = "Week",
-//                        modifier = Modifier.weight(1f),
-//                        onValueChange = { newValue ->
-//                            onPropsChanged(props.copy(Week = newValue.toLongOrNull()))
-//                        },
-//                    )
-//                    DecimalInputField(
-//                        value = props.Day.toString(),
-//                        title = "Day",
-//                        modifier = Modifier.weight(1f).padding(start = 4.dp),
-//                        onValueChange = { newValue ->
-//                            onPropsChanged(props.copy(Day = newValue.toLongOrNull()))
-//                        },
-//                    )
-//                }
-//            }
-//        }
-//    } else {
-//        Button(
-//            onClick = {
-//                onPropsChanged(
-//                    ForcedFinalBattleModel(
-//                        Week = 1,
-//                        Day = 1
-//                    )
-//                )
-//            },
-//            modifier = Modifier.padding(8.dp)
-//        ) {
-//            Text("Enable Forced Final Battle")
-//        }
-//    }
-//}
-//
-//
-//@Composable
-//fun GloballyDisabledBuildingsEditor(
-//    props: GloballyDisabledBuildingsProps?,
-//    onPropsChanged: (GloballyDisabledBuildingsProps) -> Unit,
-//    onDelete: () -> Unit
-//) {
-//    if (props != null) {
-//        Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-//            Column(modifier = Modifier.padding(16.dp)) {
-//                Row(
-//                    horizontalArrangement = Arrangement.SpaceBetween,
-//                    modifier = Modifier.fillMaxWidth()
-//                ) {
-//                    Text("Disabled Buildings", style = MaterialTheme.typography.titleMedium)
-//                    IconButton(onClick = onDelete) {
-//                        Icon(Icons.Default.Delete, contentDescription = "Delete")
-//                    }
-//                }
-//
-//                // Buildings List
-//                ChipGroup(
-//                    items = props.Buildings.map { it.toString() },
-//                    onItemRemoved = { buildingId ->
-//                        onPropsChanged(props.copy(Buildings = props.Buildings - BuildingType.valueOf(buildingId)))
-//                    }
-//                )
-//
-//                // Add new building
-//                Row(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
-//                    var isDialogOpen by remember { mutableStateOf(false) }
-//                    PickerDialog(
-//                        show = isDialogOpen,
-//                        onDismiss = { isDialogOpen = false },
-//                        items = BuildingType.values().toList(),
-//                        text = { it.description },
-//                        onBuildingSelected = { buildingId ->
-//                            onPropsChanged(props.copy(Buildings = props.Buildings + buildingId))
-//                            isDialogOpen = false
-//                        }
-//                    )
-//                    Button(
-//                        onClick = {
-//                            isDialogOpen = true
-//                        },
-//                        modifier = Modifier.padding(start = 8.dp)
-//                    ) {
-//                        Text("Add")
-//                    }
-//                }
-//            }
-//        }
-//    } else {
-//        Button(
-//            onClick = {
-//                onPropsChanged(GloballyDisabledBuildingsProps(emptyList()))
-//            },
-//            modifier = Modifier.padding(8.dp)
-//        ) {
-//            Text("Enable Building Restrictions")
-//        }
-//    }
-//}
-//
-//
-//@Composable
-//fun GMRebuildEditor(
-//    props: GMRebuildModel?,
-//    onPropsChanged: (GMRebuildModel) -> Unit,
-//    onDelete: () -> Unit
-//) {
-//    if (props != null) {
-//        Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-//            Column(modifier = Modifier.padding(16.dp)) {
-//                Row(
-//                    horizontalArrangement = Arrangement.SpaceBetween,
-//                    modifier = Modifier.fillMaxWidth()
-//                ) {
-//                    Text("GM Rebuild Settings", style = MaterialTheme.typography.titleMedium)
-//                    IconButton(onClick = onDelete) {
-//                        Icon(Icons.Default.Delete, contentDescription = "Delete")
-//                    }
-//                }
-//
-//                // Minimal Levels
-//                Row(modifier = Modifier.fillMaxWidth()) {
-//                    DecimalInputField(
-//                        value = props.MinimalGMLevel.toString(),
-//                        title = "Min GM Level",
-//                        modifier = Modifier.weight(1f),
-//                        onValueChange = { newValue ->
-//                            onPropsChanged(props.copy(MinimalGMLevel = newValue.toLongOrNull()))
-//                        },
-//                    )
-//                    DecimalInputField(
-//                        value = props.MinimalWarcriesLevel.toString(),
-//                        title = "Min Warcries Level",
-//                        modifier = Modifier.weight(1f),
-//                        onValueChange = { newValue ->
-//                            onPropsChanged(props.copy(MinimalWarcriesLevel = newValue.toLongOrNull()))
-//                        },
-//                    )
-//                }
-//
-//                // Rebuild Cost
-//                Text(
-//                    "Rebuild Cost", style = MaterialTheme.typography.titleSmall,
-//                    modifier = Modifier.padding(top = 16.dp)
-//                )
-//                ResourceCostEditor(
-//                    cost = props.RebuildCost,
-//                    onCostChanged = { newCost ->
-//                        onPropsChanged(props.copy(RebuildCost = newCost))
-//                    }
-//                )
-//            }
-//        }
-//    } else {
-//        Button(
-//            onClick = {
-//                onPropsChanged(
-//                    GMRebuildModel(
-//                        MinimalGMLevel = 0,
-//                        MinimalWarcriesLevel = 0,
-//                        RebuildCost = GMRebuildCost()
-//                    )
-//                )
-//            },
-//            modifier = Modifier.padding(8.dp)
-//        ) {
-//            Text("Enable GM Rebuild")
-//        }
-//    }
-//}
-//
-//
-//@Composable
-//fun CastleCaptureEditor(
-//    props: CastleCaptureProps,
-//    onPropsChanged: (CastleCaptureProps) -> Unit
-//) {
-//    Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-//        Column(modifier = Modifier.padding(16.dp)) {
-//            // Coordinates
-//            Row(modifier = Modifier.fillMaxWidth()) {
-//                DecimalInputField(
-//                    value = props.CoordinateX.toString(),
-//                    title = "Coordinate X",
-//                    modifier = Modifier.weight(1f).padding(end = 4.dp),
-//                    onValueChange = { newValue ->
-//                        onPropsChanged(props.copy(CoordinateX = newValue.toLongOrNull()))
-//                    },
-//                )
-//                DecimalInputField(
-//                    value = props.CoordinateY.toString(),
-//                    title = "Coordinate Y",
-//                    modifier = Modifier.weight(1f).padding(start = 4.dp),
-//                    onValueChange = { newValue ->
-//                        onPropsChanged(props.copy(CoordinateY = newValue.toLongOrNull()))
-//                    },
-//                )
-//            }
-//
-//            // Search Radius
-//            DecimalInputField(
-//                value = props.SearchRadius.toString(),
-//                title = "Search Radius",
-//                Modifier.fillMaxWidth().padding(vertical = 8.dp),
-//                onValueChange = { newValue ->
-//                    onPropsChanged(props.copy(SearchRadius = newValue.toIntOrNull()))
-//                }
-//            )
-//
-//            // Capture Timer
-//            DecimalInputField(
-//                value = props.CaptureTimer.toString(),
-//                title = "Capture Timer",
-//                Modifier.fillMaxWidth().padding(vertical = 8.dp),
-//                onValueChange = { newValue ->
-//                    onPropsChanged(props.copy(CaptureTimer = newValue.toLongOrNull()))
-//                }
-//            )
-//
-//            // Disable Fortifications
-//            Row(
-//                verticalAlignment = Alignment.CenterVertically,
-//                modifier = Modifier.padding(vertical = 8.dp)
-//            ) {
-//                Checkbox(
-//                    checked = props.DisableFortifications,
-//                    onCheckedChange = { newValue ->
-//                        onPropsChanged(props.copy(DisableFortifications = newValue))
-//                    }
-//                )
-//                Text("Disable Fortifications", modifier = Modifier.padding(start = 8.dp))
-//            }
-//        }
-//    }
-//}
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+
+@Composable
+fun ScriptFeaturesConfigEditor(
+    config: ScriptFeaturesConfig,
+    onConfigChanged: (ScriptFeaturesConfig) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var currentConfig by remember { mutableStateOf(config) }
+
+    Column(
+        modifier = modifier.padding(16.dp)
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        Text("Script Features Configuration", style = MaterialTheme.typography.headlineMedium)
+
+        CastleCaptureEditor(
+            model = currentConfig.CastleCaptureProps ?: CastleCaptureModel(),
+            onModelChanged = {
+                currentConfig = currentConfig.copy(CastleCaptureProps = it.takeIf { model ->
+                    model != CastleCaptureModel() // Only include if not default
+                })
+                onConfigChanged(currentConfig)
+            }
+        )
+        GmRebuildEditor(
+            model = currentConfig.GmRebuildProps ?: GMRebuildModel(),
+            onModelChanged = {
+                currentConfig = currentConfig.copy(GmRebuildProps = it.takeIf { model ->
+                    model != GMRebuildModel() // Only include if not default
+                })
+                onConfigChanged(currentConfig)
+            }
+        )
+        GloballyDisabledBuildingsEditor(
+            model = currentConfig.GloballyDisabledBuildingsProps ?: GloballyDisabledBuildingsModel(),
+            onModelChanged = {
+                currentConfig = currentConfig.copy(GloballyDisabledBuildingsProps = it.takeIf { model ->
+                    model.Buildings.isNotEmpty() // Only include if not empty
+                })
+                onConfigChanged(currentConfig)
+            }
+        )
+        ForcedFinalBattleEditor(
+            model = currentConfig.ForcedFinalBattleProps ?: ForcedFinalBattleModel(),
+            onModelChanged = {
+                currentConfig = currentConfig.copy(ForcedFinalBattleProps = it.takeIf { model ->
+                    model != ForcedFinalBattleModel() // Only include if not default
+                })
+                onConfigChanged(currentConfig)
+            }
+        )
+        AdditionalStartCastlesEditor(
+            castles = currentConfig.AdditionalStartCastles,
+            onCastlesChanged = {
+                currentConfig = currentConfig.copy(AdditionalStartCastles = it)
+                onConfigChanged(currentConfig)
+            }
+        )
+    }
+}
+
+@Composable
+private fun CastleCaptureEditor(
+    model: CastleCaptureModel,
+    onModelChanged: (CastleCaptureModel) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var currentModel by remember { mutableStateOf(model) }
+
+    Card(modifier = modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text("Castle Capture Properties", style = MaterialTheme.typography.headlineSmall)
+
+            NumberInput(
+                label = "Coordinate X",
+                value = currentModel.CoordinateX,
+                onValueChanged = {
+                    currentModel = currentModel.copy(CoordinateX = it)
+                    onModelChanged(currentModel)
+                }
+            )
+
+            NumberInput(
+                label = "Coordinate Y",
+                value = currentModel.CoordinateY,
+                onValueChanged = {
+                    currentModel = currentModel.copy(CoordinateY = it)
+                    onModelChanged(currentModel)
+                }
+            )
+
+            NumberInput(
+                label = "Search Radius",
+                value = currentModel.SearchRadius,
+                onValueChanged = {
+                    currentModel = currentModel.copy(SearchRadius = it?.toInt())
+                    onModelChanged(currentModel)
+                }
+            )
+
+            NumberInput(
+                label = "Event Timer",
+                value = currentModel.EventTimer,
+                onValueChanged = {
+                    currentModel = currentModel.copy(EventTimer = it)
+                    onModelChanged(currentModel)
+                }
+            )
+
+            CheckboxInput(
+                label = "Disable Fortifications",
+                checked = currentModel.DisableFortifications ?: false,
+                onCheckedChanged = {
+                    currentModel = currentModel.copy(DisableFortifications = it)
+                    onModelChanged(currentModel)
+                }
+            )
+
+            CheckboxInput(
+                label = "Is Forced Final Battle",
+                checked = currentModel.IsForcedFinalBattle ?: false,
+                onCheckedChanged = {
+                    currentModel = currentModel.copy(IsForcedFinalBattle = it)
+                    onModelChanged(currentModel)
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun GmRebuildEditor(
+    model: GMRebuildModel,
+    onModelChanged: (GMRebuildModel) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var currentModel by remember { mutableStateOf(model) }
+
+    Card(modifier = modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text("GM Rebuild Properties", style = MaterialTheme.typography.headlineSmall)
+
+            NumberInput(
+                label = "Minimal GM Level",
+                value = currentModel.MinimalGMLevel,
+                onValueChanged = {
+                    currentModel = currentModel.copy(MinimalGMLevel = it)
+                    onModelChanged(currentModel)
+                }
+            )
+
+            NumberInput(
+                label = "Minimal War Cries Level",
+                value = currentModel.MinimalWarCriesLevel,
+                onValueChanged = {
+                    currentModel = currentModel.copy(MinimalWarCriesLevel = it)
+                    onModelChanged(currentModel)
+                }
+            )
+
+            Text("Rebuild Cost", style = MaterialTheme.typography.titleMedium)
+            currentModel.RebuildCost?.let { resources ->
+                ResourcesEditor(
+                    resources = resources,
+                    onResourcesChanged = {
+                        currentModel = currentModel.copy(RebuildCost = it)
+                        onModelChanged(currentModel)
+                    }
+                )
+            } ?: run {
+                Button(onClick = {
+                    currentModel = currentModel.copy(RebuildCost = ResourcesModel())
+                    onModelChanged(currentModel)
+                }) {
+                    Text("Add Rebuild Cost")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ResourcesEditor(
+    resources: ResourcesModel,
+    onResourcesChanged: (ResourcesModel) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var currentResources by remember { mutableStateOf(resources) }
+
+    Column(
+        modifier = modifier.padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        NumberInput(
+            label = "Wood",
+            value = currentResources.Wood,
+            onValueChanged = {
+                currentResources = currentResources.copy(Wood = it?.toInt())
+                onResourcesChanged(currentResources)
+            }
+        )
+
+        NumberInput(
+            label = "Ore",
+            value = currentResources.Ore,
+            onValueChanged = {
+                currentResources = currentResources.copy(Ore = it?.toInt())
+                onResourcesChanged(currentResources)
+            }
+        )
+
+        NumberInput(
+            label = "Mercury",
+            value = currentResources.Mercury,
+            onValueChanged = {
+                currentResources = currentResources.copy(Mercury = it?.toInt())
+                onResourcesChanged(currentResources)
+            }
+        )
+
+        NumberInput(
+            label = "Sulfur",
+            value = currentResources.Sulfur,
+            onValueChanged = {
+                currentResources = currentResources.copy(Sulfur = it?.toInt())
+                onResourcesChanged(currentResources)
+            }
+        )
+
+        NumberInput(
+            label = "Gem",
+            value = currentResources.Gem,
+            onValueChanged = {
+                currentResources = currentResources.copy(Gem = it?.toInt())
+                onResourcesChanged(currentResources)
+            }
+        )
+
+        NumberInput(
+            label = "Crystal",
+            value = currentResources.Crystal,
+            onValueChanged = {
+                currentResources = currentResources.copy(Crystal = it?.toInt())
+                onResourcesChanged(currentResources)
+            }
+        )
+
+        NumberInput(
+            label = "Gold",
+            value = currentResources.Gold,
+            onValueChanged = {
+                currentResources = currentResources.copy(Gold = it?.toInt())
+                onResourcesChanged(currentResources)
+            }
+        )
+    }
+}
+
+@Composable
+private fun GloballyDisabledBuildingsEditor(
+    model: GloballyDisabledBuildingsModel,
+    onModelChanged: (GloballyDisabledBuildingsModel) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var currentModel by remember { mutableStateOf(model) }
+    val allBuildingTypes = remember { BuildingType.values().toList() }
+
+    Card(modifier = modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text("Globally Disabled Buildings", style = MaterialTheme.typography.headlineSmall)
+
+            if (currentModel.Buildings.isEmpty()) {
+                Text("No buildings disabled", style = MaterialTheme.typography.bodyMedium)
+            } else {
+                FlowColumn {
+                    currentModel.Buildings.forEach { building ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(building.description)
+                            IconButton(onClick = {
+                                currentModel = currentModel.copy(
+                                    Buildings = currentModel.Buildings - building
+                                )
+                                onModelChanged(currentModel)
+                            }) {
+                                Icon(Icons.Default.Delete, "Remove")
+                            }
+                        }
+                    }
+                }
+            }
+
+            var showSelector by remember { mutableStateOf(false) }
+
+            Button(onClick = { showSelector = true }) {
+                Text("Add Building")
+            }
+
+            if (showSelector) {
+                AlertDialog(
+                    onDismissRequest = { showSelector = false },
+                    title = { Text("Select Building to Disable") },
+                    text = {
+                        FlowColumn {
+                            allBuildingTypes.filter { it !in currentModel.Buildings }.forEach { building ->
+                                Button(
+                                    onClick = {
+                                        currentModel = currentModel.copy(
+                                            Buildings = currentModel.Buildings + building
+                                        )
+                                        onModelChanged(currentModel)
+                                        showSelector = false
+                                    },
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text(building.description)
+                                }
+                            }
+                        }
+                    },
+                    confirmButton = {
+                        Button(onClick = { showSelector = false }) {
+                            Text("Cancel")
+                        }
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ForcedFinalBattleEditor(
+    model: ForcedFinalBattleModel,
+    onModelChanged: (ForcedFinalBattleModel) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var currentModel by remember { mutableStateOf(model) }
+
+    Card(modifier = modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text("Forced Final Battle", style = MaterialTheme.typography.headlineSmall)
+
+            NumberInput(
+                label = "Week",
+                value = currentModel.Week,
+                onValueChanged = {
+                    currentModel = currentModel.copy(Week = it)
+                    onModelChanged(currentModel)
+                }
+            )
+
+            NumberInput(
+                label = "Day",
+                value = currentModel.Day,
+                onValueChanged = {
+                    currentModel = currentModel.copy(Day = it)
+                    onModelChanged(currentModel)
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun AdditionalStartCastlesEditor(
+    castles: List<AdditionalStartCastle>,
+    onCastlesChanged: (List<AdditionalStartCastle>) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var currentCastles by remember { mutableStateOf(castles) }
+
+    Card(modifier = modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text("Additional Start Castles", style = MaterialTheme.typography.headlineSmall)
+
+            if (currentCastles.isEmpty()) {
+                Text("No additional start castles configured", style = MaterialTheme.typography.bodyMedium)
+            } else {
+                FlowColumn {
+                    currentCastles.forEach { castle ->
+                        AdditionalStartCastleItem(
+                            castle = castle,
+                            onCastleChanged = { updated ->
+                                currentCastles = currentCastles.map { if (it == castle) updated else it }
+                                onCastlesChanged(currentCastles)
+                            },
+                            onRemove = {
+                                currentCastles = currentCastles - castle
+                                onCastlesChanged(currentCastles)
+                            }
+                        )
+                    }
+                }
+            }
+
+            Button(onClick = {
+                currentCastles = currentCastles + AdditionalStartCastle()
+                onCastlesChanged(currentCastles)
+            }) {
+                Text("Add Start Castle")
+            }
+        }
+    }
+}
+
+@Composable
+private fun AdditionalStartCastleItem(
+    castle: AdditionalStartCastle,
+    onCastleChanged: (AdditionalStartCastle) -> Unit,
+    onRemove: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var currentCastle by remember { mutableStateOf(castle) }
+
+    Card(modifier = modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(8.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text("Start Castle Configuration", style = MaterialTheme.typography.titleMedium)
+                IconButton(onClick = onRemove) {
+                    Icon(Icons.Default.Delete, "Remove")
+                }
+            }
+
+            Text("Start Position", style = MaterialTheme.typography.labelMedium)
+            NumberInput(
+                label = "Coordinate X",
+                value = currentCastle.StartCoordinateX,
+                onValueChanged = {
+                    currentCastle = currentCastle.copy(StartCoordinateX = it)
+                    onCastleChanged(currentCastle)
+                }
+            )
+
+            NumberInput(
+                label = "Coordinate Y",
+                value = currentCastle.StartCoordinateY,
+                onValueChanged = {
+                    currentCastle = currentCastle.copy(StartCoordinateY = it)
+                    onCastleChanged(currentCastle)
+                }
+            )
+
+            NumberInput(
+                label = "Search Radius",
+                value = currentCastle.SearchRadius,
+                onValueChanged = {
+                    currentCastle = currentCastle.copy(SearchRadius = it?.toInt())
+                    onCastleChanged(currentCastle)
+                }
+            )
+
+            Text("Target Position", style = MaterialTheme.typography.labelMedium)
+            NumberInput(
+                label = "Coordinate X",
+                value = currentCastle.TargetCoordinateX,
+                onValueChanged = {
+                    currentCastle = currentCastle.copy(TargetCoordinateX = it)
+                    onCastleChanged(currentCastle)
+                }
+            )
+
+            NumberInput(
+                label = "Coordinate Y",
+                value = currentCastle.TargetCoordinateY,
+                onValueChanged = {
+                    currentCastle = currentCastle.copy(TargetCoordinateY = it)
+                    onCastleChanged(currentCastle)
+                }
+            )
+
+            NumberInput(
+                label = "Search Radius",
+                value = currentCastle.TargetSearchRadius,
+                onValueChanged = {
+                    currentCastle = currentCastle.copy(TargetSearchRadius = it?.toInt())
+                    onCastleChanged(currentCastle)
+                }
+            )
+        }
+    }
+}
+
+// Helper components
+
+@Composable
+private fun NumberInput(
+    label: String,
+    value: Long?,
+    onValueChanged: (Long?) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var textValue by remember { mutableStateOf(value?.toString() ?: "") }
+
+    OutlinedTextField(
+        value = textValue,
+        onValueChange = {
+            textValue = it
+            onValueChanged(it.toLongOrNull())
+        },
+        label = { Text(label) },
+        modifier = modifier.fillMaxWidth(),
+    )
+}
+
+@Composable
+private fun NumberInput(
+    label: String,
+    value: Int?,
+    onValueChanged: (Int?) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var textValue by remember { mutableStateOf(value?.toString() ?: "") }
+
+    OutlinedTextField(
+        value = textValue,
+        onValueChange = {
+            textValue = it
+            onValueChanged(it.toIntOrNull())
+        },
+        label = { Text(label) },
+        modifier = modifier.fillMaxWidth(),
+    )
+}
+
+@Composable
+private fun CheckboxInput(
+    label: String,
+    checked: Boolean,
+    onCheckedChanged: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Checkbox(
+            checked = checked,
+            onCheckedChange = onCheckedChanged
+        )
+        Text(label, modifier = Modifier.padding(start = 8.dp))
+    }
+}

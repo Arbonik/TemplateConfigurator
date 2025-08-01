@@ -1,4 +1,6 @@
 import kotlinx.serialization.Serializable
+import org.example.project.data.enums.CastleType
+import java.util.LinkedHashMap
 
 //import kotlinx.serialization.Serializable
 //
@@ -29,14 +31,14 @@ data class EntitiesBanModel(
     val BanMaradeur: Boolean? = null
 )
 
-//
-//@Serializable
-//data class GeneralData(
-//    val Mine1LevelGuardLevel: Int? = null,
-//    val Mine2LevelGuardLevel: Int? = null,
-//    val MineGoldGuardLevel: Int? = null
-//)
-//
+
+@Serializable
+data class GeneralData(
+    val Mine1LevelGuardLevel: Int? = null,
+    val Mine2LevelGuardLevel: Int? = null,
+    val MineGoldGuardLevel: Int? = null
+)
+
 @Serializable
 data class IntValueConfig(
     val MinValue: Int? = null,
@@ -438,104 +440,113 @@ data class TerrainBuildingsConfig(
 //    val Count: Int? = null
 //)
 //
-//@Serializable
-//data class StartBuildingConfig(
-//    val ApplyAllTerrains: Boolean? = null,
-//    val TerrainType: TerrainType,
-//    val Buildings: List<BuildingType>,
-//    val BuildingMode: BuildingMode
-//)
-//
-//@Serializable
-//data class ScriptFeaturesConfig(
-//    val CastleCaptureProps: CastleCaptureModel,
-//    val GmRebuildProps: GMRebuildModel,
-//    val GloballyDisabledBuildingsProps: GloballyDisabledBuildingsModel,
-//    val ForcedFinalBattleProps: ForcedFinalBattleModel,
-//    val AdditionalStartCastles: List<AdditionalStartCastle>
-//)
-//
-//@Serializable
-//data class CastleCaptureModel(
-//    val CoordinateX: Long,
-//    val CoordinateY: Long,
-//    val SearchRadius: Int? = null,
-//    val EventTimer: Long,
-//    val DisableFortifications: Boolean? = null,
-//    val IsForcedFinalBattle: Boolean
-//)
-//
-//@Serializable
-//data class AdditionalStartCastle(
-//    val StartCoordinateX: Long,
-//    val StartCoordinateY: Long,
-//    val SearchRadius: Int? = null,
-//    val TargetCoordinateX: Long,
-//    val TargetCoordinateY: Long,
-//    val TargetSearchRadius: Int? = null
-//)
-//
-//@Serializable
-//data class ResourcesModel(
-//    val Wood: Int? = null,
-//    val Ore: Int? = null,
-//    val Mercury: Int? = null,
-//    val Sulfur: Int? = null,
-//    val Gem: Int? = null,
-//    val Crystal: Int? = null,
-//    val Gold: Int? = null
-//)
-//
-//@Serializable
-//data class GMRebuildModel(
-//    val MinimalGMLevel: Long,
-//    val MinimalWarCriesLevel: Long,
-//    val RebuildCost: ResourcesModel
-//)
-//
-//@Serializable
-//data class GloballyDisabledBuildingsModel(
-//    val Buildings: List<BuildingType>
-//)
-//
-//@Serializable
-//data class ForcedFinalBattleModel(
-//    val Week: Long,
-//    val Day: Long
-//)
-//
+@Serializable
+data class StartBuildingConfig(
+    val ApplyAllTerrains: Boolean? = null,
+    val TerrainType: TerrainType? = null,
+    val CastleType: CastleType? = null,
+    val Buildings: List<BuildingType> = listOf(),
+    val BuildingMode: BuildingMode? = null
+)
+
+@Serializable
+data class ScriptFeaturesConfig(
+    val CastleCaptureProps: CastleCaptureModel? = null,
+    val GmRebuildProps: GMRebuildModel? = null,
+    val GloballyDisabledBuildingsProps: GloballyDisabledBuildingsModel? = null,
+    val ForcedFinalBattleProps: ForcedFinalBattleModel? = null,
+    val AdditionalStartCastles: List<AdditionalStartCastle> = listOf()
+)
+
+@Serializable
+data class CastleCaptureModel(
+    val CoordinateX: Long? = null,
+    val CoordinateY: Long? = null,
+    val SearchRadius: Int? = null,
+    val EventTimer: Long? = null,
+    val DisableFortifications: Boolean? = null,
+    val IsForcedFinalBattle: Boolean? = null
+)
+
+@Serializable
+data class AdditionalStartCastle(
+    val StartCoordinateX: Long? = null,
+    val StartCoordinateY: Long? = null,
+    val SearchRadius: Int? = null,
+    val TargetCoordinateX: Long? = null,
+    val TargetCoordinateY: Long? = null,
+    val TargetSearchRadius: Int? = null
+)
+
+@Serializable
+data class ResourcesModel(
+    val Wood: Int? = null,
+    val Ore: Int? = null,
+    val Mercury: Int? = null,
+    val Sulfur: Int? = null,
+    val Gem: Int? = null,
+    val Crystal: Int? = null,
+    val Gold: Int? = null
+)
+
+@Serializable
+data class GMRebuildModel(
+    val MinimalGMLevel: Long? = null,
+    val MinimalWarCriesLevel: Long? = null,
+    val RebuildCost: ResourcesModel? = null
+)
+
+@Serializable
+data class GloballyDisabledBuildingsModel(
+    val Buildings: List<BuildingType> = listOf()
+)
+
+@Serializable
+data class ForcedFinalBattleModel(
+    val Week: Long? = null,
+    val Day: Long? = null
+)
+
 @Serializable
 data class ZoneRandomizationConfig(
     val ZonesToSwap: List<IntArray>,
     val IsSymmetricalSwap: Boolean? = null,
     val ZonesToRandomize: List<Long>
 )
-//
-//@Serializable
-//data class StartSpellsByPlayer(
-//    val PlayerType: PlayerType,
-//    val Spells: List<SpellType>
-//)
-//
-//@Serializable
-//data class StartSpellsByRace(
-//    val CastleType: CastleType,
-//    val Spells: List<SpellType>
-//)
-//
-//@Serializable
-//data class StartSpellsByHero(
-//    val HeroType: HeroType,
-//    val Spells: List<SpellType>
-//)
-//
-//@Serializable
-//data class StartSpellsConfig(
-//    val GlobalSpells: List<SpellType>,
-//    val SpellsByPlayers: List<StartSpellsByPlayer>,
-//    val SpellsByRaces: List<StartSpellsByRace>,
-//    val SpellsByHeroes: List<StartSpellsByHero>
-//)
+
+@Serializable
+data class StartSpellsByPlayer(
+    val PlayerType: PlayerType,
+    val Spells: List<SpellType>
+)
+enum class PlayerType(
+    val number: Int,
+    val description: String
+) {
+    ANY(0, "любой игрок"),
+    FIRST(1, "первый игрок"),
+    SECOND(2, "второй игрок");
+}
+
+@Serializable
+data class StartSpellsByRace(
+    val CastleType: CastleType,
+    val Spells: List<SpellType>
+)
+
+@Serializable
+data class StartSpellsByHero(
+    val HeroType: HeroType,
+    val Spells: List<SpellType>
+)
+
+@Serializable
+data class StartSpellsConfig(
+    val GlobalSpells: List<SpellType>,
+    val SpellsByPlayers: List<StartSpellsByPlayer>,
+    val SpellsByRaces: List<StartSpellsByRace>,
+    val SpellsByHeroes: List<StartSpellsByHero>
+)
 
 @Serializable
 data class BannedBasesByClass(
@@ -580,7 +591,6 @@ enum class ArtifactType(
     val number: Int,
     val description: String
 ) {
-    None(0, ""),
     SwordOfRuins(1, "Меч мощи"),
     DwarfKingAxe(2, "Секира короля гномов"),
     WandOfSpell(3, "Палочка с заклинанием"),
@@ -700,12 +710,12 @@ enum class BuildingTextureConfig(
     Random(101, "случайная текстура");
 }
 
-//
-//enum class BuildingMode {
-//    All,
-//    StartCastle,
-//    NeutralCastle
-//}
+@Serializable
+enum class BuildingMode {
+    All,
+    StartCastle,
+    NeutralCastle
+}
 //enum class BuildingTexture {
 //    Default,
 //    HumansDwelling,
@@ -729,83 +739,83 @@ enum class BuildingTextureConfig(
 //    ShopPointTower
 //}
 //
-//enum class BuildingType(
-//    val number: Int,
-//    val description: String
-//) {
-//    T1(0, "Т1 двелл"),
-//    T1G(1, "Т1 гс"),
-//    T2(2, "Т2 двелл"),
-//    T2G(3, "Т2 гс"),
-//    T3(4, "Т3 двелл"),
-//    T3G(5, "Т3 гс"),
-//    T4(6, "Т4 двелл"),
-//    T4G(7, "Т4 гс"),
-//    T5(8, "Т5 двелл"),
-//    T5G(9, "Т5 гс"),
-//    T6(10, "Т6 двелл"),
-//    T6G(11, "Т6 гс"),
-//    T7(12, "Т7 двелл"),
-//    T7G(13, "Т7 гс"),
-//    Tavern(14, "Таверна"),
-//    Forge(15, "Кузница"),
-//    Market1(16, "Рынок"),
-//    Market2(17, "Склад"),
-//    GM1(18, "Гм лвл 1"),
-//    GM2(19, "Гм лвл 2"),
-//    GM3(20, "Гм лвл 3"),
-//    GM4(21, "Гм лвл 4"),
-//    GM5(22, "Гм лвл 5"),
-//    Fort1(23, "Форт"),
-//    Fort2(24, "Цитадель"),
-//    Fort3(25, "Замок"),
-//    Gold1(26, "Дом старейшин"),
-//    Gold2(27, "Ратуша"),
-//    Gold3(28, "Магистрат"),
-//    Gold4(29, "Капитолий"),
-//    Asha(30, "Здание за Слезу Асхи"),
-//    HavenTrainingGrounds(31, "Трен лвл 1"),
-//    HavenHeroesMonument(32, "Трен лвл 2"),
-//    HavenStables(33, "Конюшня"),
-//    HavenFarms(34, "Фермы на прирост крестьян"),
-//    InfernoHellGates(35, "+10% к гейтингу"),
-//    InfernoDemonsGrow(36, "Прирост демонов +2"),
-//    InfernoHallOfHorror(37, "Прирост коней +1"),
-//    InfernoSacrificialPit(38, "Жертвенная яма"),
-//    NecromancyAmplifier(39, "+1000 очков некромантии"),
-//    NecromancyUnholyTemple(40, "Конвертер нежити"),
-//    NecromancyGraves(41, "Прирост скелетов +6"),
-//    NecromancyDragonTombstone(42, "Прирост драконов +1"),
-//    PreserveAvengerGuild(43, "Гильдия мстителей"),
-//    PreserveAvengerBrotherhood(44, "Братство мстителей, +10% шанс прока заклятых"),
-//    PreserveMysticPond(45, "Пруд +ресурсы"),
-//    PreserveSparklingFountain(46, "Фонтан +удачи"),
-//    PreserveBloomingGrove(47, "Прирост фей"),
-//    PreserveTreantSamplings(48, "Прирост энтов"),
-//    DungeonAltarOfElements(49, "Элементальные цепочки"),
-//    DungeonAltarOfPrimalChaos(50, "+10% урона от цепочек"),
-//    DungeonRitualPit(51, "Ритуальная яма"),
-//    DungeonTradePost(52, "Лавка артефактов"),
-//    DungeonHallOfIntrigue(53, "+1 знания героям"),
-//    AcademyLibrary(54, "Библиотека"),
-//    AcademyArcaneForge(55, "Кузница миниартефактов"),
-//    AcademyArtifactMerchant(56, "Лавка артефактов"),
-//    AcademyTreasureCave(57, "+500 золота и прирост джиннов"),
-//    FortressRunicShrine1(58, "Руны лвл 1"),
-//    FortressRunicShrine2(59, "Руны лвл 2"),
-//    FortressRunicShrine3(60, "Руны лвл 3"),
-//    FortressArena(61, "Прирост берсерков"),
-//    FortressGuardPost(62, "Сторожевая башня +отряд карликов"),
-//    FortressStoneworks(63, "Укрепленные стены"),
-//    FortressRunicAcademy(64, "Прирост жрецов рун"),
-//    StrongholdHallOfTrial(65, "Кличи лвл 1"),
-//    StrongholdHallOfMastership(66, "Кличи лвл 2"),
-//    StrongholdHallOfMight(67, "Кличи лвл 3"),
-//    StrongholdGarbagePile(68, "Прирост гоблинов"),
-//    StrongholdTravellerShelter(69, "Талисманы для походных артов"),
-//    StrongholdPileOfOurFoes(70, "Куча черепов +кровь на старте боя"),
-//    StrongholdSlaveMarket(71, "Рынок рабов");
-//}
+enum class BuildingType(
+    val number: Int,
+    val description: String
+) {
+    T1(0, "Т1 двелл"),
+    T1G(1, "Т1 гс"),
+    T2(2, "Т2 двелл"),
+    T2G(3, "Т2 гс"),
+    T3(4, "Т3 двелл"),
+    T3G(5, "Т3 гс"),
+    T4(6, "Т4 двелл"),
+    T4G(7, "Т4 гс"),
+    T5(8, "Т5 двелл"),
+    T5G(9, "Т5 гс"),
+    T6(10, "Т6 двелл"),
+    T6G(11, "Т6 гс"),
+    T7(12, "Т7 двелл"),
+    T7G(13, "Т7 гс"),
+    Tavern(14, "Таверна"),
+    Forge(15, "Кузница"),
+    Market1(16, "Рынок"),
+    Market2(17, "Склад"),
+    GM1(18, "Гм лвл 1"),
+    GM2(19, "Гм лвл 2"),
+    GM3(20, "Гм лвл 3"),
+    GM4(21, "Гм лвл 4"),
+    GM5(22, "Гм лвл 5"),
+    Fort1(23, "Форт"),
+    Fort2(24, "Цитадель"),
+    Fort3(25, "Замок"),
+    Gold1(26, "Дом старейшин"),
+    Gold2(27, "Ратуша"),
+    Gold3(28, "Магистрат"),
+    Gold4(29, "Капитолий"),
+    Asha(30, "Здание за Слезу Асхи"),
+    HavenTrainingGrounds(31, "Трен лвл 1"),
+    HavenHeroesMonument(32, "Трен лвл 2"),
+    HavenStables(33, "Конюшня"),
+    HavenFarms(34, "Фермы на прирост крестьян"),
+    InfernoHellGates(35, "+10% к гейтингу"),
+    InfernoDemonsGrow(36, "Прирост демонов +2"),
+    InfernoHallOfHorror(37, "Прирост коней +1"),
+    InfernoSacrificialPit(38, "Жертвенная яма"),
+    NecromancyAmplifier(39, "+1000 очков некромантии"),
+    NecromancyUnholyTemple(40, "Конвертер нежити"),
+    NecromancyGraves(41, "Прирост скелетов +6"),
+    NecromancyDragonTombstone(42, "Прирост драконов +1"),
+    PreserveAvengerGuild(43, "Гильдия мстителей"),
+    PreserveAvengerBrotherhood(44, "Братство мстителей, +10% шанс прока заклятых"),
+    PreserveMysticPond(45, "Пруд +ресурсы"),
+    PreserveSparklingFountain(46, "Фонтан +удачи"),
+    PreserveBloomingGrove(47, "Прирост фей"),
+    PreserveTreantSamplings(48, "Прирост энтов"),
+    DungeonAltarOfElements(49, "Элементальные цепочки"),
+    DungeonAltarOfPrimalChaos(50, "+10% урона от цепочек"),
+    DungeonRitualPit(51, "Ритуальная яма"),
+    DungeonTradePost(52, "Лавка артефактов"),
+    DungeonHallOfIntrigue(53, "+1 знания героям"),
+    AcademyLibrary(54, "Библиотека"),
+    AcademyArcaneForge(55, "Кузница миниартефактов"),
+    AcademyArtifactMerchant(56, "Лавка артефактов"),
+    AcademyTreasureCave(57, "+500 золота и прирост джиннов"),
+    FortressRunicShrine1(58, "Руны лвл 1"),
+    FortressRunicShrine2(59, "Руны лвл 2"),
+    FortressRunicShrine3(60, "Руны лвл 3"),
+    FortressArena(61, "Прирост берсерков"),
+    FortressGuardPost(62, "Сторожевая башня +отряд карликов"),
+    FortressStoneworks(63, "Укрепленные стены"),
+    FortressRunicAcademy(64, "Прирост жрецов рун"),
+    StrongholdHallOfTrial(65, "Кличи лвл 1"),
+    StrongholdHallOfMastership(66, "Кличи лвл 2"),
+    StrongholdHallOfMight(67, "Кличи лвл 3"),
+    StrongholdGarbagePile(68, "Прирост гоблинов"),
+    StrongholdTravellerShelter(69, "Талисманы для походных артов"),
+    StrongholdPileOfOurFoes(70, "Куча черепов +кровь на старте боя"),
+    StrongholdSlaveMarket(71, "Рынок рабов");
+}
 //
 //enum class CastleType(val number: Int) {
 //    UNDEFINED(0),
@@ -1061,14 +1071,7 @@ enum class HeroType(
 //    SPECIAL(7, "Абилки существ/героев и технические спеллы");
 //}
 //
-//enum class PlayerType(
-//    val number: Int,
-//    val description: String
-//) {
-//    ANY(0, "любой игрок игроки"),
-//    FIRST(1, "первый игрока"),
-//    SECOND(2, "второй игрока");
-//}
+
 //enum class ScriptBuilding(
 //    val number: Int,
 //    val description: String
@@ -1117,7 +1120,6 @@ enum class SpellType(
     val number: Int,
     val description: String
 ) {
-    None(0, ""),
     MagicArrow(1, "Магическая стрела"),
     MagicFist(2, "Магический кулак"),
     LightningBolt(3, "Молния"),
@@ -1193,6 +1195,14 @@ enum class TerrainType {
     Terrain4,//(5, "четвёртый случайный свободный террейн"),
     Terrain5,//(6, "пятый случайный свободный террейн"),
     Terrain6,//(7, "шестой случайный свободный террейн")
+    Humans,
+    Inferno,
+    Necropolis,
+    Elves,
+    Liga,
+    Mages,
+    Dwarfs,
+    Horde
 }
 
 @Serializable

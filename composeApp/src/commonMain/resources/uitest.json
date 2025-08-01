@@ -336,11 +336,76 @@
   ],
   "StartBuildingConfigs": [
     {
-      "id": "start_building_1"
+      "ApplyAllTerrains": true,
+      "TerrainType": "FirstPlayer",
+      "CastleType": "Humans",
+      "Buildings": [
+        "T1",
+        "T1G",
+        "T2",
+        "Tavern",
+        "Market1",
+        "GM1"
+      ],
+      "BuildingMode": "All"
+    },
+    {
+      "ApplyAllTerrains": null,
+      "TerrainType": "Inferno",
+      "CastleType": "Inferno",
+      "Buildings": [
+        "T1",
+        "T2",
+        "T3",
+        "InfernoHellGates",
+        "InfernoDemonsGrow"
+      ],
+      "BuildingMode": "StartCastle"
+    },
+    {
+      "ApplyAllTerrains": false,
+      "TerrainType": "Necropolis",
+      "CastleType": "Necropolis",
+      "Buildings": [
+        "T1",
+        "T2",
+        "T3",
+        "T4",
+        "NecromancyAmplifier",
+        "NecromancyGraves"
+      ],
+      "BuildingMode": "NeutralCastle"
+    },
+    {
+      "ApplyAllTerrains": null,
+      "TerrainType": "Elves",
+      "CastleType": "Elves",
+      "Buildings": [
+        "T1",
+        "T2",
+        "PreserveAvengerGuild",
+        "PreserveMysticPond"
+      ],
+      "BuildingMode": "All"
+    },
+    {
+      "ApplyAllTerrains": true,
+      "TerrainType": "Random",
+      "CastleType": "Random",
+      "Buildings": [
+        "T1",
+        "T2",
+        "T3",
+        "Tavern",
+        "Market1"
+      ],
+      "BuildingMode": "All"
     }
   ],
   "GeneralData": {
-    "id": "general_data_1"
+    "Mine1LevelGuardLevel": 5,
+    "Mine2LevelGuardLevel": 3,
+    "MineGoldGuardLevel": 7
   },
   "BaseArmyMultiplier": 1.5,
   "ArmyMultipliers": {
@@ -354,7 +419,37 @@
     "id": "entities_ban_1"
   },
   "StartSpellsConfig": {
-    "id": "start_spells_1"
+    "GlobalSpells": ["Fireball", "Teleport"],
+    "SpellsByPlayers": [
+      {
+        "PlayerType": "FIRST",
+        "Spells": ["Haste", "CelestialShield"]
+      },
+      {
+        "PlayerType": "SECOND",
+        "Spells": ["Slow", "Curse"]
+      }
+    ],
+    "SpellsByRaces": [
+      {
+        "CastleType": "Humans",
+        "Spells": ["HolyWord", "Resurrect"]
+      },
+      {
+        "CastleType": "Necropolis",
+        "Spells": ["MeteorShower", "ChainLightning"]
+      }
+    ],
+    "SpellsByHeroes": [
+      {
+        "HeroType": "Nadaur",
+        "Spells": ["MagicFist", "DisruptingRay"]
+      },
+      {
+        "HeroType": "Vegeyr",
+        "Spells": ["Stoneskin", "Bloodlust"]
+      }
+    ]
   },
   "CustomBuildingConfigs": [
     {

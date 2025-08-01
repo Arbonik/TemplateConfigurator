@@ -1,7 +1,9 @@
 package org.example.project.data.enums
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 enum class CastleType(val number: Int) {
-    Undefined(0),
     Humans(1),
     Inferno(2),
     Necropolis(3),
@@ -11,7 +13,4 @@ enum class CastleType(val number: Int) {
     Dwarfs(7),
     Horde(8),
     Random(9);
-    companion object {
-        val available = listOf(Humans, Inferno, Necropolis, Elves, Liga, Mages, Dwarfs, Horde)
-    }
 }
