@@ -1,39 +1,17 @@
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowColumn
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import kotlinx.serialization.Serializable
-import org.example.project.ui.ArmySection
-import org.example.project.ui.BansConfigSection
-import org.example.project.ui.ConnectionModelEditor
-import org.example.project.ui.GeneralDataEditor
-import org.example.project.ui.TerrainConfigSection
-import org.example.project.ui.ZoneRandomizationConfigEditor
+import org.example.project.ui.*
 
 
 @Serializable
@@ -41,24 +19,18 @@ data class TemplateGenerationConfig(
     val TemplateName: String,
     val Zones: List<ZoneGenerationConfig>,
     val Connections: List<ConnectionModel>,
-    val TerrainConfigs: List<TerrainConfig>,
-    val StartBuildingConfigs: List<StartBuildingConfig>,
-    val GeneralData: GeneralData,
+    val TerrainConfigs: List<TerrainConfig> = listOf(),
+    val StartBuildingConfigs: List<StartBuildingConfig> = listOf(),
+    val GeneralData: GeneralData? = null,
     val BaseArmyMultiplier: Double? = null,
     val multipliers: Map<String, Double> = mapOf(),
     val ScriptFeaturesConfig: ScriptFeaturesConfig,
     val EntitiesBanConfig: EntitiesBanModel = EntitiesBanModel(),
-    val StartSpellsConfig: StartSpellsConfig,
+    val StartSpellsConfig: StartSpellsConfig? = null,
     val CustomBuildingConfigs: List<CustomBuildingConfig>,
-    val CreatureBanksPool: CreatureBanksPool,
-    val ZoneRandomizationConfig: ZoneRandomizationConfig
+    val CreatureBanksPool: CreatureBanksPool? = null,
+    val ZoneRandomizationConfig: ZoneRandomizationConfig? = null
 )
-
-@Serializable
-data class CustomBuildingConfig(val id: String)
-
-@Serializable
-data class CreatureBanksPool(val id: String)
 
 // Модель для пунктов навигации
 sealed class NavigationItem(
@@ -179,8 +151,18 @@ fun TemplateConfigEditor(
                             onConfigChanged(config.copy(StartSpellsConfig = it))
                         }
                     )
-                    is NavigationItem.CustomBuildings -> CustomBuildingsSection(config.CustomBuildingConfigs)
-                    is NavigationItem.CreatureBanks -> CreatureBanksSection(config.CreatureBanksPool)
+                    is NavigationItem.CustomBuildings -> BuildingConfigEditor(
+                        buildingConfigs = config.CustomBuildingConfigs,
+                        onConfigsUpdated = { it ->
+                            onConfigChanged(config.copy(CustomBuildingConfigs = it))
+                        }
+                    )
+                    is NavigationItem.CreatureBanks -> CreatureBankConfigEditor(
+                       config =  config.CreatureBanksPool,
+                        onConfigChanged = {
+                            config.copy(CreatureBanksPool = it)
+                        }
+                    )
                     is NavigationItem.ZoneRandomization -> ZoneRandomizationConfigEditor(
                         config.ZoneRandomizationConfig,
                         onConfigChanged = {
@@ -241,6 +223,70 @@ private fun NavigationPanel(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun CreatureBankConfigEditor(
+    config: CreatureBanksPool?,
+    onConfigChanged: (CreatureBanksPool?) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier.padding(16.dp)) {
+        Text("Creature Banks Configuration", style = MaterialTheme.typography.h6)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // NonPlayerFactions toggle
+        var nonPlayerFactions by remember { mutableStateOf(config?.NonPlayerFactions ?: false) }
+        SwitchWithLabel(
+            label = "Include Non-Player Factions",
+            checked = nonPlayerFactions,
+            onCheckedChange = {
+                nonPlayerFactions = it
+                onConfigChanged(config?.copy(NonPlayerFactions = it))
+            }
+        )
+
+        // PlayerFactions toggle
+        var playerFactions by remember { mutableStateOf(config?.PlayerFactions ?: false) }
+        SwitchWithLabel(
+            label = "Include Player Factions",
+            checked = playerFactions,
+            onCheckedChange = {
+                playerFactions = it
+                onConfigChanged(config?.copy(PlayerFactions = it))
+            }
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        NullableIntValueConfigEditor(
+            label = "Banks Amount",
+            config = config?.BanksAmount,
+            onConfigChanged = { newValueConfig ->
+                onConfigChanged(config?.copy(BanksAmount = newValueConfig))
+            },
+            modifier = Modifier.padding(start = 16.dp)
+        )
+    }
+}
+
+@Composable
+private fun SwitchWithLabel(
+    label: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Text(text = label, modifier = Modifier.weight(1f))
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange
+        )
     }
 }
 
@@ -312,12 +358,6 @@ private fun LanguageSwitcher() {
     }
 }
 
-// Заглушки для секций конфигурации
-@Composable
-private fun GeneralConfigSection(data: GeneralData) {
-
-}
-
 @Composable
 private fun ConnectionsSection(
     connections: List<ConnectionModel>,
@@ -331,26 +371,3 @@ private fun ConnectionsSection(
     )
 }
 
-@Composable
-private fun ScriptFeaturesSection(config: ScriptFeaturesConfig) {
-    Text("Script Features Configuration Section")
-    // Реализация формы для ScriptFeaturesConfig
-}
-
-@Composable
-private fun StartSpellsSection(config: StartSpellsConfig) {
-    Text("Start Spells Configuration Section")
-
-}
-
-@Composable
-private fun CustomBuildingsSection(configs: List<CustomBuildingConfig>) {
-    Text("Custom Buildings Configuration Section")
-    // Реализация формы для CustomBuildingConfigs
-}
-
-@Composable
-private fun CreatureBanksSection(pool: CreatureBanksPool) {
-    Text("Creature Banks Pool Configuration Section")
-    // Реализация формы для CreatureBanksPool
-}

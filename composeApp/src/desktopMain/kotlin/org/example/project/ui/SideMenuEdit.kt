@@ -455,7 +455,7 @@ fun TerrainBuildingsConfigEditor(
 
 @Composable
 fun ZoneRandomizationConfigEditor(
-    config: ZoneRandomizationConfig,
+    config: ZoneRandomizationConfig?,
     onConfigChanged: (ZoneRandomizationConfig) -> Unit,
     modifier: Modifier = Modifier,
     availableZoneIds: List<Int> = emptyList() // List of available zone IDs for selection
@@ -479,13 +479,14 @@ fun ZoneRandomizationConfigEditor(
             )
         }
 
-        items(config.ZonesToSwap) { zoneArray ->
+        items(config?.ZonesToSwap ?: emptyList()) { zoneArray ->
             ZoneArrayEditor(
                 zoneArray = zoneArray.toList(),
                 onEditClicked = {
                     showZoneSelectionDialog = ZoneSelectionContext.ZonesToSwap(zoneArray)
                 },
                 onRemoveClicked = {
+                    if (config!= null)
                     onConfigChanged(config.copy(
                         ZonesToSwap = config.ZonesToSwap.filter { it !== zoneArray }
                     ))
@@ -497,9 +498,11 @@ fun ZoneRandomizationConfigEditor(
             Button(
                 onClick = {
                     val newArray = intArrayOf()
-                    onConfigChanged(config.copy(
-                        ZonesToSwap = config.ZonesToSwap + newArray
-                    ))
+                    config?.let {
+                        onConfigChanged(it.copy(
+                            ZonesToSwap = config.ZonesToSwap + newArray
+                        ))
+                    }
                     showZoneSelectionDialog = ZoneSelectionContext.ZonesToSwap(newArray)
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -515,9 +518,9 @@ fun ZoneRandomizationConfigEditor(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Switch(
-                    checked = config.IsSymmetricalSwap ?: false,
+                    checked = config?.IsSymmetricalSwap ?: false,
                     onCheckedChange = { isChecked ->
-                        onConfigChanged(config.copy(IsSymmetricalSwap = isChecked))
+                        config?.let { onConfigChanged(it.copy(IsSymmetricalSwap = isChecked)) }
                     },
                     modifier = Modifier.padding(end = 8.dp)
                 )
@@ -540,10 +543,12 @@ fun ZoneRandomizationConfigEditor(
             )
         }
 
+        if (config!=null)
         items(config.ZonesToRandomize) { zoneId ->
             ZoneIdItem(
                 zoneId = zoneId,
                 onRemoveClicked = {
+                    if (config !=null)
                     onConfigChanged(config.copy(
                         ZonesToRandomize = config.ZonesToRandomize.filter { it != zoneId }
                     ))
@@ -571,14 +576,18 @@ fun ZoneRandomizationConfigEditor(
             onConfirm = { selectedIds ->
                 when (context) {
                     is ZoneSelectionContext.ZonesToSwap -> {
-                        val updatedZones = config.ZonesToSwap.map {
-                            if (it === context.array) selectedIds.toIntArray() else it
+                        if (config!=null) {
+                            val updatedZones = config.ZonesToSwap.map {
+                                if (it === context.array) selectedIds.toIntArray() else it
+                            }
+                             onConfigChanged(config.copy(ZonesToSwap = updatedZones))
                         }
-                        onConfigChanged(config.copy(ZonesToSwap = updatedZones))
                     }
                     ZoneSelectionContext.ZonesToRandomize -> {
-                        val updatedZones = config.ZonesToRandomize + selectedIds.map { it.toLong() }
-                        onConfigChanged(config.copy(ZonesToRandomize = updatedZones))
+                        if (config!= null) {
+                            val updatedZones = config.ZonesToRandomize + selectedIds.map { it.toLong() }
+                            onConfigChanged(config.copy(ZonesToRandomize = updatedZones))
+                        }
                     }
                 }
                 showZoneSelectionDialog = null

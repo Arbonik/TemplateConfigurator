@@ -11,16 +11,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import java.awt.FileDialog
 import java.awt.Frame
 import java.io.File
 
+@OptIn(ExperimentalSerializationApi::class)
 val json = Json {
     ignoreUnknownKeys = true
     explicitNulls = false   // не требовать явных null для отсутствующих полей
     coerceInputValues = true // преобразовывать некорректные значения к значениям по умолчанию
+    decodeEnumsCaseInsensitive = true
 }
 
 // Открытие файла
@@ -38,7 +41,7 @@ fun openFile(readerText: (String) -> Unit, onError : (String) -> Unit) {
 // Открытие файла
 fun openFileUi(readerText: (String) -> Unit, onError : (String) -> Unit) {
     try {
-        val file = File("/Users/arbonik/KMPProject/TemplateConfigurator/composeApp/src/commonMain/resources/uitest.json")
+        val file = File("/Users/arbonik/KMPProject/TemplateConfigurator/composeApp/src/commonMain/resources/Moon_Mega_Treasure.json")
         readerText(file?.readText() ?: "")
     } catch (e: Exception) {
         onError(e.localizedMessage)
@@ -57,7 +60,6 @@ fun saveFile(content: String) {
 @Composable
 @Preview
 fun App() {
-
     MaterialTheme {
         var error by remember { mutableStateOf("") }
         if (error.isEmpty())

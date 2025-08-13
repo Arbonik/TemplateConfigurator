@@ -287,9 +287,6 @@ private fun BasicZoneConfigEditor(
             value = config.MirrorZoneId,
             onValueChange = { newValue ->
                 onConfigChanged(config.copy(MirrorZoneId = newValue))
-            },
-            onNullToggle = { isNull ->
-                onConfigChanged(config.copy(MirrorZoneId = if (isNull) null else 0))
             }
         )
 
@@ -357,7 +354,8 @@ private fun DwellingGenerationEditor(
             EnumDropdown(
                 label = "Building Texture",
                 options = BuildingTextureConfig.values().toList(),
-                selectedOption = config.DwellingGenerationConfig.BuildingTexture,
+                selectedOption = config.DwellingGenerationConfig.BuildingTexture
+                    ?: BuildingTextureConfig.DefaultDwellingByTerrain,
                 onOptionSelected = { newTexture ->
                     onConfigChanged(
                         config.copy(
@@ -371,7 +369,7 @@ private fun DwellingGenerationEditor(
 
             // Creatures Configuration
             CreaturesConfigEditor(
-                config = config.DwellingGenerationConfig.CreaturesConfiguration,
+                config = config.DwellingGenerationConfig.CreaturesConfiguration ?: CreaturesConfiguration(),
                 onConfigChanged = { newCreaturesConfig ->
                     onConfigChanged(
                         config.copy(
@@ -686,9 +684,6 @@ private fun ZoneFeaturesEditor(
             config = config.AbandonedMines,
             onConfigChanged = { newConfig ->
                 onConfigChanged(config.copy(AbandonedMines = newConfig))
-            },
-            onNullToggle = { isNull ->
-                onConfigChanged(config.copy(AbandonedMines = if (isNull) null else IntValueConfig(0)))
             }
         )
 
@@ -698,9 +693,6 @@ private fun ZoneFeaturesEditor(
             config = config.UpgBuildingsDensity,
             onConfigChanged = { newConfig ->
                 onConfigChanged(config.copy(UpgBuildingsDensity = newConfig))
-            },
-            onNullToggle = { isNull ->
-                onConfigChanged(config.copy(UpgBuildingsDensity = if (isNull) null else IntValueConfig(0)))
             }
         )
 
@@ -710,9 +702,6 @@ private fun ZoneFeaturesEditor(
             config = config.TreasureDensity,
             onConfigChanged = { newConfig ->
                 onConfigChanged(config.copy(TreasureDensity = newConfig))
-            },
-            onNullToggle = { isNull ->
-                onConfigChanged(config.copy(TreasureDensity = if (isNull) null else IntValueConfig(0)))
             }
         )
         // TreasureChestDensity
@@ -721,9 +710,6 @@ private fun ZoneFeaturesEditor(
             config = config.TreasureChestDensity,
             onConfigChanged = { newConfig ->
                 onConfigChanged(config.copy(TreasureChestDensity = newConfig))
-            },
-            onNullToggle = { isNull ->
-                onConfigChanged(config.copy(TreasureChestDensity = if (isNull) null else IntValueConfig(0)))
             }
         )
 
@@ -734,9 +720,6 @@ private fun ZoneFeaturesEditor(
             config = config.Prisons,
             onConfigChanged = { newConfig ->
                 onConfigChanged(config.copy(Prisons = newConfig))
-            },
-            onNullToggle = { isNull ->
-                onConfigChanged(config.copy(Prisons = if (isNull) null else IntValueConfig(0)))
             }
         )
 
@@ -746,9 +729,6 @@ private fun ZoneFeaturesEditor(
             config = config.TownGuardStrenght,
             onConfigChanged = { newConfig ->
                 onConfigChanged(config.copy(TownGuardStrenght = newConfig))
-            },
-            onNullToggle = { isNull ->
-                onConfigChanged(config.copy(TownGuardStrenght = if (isNull) null else IntValueConfig(0)))
             }
         )
 
@@ -758,9 +738,6 @@ private fun ZoneFeaturesEditor(
             config = config.ShopPoints,
             onConfigChanged = { newConfig ->
                 onConfigChanged(config.copy(ShopPoints = newConfig))
-            },
-            onNullToggle = { isNull ->
-                onConfigChanged(config.copy(ShopPoints = if (isNull) null else IntValueConfig(0)))
             }
         )
         // ShrinePoints
@@ -769,9 +746,6 @@ private fun ZoneFeaturesEditor(
             config = config.ShrinePoints,
             onConfigChanged = { newConfig ->
                 onConfigChanged(config.copy(ShrinePoints = newConfig))
-            },
-            onNullToggle = { isNull ->
-                onConfigChanged(config.copy(ShrinePoints = if (isNull) null else IntValueConfig(0)))
             }
         )
         // LuckMoralBuildingsDensity
@@ -780,9 +754,6 @@ private fun ZoneFeaturesEditor(
             config = config.LuckMoralBuildingsDensity,
             onConfigChanged = { newConfig ->
                 onConfigChanged(config.copy(LuckMoralBuildingsDensity = newConfig))
-            },
-            onNullToggle = { isNull ->
-                onConfigChanged(config.copy(LuckMoralBuildingsDensity = if (isNull) null else IntValueConfig(0)))
             }
         )
         // ResourceBuildingsDensity
@@ -791,9 +762,6 @@ private fun ZoneFeaturesEditor(
             config = config.ResourceBuildingsDensity,
             onConfigChanged = { newConfig ->
                 onConfigChanged(config.copy(ResourceBuildingsDensity = newConfig))
-            },
-            onNullToggle = { isNull ->
-                onConfigChanged(config.copy(ResourceBuildingsDensity = if (isNull) null else IntValueConfig(0)))
             }
         )
         // TreasureBuildingPoints
@@ -802,9 +770,6 @@ private fun ZoneFeaturesEditor(
             config = config.TreasureBuildingPoints,
             onConfigChanged = { newConfig ->
                 onConfigChanged(config.copy(TreasureBuildingPoints = newConfig))
-            },
-            onNullToggle = { isNull ->
-                onConfigChanged(config.copy(TreasureBuildingPoints = if (isNull) null else IntValueConfig(0)))
             }
         )
         // TreasureBlocksTotalValue
@@ -813,9 +778,6 @@ private fun ZoneFeaturesEditor(
             config = config.TreasureBlocksTotalValue,
             onConfigChanged = { newConfig ->
                 onConfigChanged(config.copy(TreasureBlocksTotalValue = newConfig))
-            },
-            onNullToggle = { isNull ->
-                onConfigChanged(config.copy(TreasureBlocksTotalValue = if (isNull) null else IntValueConfig(0)))
             }
         )
         // DenOfThieves
@@ -824,9 +786,6 @@ private fun ZoneFeaturesEditor(
             config = config.DenOfThieves,
             onConfigChanged = { newConfig ->
                 onConfigChanged(config.copy(DenOfThieves = newConfig))
-            },
-            onNullToggle = { isNull ->
-                onConfigChanged(config.copy(DenOfThieves = if (isNull) null else IntValueConfig(0)))
             }
         )
         // RedwoodObservatoryDensity
@@ -835,9 +794,6 @@ private fun ZoneFeaturesEditor(
             config = config.RedwoodObservatoryDensity,
             onConfigChanged = { newConfig ->
                 onConfigChanged(config.copy(RedwoodObservatoryDensity = newConfig))
-            },
-            onNullToggle = { isNull ->
-                onConfigChanged(config.copy(RedwoodObservatoryDensity = if (isNull) null else IntValueConfig(0)))
             }
         )
         // Size
@@ -846,9 +802,6 @@ private fun ZoneFeaturesEditor(
             config = config.Size,
             onConfigChanged = { newConfig ->
                 onConfigChanged(config.copy(Size = newConfig))
-            },
-            onNullToggle = { isNull ->
-                onConfigChanged(config.copy(Size = if (isNull) null else IntValueConfig(0)))
             }
         )
         // DistBetweenTreasureBlocks
@@ -857,9 +810,6 @@ private fun ZoneFeaturesEditor(
             config = config.DistBetweenTreasureBlocks,
             onConfigChanged = { newConfig ->
                 onConfigChanged(config.copy(DistBetweenTreasureBlocks = newConfig))
-            },
-            onNullToggle = { isNull ->
-                onConfigChanged(config.copy(DistBetweenTreasureBlocks = if (isNull) null else IntValueConfig(0)))
             }
         )
 
@@ -887,9 +837,6 @@ private fun PositioningEditor(
             config = config.ZoneStartPointX,
             onConfigChanged = { newConfig ->
                 onConfigChanged(config.copy(ZoneStartPointX = newConfig))
-            },
-            onNullToggle = { isNull ->
-                onConfigChanged(config.copy(ZoneStartPointX = if (isNull) null else IntValueConfig(0)))
             }
         )
 
@@ -899,9 +846,6 @@ private fun PositioningEditor(
             config = config.ZoneStartPointY,
             onConfigChanged = { newConfig ->
                 onConfigChanged(config.copy(ZoneStartPointY = newConfig))
-            },
-            onNullToggle = { isNull ->
-                onConfigChanged(config.copy(ZoneStartPointY = if (isNull) null else IntValueConfig(0)))
             }
         )
 
@@ -911,9 +855,6 @@ private fun PositioningEditor(
             config = config.MainTownStartPointX,
             onConfigChanged = { newConfig ->
                 onConfigChanged(config.copy(MainTownStartPointX = newConfig))
-            },
-            onNullToggle = { isNull ->
-                onConfigChanged(config.copy(MainTownStartPointX = if (isNull) null else IntValueConfig(0)))
             }
         )
 
@@ -923,9 +864,6 @@ private fun PositioningEditor(
             config = config.MainTownStartPointY,
             onConfigChanged = { newConfig ->
                 onConfigChanged(config.copy(MainTownStartPointY = newConfig))
-            },
-            onNullToggle = { isNull ->
-                onConfigChanged(config.copy(MainTownStartPointY = if (isNull) null else IntValueConfig(0)))
             }
         )
 
@@ -935,9 +873,6 @@ private fun PositioningEditor(
             config = config.MainTownRotationDirection,
             onConfigChanged = { newConfig ->
                 onConfigChanged(config.copy(MainTownRotationDirection = newConfig))
-            },
-            onNullToggle = { isNull ->
-                onConfigChanged(config.copy(MainTownRotationDirection = if (isNull) null else IntValueConfig(0)))
             }
         )
     }
@@ -968,11 +903,10 @@ private fun NumberInputField(
 }
 
 @Composable
-private fun NullableNumberInputField(
+fun NullableNumberInputField(
     label: String,
     value: Int?,
     onValueChange: (Int?) -> Unit,
-    onNullToggle: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var isNull by remember { mutableStateOf(value == null) }
@@ -986,7 +920,7 @@ private fun NullableNumberInputField(
             checked = !isNull,
             onCheckedChange = {
                 isNull = !it
-                onNullToggle(isNull)
+                onValueChange(null)
                 if (!isNull && textValue.isEmpty()) {
                     textValue = "0"
                     onValueChange(0)
@@ -999,6 +933,47 @@ private fun NullableNumberInputField(
             onValueChange = {
                 textValue = it
                 it.toIntOrNull()?.let { intValue -> onValueChange(intValue) }
+            },
+            label = { Text(label) },
+            modifier = Modifier.weight(1f),
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            enabled = !isNull
+        )
+    }
+}
+
+@Composable
+fun NullableNumberInputField(
+    label: String,
+    value: Double?,
+    onValueChange: (Double?) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var isNull by remember { mutableStateOf(value == null) }
+    var textValue by remember { mutableStateOf(value?.toString() ?: "") }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Checkbox(
+            checked = !isNull,
+            onCheckedChange = {
+                isNull = !it
+                onValueChange(null)
+                if (!isNull && textValue.isEmpty()) {
+                    textValue = "0"
+                    onValueChange(0.0)
+                }
+            }
+        )
+
+        OutlinedTextField(
+            value = if (isNull) "" else textValue,
+            onValueChange = {
+                textValue = it
+                it.toDoubleOrNull()?.let { intValue -> onValueChange(intValue) }
             },
             label = { Text(label) },
             modifier = Modifier.weight(1f),
@@ -1083,48 +1058,10 @@ private fun CheckboxWithLabel(
 }
 
 @Composable
-private fun NamedIntValueConfigEditor(
-    label: String,
-    config: IntValueConfig?,
-    onConfigChanged: (IntValueConfig) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(modifier = modifier.padding(vertical = 8.dp)) {
-        Text(label, style = MaterialTheme.typography.labelMedium)
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            NumberInputField(
-                label = "Min",
-                value = config?.MinValue ?: 0,
-                onValueChange = { newValue ->
-                    onConfigChanged((config ?: IntValueConfig(0)).copy(MinValue = newValue))
-                },
-                modifier = Modifier.weight(0.48f)
-            )
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            NumberInputField(
-                label = "Max",
-                value = config?.MaxValue ?: 0,
-                onValueChange = { newValue ->
-                    onConfigChanged((config ?: IntValueConfig(0)).copy(MaxValue = newValue))
-                },
-                modifier = Modifier.weight(0.48f)
-            )
-        }
-    }
-}
-
-@Composable
-private fun NullableIntValueConfigEditor(
+fun NullableIntValueConfigEditor(
     label: String,
     config: IntValueConfig?,
     onConfigChanged: (IntValueConfig?) -> Unit,
-    onNullToggle: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var isNull by remember { mutableStateOf(config == null) }
@@ -1140,9 +1077,10 @@ private fun NullableIntValueConfigEditor(
                 checked = !isNull,
                 onCheckedChange = {
                     isNull = !it
-                    onNullToggle(isNull)
                     if (!isNull && config == null) {
                         onConfigChanged(IntValueConfig(0))
+                    } else {
+                        onConfigChanged(null)
                     }
                 }
             )
@@ -1198,52 +1136,6 @@ private fun IntValueConfigEditor(
                 modifier = Modifier.weight(1f)
             )
         }
-    }
-}
-
-@Composable
-private fun ResourcesConfigEditor(
-    config: ResourcesConfig,
-    label: String,
-    onConfigUpdated: (ResourcesConfig) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    var currentConfig by remember { mutableStateOf(config) }
-
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Text(label, style = MaterialTheme.typography.labelMedium)
-
-        IntValueConfigEditor(
-            config = currentConfig.Wood ?: IntValueConfig(0),
-            label = "Wood",
-            onConfigUpdated = { newConfig ->
-                currentConfig = currentConfig.copy(Wood = newConfig)
-                onConfigUpdated(currentConfig)
-            }
-        )
-
-        IntValueConfigEditor(
-            config = currentConfig.Ore ?: IntValueConfig(0),
-            label = "Ore",
-            onConfigUpdated = { newConfig ->
-                currentConfig = currentConfig.copy(Ore = newConfig)
-                onConfigUpdated(currentConfig)
-            }
-        )
-
-        IntValueConfigEditor(
-            config = currentConfig.Mercury ?: IntValueConfig(0),
-            label = "Mercury",
-            onConfigUpdated = { newConfig ->
-                currentConfig = currentConfig.copy(Mercury = newConfig)
-                onConfigUpdated(currentConfig)
-            }
-        )
-
-        // Add other resources similarly...
     }
 }
 

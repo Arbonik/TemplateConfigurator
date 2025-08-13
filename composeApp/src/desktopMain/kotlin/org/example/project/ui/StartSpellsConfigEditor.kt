@@ -14,7 +14,7 @@ import org.example.project.data.enums.CastleType
 
 @Composable
 fun StartSpellsConfigEditor(
-    config: StartSpellsConfig,
+    config: StartSpellsConfig?,
     onConfigChanged: (StartSpellsConfig) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -27,7 +27,7 @@ fun StartSpellsConfigEditor(
     var showAddHeroConfig by remember { mutableStateOf(false) }
 
     val playersType = remember(config) {
-        PlayerType.values().toList() - config.SpellsByPlayers.map { it.PlayerType }
+        PlayerType.values().toList() - (config?.SpellsByPlayers?.map { it.PlayerType } ?: emptyList()).toSet()
     }
 
     LazyColumn(
@@ -40,29 +40,33 @@ fun StartSpellsConfigEditor(
                 onAddClick = { showGlobalSpellsPicker = true }
             )
             SpellsList(
-                spells = config.GlobalSpells,
+                spells = config?.GlobalSpells ?: emptyList(),
                 onEditClick = null,
                 onRemoveClick = { spell ->
-                    onConfigChanged(config.copy(GlobalSpells = config.GlobalSpells - spell))
+                    if (config != null)
+                        onConfigChanged(config.copy(GlobalSpells = config.GlobalSpells - spell))
                 }
             )
         }
 
         item {
-                ConfigSectionHeader(
-                    title = "Spells by Player",
-                    onAddClick = if (playersType.isNotEmpty()) {
-                        { showAddPlayerConfig = true }
-                    } else null
-                )
+            ConfigSectionHeader(
+                title = "Spells by Player",
+                onAddClick = if (playersType.isNotEmpty()) {
+                    { showAddPlayerConfig = true }
+                } else null
+            )
+            if (config != null)
             config.SpellsByPlayers.forEach { playerConfig ->
                 PlayerConfigItem(
                     config = playerConfig,
                     onEditSpells = { showPlayerSpellsPicker = playerConfig },
                     onRemove = {
-                        onConfigChanged(config.copy(
-                            SpellsByPlayers = config.SpellsByPlayers - playerConfig
-                        ))
+                        onConfigChanged(
+                            config.copy(
+                                SpellsByPlayers = config.SpellsByPlayers - playerConfig
+                            )
+                        )
                     }
                 )
             }
@@ -73,14 +77,17 @@ fun StartSpellsConfigEditor(
                 title = "Spells by Race",
                 onAddClick = { showAddRaceConfig = true }
             )
+            if (config != null)
             config.SpellsByRaces.forEach { raceConfig ->
                 RaceConfigItem(
                     config = raceConfig,
                     onEditSpells = { showRaceSpellsPicker = raceConfig },
                     onRemove = {
-                        onConfigChanged(config.copy(
-                            SpellsByRaces = config.SpellsByRaces - raceConfig
-                        ))
+                        onConfigChanged(
+                            config.copy(
+                                SpellsByRaces = config.SpellsByRaces - raceConfig
+                            )
+                        )
                     }
                 )
             }
@@ -91,14 +98,17 @@ fun StartSpellsConfigEditor(
                 title = "Spells by Hero",
                 onAddClick = { showAddHeroConfig = true }
             )
+            if (config != null)
             config.SpellsByHeroes.forEach { heroConfig ->
                 HeroConfigItem(
                     config = heroConfig,
                     onEditSpells = { showHeroSpellsPicker = heroConfig },
                     onRemove = {
-                        onConfigChanged(config.copy(
-                            SpellsByHeroes = config.SpellsByHeroes - heroConfig
-                        ))
+                        onConfigChanged(
+                            config.copy(
+                                SpellsByHeroes = config.SpellsByHeroes - heroConfig
+                            )
+                        )
                     }
                 )
             }
@@ -108,9 +118,10 @@ fun StartSpellsConfigEditor(
     // Dialogs for picking spells
     if (showGlobalSpellsPicker) {
         SpellPickerDialog(
-            selectedSpells = config.GlobalSpells,
+            selectedSpells = config?.GlobalSpells ?: emptyList(),
             onDismiss = { showGlobalSpellsPicker = false },
             onConfirm = { spells ->
+                if (config != null)
                 onConfigChanged(config.copy(GlobalSpells = spells))
                 showGlobalSpellsPicker = false
             }
@@ -122,11 +133,13 @@ fun StartSpellsConfigEditor(
             selectedSpells = playerConfig.Spells,
             onDismiss = { showPlayerSpellsPicker = null },
             onConfirm = { spells ->
-                val updatedList = config.SpellsByPlayers.map {
-                    if (it == playerConfig) it.copy(Spells = spells) else it
+                if (config != null) {
+                    val updatedList = config.SpellsByPlayers.map {
+                        if (it == playerConfig) it.copy(Spells = spells) else it
+                    }
+                    onConfigChanged(config.copy(SpellsByPlayers = updatedList))
+                    showPlayerSpellsPicker = null
                 }
-                onConfigChanged(config.copy(SpellsByPlayers = updatedList))
-                showPlayerSpellsPicker = null
             }
         )
     }
@@ -136,11 +149,13 @@ fun StartSpellsConfigEditor(
             selectedSpells = raceConfig.Spells,
             onDismiss = { showRaceSpellsPicker = null },
             onConfirm = { spells ->
-                val updatedList = config.SpellsByRaces.map {
-                    if (it == raceConfig) it.copy(Spells = spells) else it
+                if (config != null) {
+                    val updatedList = config.SpellsByRaces.map {
+                        if (it == raceConfig) it.copy(Spells = spells) else it
+                    }
+                    onConfigChanged(config.copy(SpellsByRaces = updatedList))
+                    showRaceSpellsPicker = null
                 }
-                onConfigChanged(config.copy(SpellsByRaces = updatedList))
-                showRaceSpellsPicker = null
             }
         )
     }
@@ -150,11 +165,13 @@ fun StartSpellsConfigEditor(
             selectedSpells = heroConfig.Spells,
             onDismiss = { showHeroSpellsPicker = null },
             onConfirm = { spells ->
-                val updatedList = config.SpellsByHeroes.map {
-                    if (it == heroConfig) it.copy(Spells = spells) else it
+                if (config != null) {
+                    val updatedList = config.SpellsByHeroes.map {
+                        if (it == heroConfig) it.copy(Spells = spells) else it
+                    }
+                    onConfigChanged(config.copy(SpellsByHeroes = updatedList))
+                    showHeroSpellsPicker = null
                 }
-                onConfigChanged(config.copy(SpellsByHeroes = updatedList))
-                showHeroSpellsPicker = null
             }
         )
     }
@@ -165,12 +182,16 @@ fun StartSpellsConfigEditor(
             items = playersType,
             onDismiss = { showAddPlayerConfig = false },
             onConfirm = { playerType ->
-                val newConfig = StartSpellsByPlayer(playerType, emptyList())
-                onConfigChanged(config.copy(
-                    SpellsByPlayers = config.SpellsByPlayers + newConfig
-                ))
-                showAddPlayerConfig = false
-                showPlayerSpellsPicker = newConfig
+                if (config != null) {
+                    val newConfig = StartSpellsByPlayer(playerType, emptyList())
+                    onConfigChanged(
+                        config.copy(
+                            SpellsByPlayers = config.SpellsByPlayers + newConfig
+                        )
+                    )
+                    showAddPlayerConfig = false
+                    showPlayerSpellsPicker = newConfig
+                }
             }
         )
     }
@@ -179,12 +200,16 @@ fun StartSpellsConfigEditor(
         CastleTypePickerDialog(
             onDismiss = { showAddRaceConfig = false },
             onConfirm = { castleType ->
-                val newConfig = StartSpellsByRace(castleType, emptyList())
-                onConfigChanged(config.copy(
-                    SpellsByRaces = config.SpellsByRaces + newConfig
-                ))
-                showAddRaceConfig = false
-                showRaceSpellsPicker = newConfig
+                if (config != null) {
+                    val newConfig = StartSpellsByRace(castleType, emptyList())
+                    onConfigChanged(
+                        config.copy(
+                            SpellsByRaces = config.SpellsByRaces + newConfig
+                        )
+                    )
+                    showAddRaceConfig = false
+                    showRaceSpellsPicker = newConfig
+                }
             }
         )
     }
@@ -193,12 +218,16 @@ fun StartSpellsConfigEditor(
         HeroTypePickerDialog(
             onDismiss = { showAddHeroConfig = false },
             onConfirm = { heroType ->
-                val newConfig = StartSpellsByHero(heroType, emptyList())
-                onConfigChanged(config.copy(
-                    SpellsByHeroes = config.SpellsByHeroes + newConfig
-                ))
-                showAddHeroConfig = false
-                showHeroSpellsPicker = newConfig
+                if (config != null) {
+                    val newConfig = StartSpellsByHero(heroType, emptyList())
+                    onConfigChanged(
+                        config.copy(
+                            SpellsByHeroes = config.SpellsByHeroes + newConfig
+                        )
+                    )
+                    showAddHeroConfig = false
+                    showHeroSpellsPicker = newConfig
+                }
             }
         )
     }
@@ -473,7 +502,8 @@ private fun SpellPickerDialog(
                     }
                     Spacer(modifier = Modifier.width(16.dp))
                     Button(onClick = {
-                        onConfirm(currentSelection.toList()) }
+                        onConfirm(currentSelection.toList())
+                    }
                     ) {
                         Text("Confirm")
                     }

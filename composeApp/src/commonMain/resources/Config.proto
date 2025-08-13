@@ -1137,7 +1137,6 @@ message CustomBuildingConfig {
     ScriptBuildingConfig ScriptBuilding = 9; // одно из кастомных зданий без дополнительных настроек
     MageEyeConfig MageEye = 10; // здание для открытия тумана войны по заданным координатам
     RunicChestConfig RunicChest = 11;  // объект с выдачей рун герою
-
     DefaultBuildingConfig DefaultBuilding = 99;  // вариант объекта по умолчанию без кастомизации (текстура тоже будет взята из дефолтного объекта)
     CreatureBankConfig MjoBankConfig = 100; // это вариант здания который будет использован для специальной генерации объектов с настройками в секции CreatureBanksPool и добавлен специальной галочкой AddCreatureBanksPool.
   }

@@ -129,7 +129,7 @@ private fun ConnectionModelList(
     deleteZone: (ConnectionModel) -> Unit
 ) {
     LazyColumn(modifier = modifier) {
-        itemsIndexed(connections) { index , connection ->
+        itemsIndexed(connections) { index, connection ->
             CompactConnectionListItem(
                 connection,
                 {

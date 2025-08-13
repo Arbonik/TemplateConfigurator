@@ -30,7 +30,7 @@ fun DwellingByPointsConfigScreen(
         )
 
         DwellingValueEditor(
-            value = config.DwellingPoints,
+            value = config.DwellingPoints ?: DwellingValue(),
             onValueChanged = { onConfigChanged(config.copy(DwellingPoints = it)) },
         )
 
@@ -50,20 +50,20 @@ fun DwellingByPointsConfigScreen(
 
         SectionTitle("Global Dwelling Points")
         DwellingValueEditor(
-            value = config.DwellingPoints,
+            value = config.DwellingPoints ?: DwellingValue(),
             onValueChanged = { onConfigChanged(config.copy(DwellingPoints = it)) }
         )
 
         SectionTitle("Per-Tier Limits")
         DwellingValueEditor(
-            value = config.MinCountPerTier,
+            value = config.MinCountPerTier?: DwellingValue(),
             onValueChanged = { onConfigChanged(config.copy(MinCountPerTier = it)) },
             label = "Min Count",
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
         DwellingValueEditor(
-            value = config.MaxCountPerTier,
+            value = config.MaxCountPerTier ?: DwellingValue(),
             onValueChanged = { onConfigChanged(config.copy(MaxCountPerTier = it)) },
             label = "Max Count",
             modifier = Modifier.padding(bottom = 8.dp)

@@ -16,13 +16,13 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GeneralDataEditor(
-    initialData: GeneralData,
+    initialData: GeneralData?,
     onSave: (GeneralData) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var mine1Level by remember { mutableStateOf(initialData.Mine1LevelGuardLevel?.toString() ?: "") }
-    var mine2Level by remember { mutableStateOf(initialData.Mine2LevelGuardLevel?.toString() ?: "") }
-    var mineGoldLevel by remember { mutableStateOf(initialData.MineGoldGuardLevel?.toString() ?: "") }
+    var mine1Level by remember { mutableStateOf(initialData?.Mine1LevelGuardLevel?.toString() ?: "") }
+    var mine2Level by remember { mutableStateOf(initialData?.Mine2LevelGuardLevel?.toString() ?: "") }
+    var mineGoldLevel by remember { mutableStateOf(initialData?.MineGoldGuardLevel?.toString() ?: "") }
 
     var showError by remember { mutableStateOf(false) }
 

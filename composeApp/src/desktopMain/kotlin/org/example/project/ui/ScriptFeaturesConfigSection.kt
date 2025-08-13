@@ -2,6 +2,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -51,12 +52,10 @@ fun ScriptFeaturesConfigEditor(
                 onConfigChanged(currentConfig)
             }
         )
-        ForcedFinalBattleEditor(
-            model = currentConfig.ForcedFinalBattleProps ?: ForcedFinalBattleModel(),
-            onModelChanged = {
-                currentConfig = currentConfig.copy(ForcedFinalBattleProps = it.takeIf { model ->
-                    model != ForcedFinalBattleModel() // Only include if not default
-                })
+        ForcedFinalBattleListEditor(
+            models = currentConfig.ForcedFinalBattleProps,
+            onModelsChanged = {
+                currentConfig = currentConfig.copy(ForcedFinalBattleProps = it)
                 onConfigChanged(currentConfig)
             }
         )
@@ -346,6 +345,70 @@ private fun GloballyDisabledBuildingsEditor(
                         }
                     }
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun ForcedFinalBattleListEditor(
+    models: List<ForcedFinalBattleModel>,
+    onModelsChanged: (List<ForcedFinalBattleModel>) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var currentModels by remember { mutableStateOf(models) }
+
+    Column(modifier = modifier) {
+        // Header with add button
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                "Forced Final Battles",
+                style = MaterialTheme.typography.headlineSmall
+            )
+
+            IconButton(
+                onClick = {
+                    currentModels = currentModels + ForcedFinalBattleModel()
+                    onModelsChanged(currentModels)
+                }
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Add battle")
+            }
+        }
+
+        // List of editors
+        FlowColumn(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            currentModels.forEachIndexed{ index, model ->
+                ForcedFinalBattleEditor(
+                    model = model,
+                    onModelChanged = { updatedModel ->
+                        currentModels = currentModels.toMutableList().apply {
+                            set(index, updatedModel)
+                        }
+                        onModelsChanged(currentModels)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                // Delete button for each item
+                IconButton(
+                    onClick = {
+                        currentModels = currentModels.toMutableList().apply {
+                            removeAt(index)
+                        }
+                        onModelsChanged(currentModels)
+                    },
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Icon(Icons.Default.Delete, contentDescription = "Delete battle")
+                }
             }
         }
     }
