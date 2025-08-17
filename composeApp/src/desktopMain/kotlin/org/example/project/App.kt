@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import org.example.project.ui.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import java.awt.FileDialog
 import java.awt.Frame
@@ -60,7 +61,7 @@ fun saveFile(content: String) {
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
+    AppTheme {
         var error by remember { mutableStateOf("") }
         if (error.isEmpty())
             Column(

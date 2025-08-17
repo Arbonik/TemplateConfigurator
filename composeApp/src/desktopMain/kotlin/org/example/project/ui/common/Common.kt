@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
+import org.example.project.ui.theme.HeadingText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -146,7 +147,7 @@ fun IntValueConfigEditor(
                     }
                 }
             )
-            Text("Рандом")
+            HeadingText("Рандом")
         }
 
         if (isRandom) {
