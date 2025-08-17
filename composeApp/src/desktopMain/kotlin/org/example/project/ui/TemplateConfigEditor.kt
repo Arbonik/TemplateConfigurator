@@ -2,6 +2,7 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -50,6 +51,7 @@ sealed class NavigationItem(
     object CustomBuildings : NavigationItem("custom_buildings", "Custom Buildings", Icons.Default.Build)
     object CreatureBanks : NavigationItem("creature_banks", "Creature Banks", Icons.Default.AccountTree)
     object ZoneRandomization : NavigationItem("zone_randomization", "Zone Randomization", Icons.Default.Shuffle)
+    object PNG : NavigationItem("png", "Graph Scheme", Icons.Default.AttachFile)
 }
 
 @Composable
@@ -170,6 +172,10 @@ fun TemplateConfigEditor(
                         },
                         availableZoneIds = config.Zones.map { it.ZoneId }
                     )
+                    is NavigationItem.PNG -> ZonesGraphInteractiveScreen(
+                        config.Zones,
+                        connections = config.Connections
+                    )
                 }
             }
         }
@@ -189,7 +195,7 @@ private fun NavigationPanel(
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .scrollable(rememberScrollState(0), Orientation.Vertical)
+                .verticalScroll(rememberScrollState())
                 .padding(8.dp)
         ) {
             Text(
@@ -211,7 +217,8 @@ private fun NavigationPanel(
                 NavigationItem.StartSpells,
                 NavigationItem.CustomBuildings,
                 NavigationItem.CreatureBanks,
-                NavigationItem.ZoneRandomization
+                NavigationItem.ZoneRandomization,
+                NavigationItem.PNG,
             )
 
             navItems.forEach { item ->
