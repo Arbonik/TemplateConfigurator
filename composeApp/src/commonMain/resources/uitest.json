@@ -1,471 +1,1008 @@
 {
-  "TemplateName": "template_1",
+  "TemplateName": "[S3]Echo",
   "Zones": [
     {
       "ZoneId": 1,
       "TerrainType": "FirstPlayer",
-      "MirrorZoneId": 2,
       "DwellingGenerationConfig": {
-        "BuildingTexture": "DefaultDwellingByTerrain",
-        "CreaturesConfiguration": {
-          "ReplacementsCount": {
-            "MinValue": 1,
-            "MaxValue": 3
-          },
-          "TerrainFaction": true,
-          "NonPlayersFactions": false,
-          "Grades": true,
-          "BaseCostMultiplier": 1.2,
-          "CreatureModifiers": [
-            {
-              "Tier": 1,
-              "CostMultiplier": 1.1,
-              "GrowMultiplier": 1.0
+        "BuildingTexture": "Null",
+        "DwellingByPointsConfig": {
+          "PointsCount": 1500,
+          "PointsCountByFaction": {},
+          "DwellingPointsByFaction": {
+            "Humans": {
+              "T1": 59,
+              "T2": 81,
+              "T3": 74,
+              "T4": 162,
+              "T5": 152,
+              "T6": 202,
+              "T7": 270
             },
-            {
-              "Tier": 2,
-              "ResourcesMultiplier": 1.2
+            "Inferno": {
+              "T1": 91,
+              "T2": 95,
+              "T3": 76,
+              "T4": 152,
+              "T5": 163,
+              "T6": 169,
+              "T7": 254
+            },
+            "Necropolis": {
+              "T1": 109,
+              "T2": 115,
+              "T3": 138,
+              "T4": 128,
+              "T5": 191,
+              "T6": 191,
+              "T7": 128
+            },
+            "Elves": {
+              "T1": 57,
+              "T2": 74,
+              "T3": 201,
+              "T4": 191,
+              "T5": 143,
+              "T6": 143,
+              "T7": 191
+            },
+            "Liga": {
+              "T1": 84,
+              "T2": 98,
+              "T3": 146,
+              "T4": 130,
+              "T5": 163,
+              "T6": 163,
+              "T7": 217
+            },
+            "Mages": {
+              "T1": 81,
+              "T2": 68,
+              "T3": 109,
+              "T4": 146,
+              "T5": 109,
+              "T6": 243,
+              "T7": 243
+            },
+            "Dwarfs": {
+              "T1": 131,
+              "T2": 114,
+              "T3": 110,
+              "T4": 73,
+              "T5": 146,
+              "T6": 183,
+              "T7": 244
+            },
+            "Horde": {
+              "T1": 51,
+              "T2": 65,
+              "T3": 74,
+              "T4": 135,
+              "T5": 203,
+              "T6": 203,
+              "T7": 270
             }
-          ],
-          "CreatureTierReplacements": [
-            {
-              "Tier": 1,
-              "CreatureIds": ["creature_1", "creature_2"]
+          },
+          "AllowedTiers": [],
+          "MinCountPerTierByFaction": {
+            "Humans": {
+              "T2": 1
+            },
+            "Inferno": {
+              "T1": 1,
+              "T4": 1
+            },
+            "Necropolis": {
+              "T1": 1
+            },
+            "Elves": {
+              "T3": 1
+            },
+            "Liga": {
+              "T1": 1,
+              "T2": 1
+            },
+            "Mages": {
+              "T1": 1,
+              "T3": 1
+            },
+            "Dwarfs": {
+              "T2": 1,
+              "T3": 1
+            },
+            "Horde": {
+              "T2": 1
             }
-          ]
-        },
-        "RandomDwellingConfig": {
-          "MinCount": 2,
-          "MaxCount": 5,
-          "MinTiersCount": 1,
-          "MaxTiersCount": 3,
-          "UniformDistribution": false,
-          "AllowedTiers": [1, 2, 3],
-          "MinCountPerTier": 1,
-          "MaxCountPerTier": 2
+          },
+          "MaxCountPerTierByFaction": {
+            "Humans": {
+              "T1": 3,
+              "T2": 2,
+              "T3": 3,
+              "T4": 3,
+              "T5": 2,
+              "T6": 3,
+              "T7": 3
+            },
+            "Inferno": {
+              "T1": 3,
+              "T2": 3,
+              "T3": 3,
+              "T4": 2,
+              "T5": 3,
+              "T6": 3,
+              "T7": 3
+            },
+            "Necropolis": {
+              "T1": 2,
+              "T2": 3,
+              "T3": 3,
+              "T4": 2,
+              "T5": 3,
+              "T6": 3,
+              "T7": 3
+            },
+            "Elves": {
+              "T1": 3,
+              "T2": 3,
+              "T3": 2,
+              "T4": 2,
+              "T5": 3,
+              "T6": 3,
+              "T7": 3
+            },
+            "Liga": {
+              "T1": 3,
+              "T2": 2,
+              "T3": 3,
+              "T4": 3,
+              "T5": 1,
+              "T6": 3,
+              "T7": 3
+            },
+            "Mages": {
+              "T1": 2,
+              "T2": 3,
+              "T3": 3,
+              "T4": 3,
+              "T5": 3,
+              "T6": 3,
+              "T7": 3
+            },
+            "Dwarfs": {
+              "T1": 3,
+              "T2": 3,
+              "T3": 3,
+              "T4": 3,
+              "T5": 3,
+              "T6": 3,
+              "T7": 3
+            },
+            "Horde": {
+              "T1": 4,
+              "T2": 2,
+              "T3": 3,
+              "T4": 3,
+              "T5": 3,
+              "T6": 2,
+              "T7": 2
+            }
+          }
         }
       },
       "MineGenerationConfig": {
         "Wood": {
-          "MinValue": 100,
-          "MaxValue": 200
+          "MinValue": 1,
+          "MaxValue": 1
         },
         "Ore": {
-          "MinValue": 100,
-          "MaxValue": 200
+          "MinValue": 1,
+          "MaxValue": 1
         },
         "Mercury": {
-          "MinValue": 5,
-          "MaxValue": 10
+          "MinValue": 1,
+          "MaxValue": 1
         },
         "Crystals": {
-          "MinValue": 5,
-          "MaxValue": 10
+          "MinValue": 1,
+          "MaxValue": 1
         },
         "Sulfur": {
-          "MinValue": 5,
-          "MaxValue": 10
+          "MinValue": 1,
+          "MaxValue": 1
         },
         "Gems": {
-          "MinValue": 3,
-          "MaxValue": 7
+          "MinValue": 1,
+          "MaxValue": 1
         },
         "Gold": {
-          "MinValue": 1000,
-          "MaxValue": 2000
+          "MinValue": 1,
+          "MaxValue": 1
         }
       },
-      "AbandonedMines": {
-        "MinValue": 1,
-        "MaxValue": 3
+      "UpgBuildingsDensity": {
+        "MinValue": 12,
+        "MaxValue": 12
       },
       "TreasureDensity": {
-        "MinValue": 5,
+        "MinValue": 10,
+        "MaxValue": 10
+      },
+      "TreasureChestDensity": {
+        "MinValue": 10,
         "MaxValue": 10
       },
       "Prisons": {
-        "MinValue": 1,
-        "MaxValue": 2
+        "MinValue": 0,
+        "MaxValue": 0
       },
-      "TownGuardStrenght": {
+      "ShopPoints": {
         "MinValue": 10,
-        "MaxValue": 20
+        "MaxValue": 10
       },
-      "Size": {
-        "MinValue": 50,
-        "MaxValue": 70
+      "ShrinePoints": {
+        "MinValue": 12,
+        "MaxValue": 12
       },
-      "Town": true,
-      "ZoneStartPointX": {
+      "LuckMoralBuildingsDensity": {
         "MinValue": 10,
-        "MaxValue": 20
+        "MaxValue": 10
       },
-      "ZoneStartPointY": {
+      "ResourceBuildingsDensity": {
         "MinValue": 10,
-        "MaxValue": 20
+        "MaxValue": 10
+      },
+      "TreasureBuildingPoints": {
+        "MinValue": 45,
+        "MaxValue": 45
+      },
+      "TreasureBlocksTotalValue": {
+        "MinValue": 25000,
+        "MaxValue": 25000
+      },
+      "DenOfThieves": {
+        "MinValue": 0,
+        "MaxValue": 0
+      },
+      "RedwoodObservatoryDensity": {
+        "MinValue": 0,
+        "MaxValue": 0
+      },
+      "TreasureBlocksScalingFromTownDist": true,
+      "Taverns": {
+        "MinValue": 3,
+        "MaxValue": 3
+      },
+      "EnlightenmentStones": {
+        "MinValue": 0,
+        "MaxValue": 0
+      },
+      "WisdomStones": {
+        "MinValue": 0,
+        "MaxValue": 0
+      }
+    },
+    {
+      "ZoneId": 2,
+      "TerrainType": "SecondPlayer",
+      "MirrorZoneId": 1,
+      "DwellingGenerationConfig": {
+        "BuildingTexture": "Null",
+        "DwellingByPointsConfig": {
+          "PointsCount": 1500,
+          "PointsCountByFaction": {},
+          "DwellingPointsByFaction": {
+            "Humans": {
+              "T1": 59,
+              "T2": 81,
+              "T3": 74,
+              "T4": 162,
+              "T5": 152,
+              "T6": 202,
+              "T7": 270
+            },
+            "Inferno": {
+              "T1": 91,
+              "T2": 95,
+              "T3": 76,
+              "T4": 152,
+              "T5": 163,
+              "T6": 169,
+              "T7": 254
+            },
+            "Necropolis": {
+              "T1": 109,
+              "T2": 115,
+              "T3": 138,
+              "T4": 128,
+              "T5": 191,
+              "T6": 191,
+              "T7": 128
+            },
+            "Elves": {
+              "T1": 57,
+              "T2": 74,
+              "T3": 201,
+              "T4": 191,
+              "T5": 143,
+              "T6": 143,
+              "T7": 191
+            },
+            "Liga": {
+              "T1": 84,
+              "T2": 98,
+              "T3": 146,
+              "T4": 130,
+              "T5": 163,
+              "T6": 163,
+              "T7": 217
+            },
+            "Mages": {
+              "T1": 81,
+              "T2": 68,
+              "T3": 109,
+              "T4": 146,
+              "T5": 109,
+              "T6": 243,
+              "T7": 243
+            },
+            "Dwarfs": {
+              "T1": 131,
+              "T2": 114,
+              "T3": 110,
+              "T4": 73,
+              "T5": 146,
+              "T6": 183,
+              "T7": 244
+            },
+            "Horde": {
+              "T1": 51,
+              "T2": 65,
+              "T3": 74,
+              "T4": 135,
+              "T5": 203,
+              "T6": 203,
+              "T7": 270
+            }
+          },
+          "AllowedTiers": [],
+          "MinCountPerTierByFaction": {
+            "Humans": {
+              "T2": 1
+            },
+            "Inferno": {
+              "T1": 1,
+              "T4": 1
+            },
+            "Necropolis": {
+              "T1": 1
+            },
+            "Elves": {
+              "T3": 1
+            },
+            "Liga": {
+              "T1": 1,
+              "T2": 1
+            },
+            "Mages": {
+              "T1": 1,
+              "T3": 1
+            },
+            "Dwarfs": {
+              "T2": 1,
+              "T3": 1
+            },
+            "Horde": {
+              "T2": 1
+            }
+          },
+          "MaxCountPerTierByFaction": {
+            "Humans": {
+              "T1": 4,
+              "T2": 2,
+              "T3": 3,
+              "T4": 3,
+              "T5": 2,
+              "T6": 2,
+              "T7": 2
+            },
+            "Inferno": {
+              "T1": 3,
+              "T2": 3,
+              "T3": 3,
+              "T4": 2,
+              "T5": 2,
+              "T6": 2,
+              "T7": 2
+            },
+            "Necropolis": {
+              "T1": 2,
+              "T2": 3,
+              "T3": 3,
+              "T4": 2,
+              "T5": 2,
+              "T6": 2,
+              "T7": 3
+            },
+            "Elves": {
+              "T1": 3,
+              "T2": 3,
+              "T3": 2,
+              "T4": 2,
+              "T5": 2,
+              "T6": 2,
+              "T7": 2
+            },
+            "Liga": {
+              "T1": 3,
+              "T2": 2,
+              "T3": 3,
+              "T4": 3,
+              "T5": 1,
+              "T6": 2,
+              "T7": 2
+            },
+            "Mages": {
+              "T1": 2,
+              "T2": 3,
+              "T3": 3,
+              "T4": 3,
+              "T5": 2,
+              "T6": 2,
+              "T7": 2
+            },
+            "Dwarfs": {
+              "T1": 3,
+              "T2": 3,
+              "T3": 3,
+              "T4": 3,
+              "T5": 2,
+              "T6": 2,
+              "T7": 2
+            },
+            "Horde": {
+              "T1": 4,
+              "T2": 2,
+              "T3": 3,
+              "T4": 3,
+              "T5": 3,
+              "T6": 2,
+              "T7": 2
+            }
+          }
+        }
       }
     },
     {
       "ZoneId": 3,
-      "TerrainType": "Terrain2",
+      "TerrainType": "Terrain1",
       "DwellingGenerationConfig": {
-        "BuildingTexture": "NeutralCreatureBuilding",
+        "BuildingTexture": "Null",
         "CreaturesConfiguration": {
           "ReplacementsCount": {
-            "MinValue": 0,
-            "MaxValue": 2
+            "MinValue": 7,
+            "MaxValue": 7
           },
-          "Neutrals": true,
-          "NoGrades": true,
-          "BaseGrowMultiplier": 0.8,
-          "CreatureTierReplacements": [
-            {
-              "Tier": 3,
-              "CreatureIds": ["neutral_creature_1", "neutral_creature_2"]
-            },
-            {
-              "Tier": 4,
-              "CreatureIds": ["neutral_creature_3"]
-            }
-          ],
-          "NonUniqueReplacements": true
+          "TerrainFaction": true,
+          "PlayerFactions": false,
+          "PlayerType": "Any",
+          "Grades": true,
+          "Neutrals": false,
+          "BaseCostMultiplier": 0.5,
+          "BaseResourcesMultiplier": 0.0,
+          "CreatureModifiers": [],
+          "CreatureTierReplacements": []
         },
         "StaticDwellingConfigs": {
           "DwellingValue": [
             {
-              "T1": 10,
-              "T2": 5,
-              "T3": 3
-            },
-            {
-              "T4": 2,
-              "T5": 1
+              "T5": 2,
+              "T6": 2,
+              "T7": 2
             }
           ]
         }
       },
-      "MineGenerationConfig": {
-        "Wood": {
-          "MinValue": 50,
-          "MaxValue": 100
-        },
-        "Ore": {
-          "MinValue": 50,
-          "MaxValue": 100
-        },
-        "Gold": {
-          "MinValue": 500,
-          "MaxValue": 1000
-        }
+      "UpgBuildingsDensity": {
+        "MinValue": 0,
+        "MaxValue": 0
+      },
+      "TreasureDensity": {
+        "MinValue": 5,
+        "MaxValue": 5
       },
       "TreasureChestDensity": {
-        "MinValue": 3,
-        "MaxValue": 6
+        "MinValue": 5,
+        "MaxValue": 5
+      },
+      "Prisons": {
+        "MinValue": 0,
+        "MaxValue": 0
+      },
+      "ShopPoints": {
+        "MinValue": 0,
+        "MaxValue": 0
+      },
+      "ShrinePoints": {
+        "MinValue": 0,
+        "MaxValue": 0
+      },
+      "LuckMoralBuildingsDensity": {
+        "MinValue": 0,
+        "MaxValue": 0
       },
       "ResourceBuildingsDensity": {
-        "MinValue": 2,
-        "MaxValue": 4
+        "MinValue": 0,
+        "MaxValue": 0
       },
       "TreasureBuildingPoints": {
-        "MinValue": 1,
-        "MaxValue": 3
+        "MinValue": 0,
+        "MaxValue": 0
       },
-      "Size": {
-        "MinValue": 40,
-        "MaxValue": 60
+      "TreasureBlocksTotalValue": {
+        "MinValue": 175000,
+        "MaxValue": 175000
+      },
+      "DenOfThieves": {
+        "MinValue": 1,
+        "MaxValue": 1
+      },
+      "RedwoodObservatoryDensity": {
+        "MinValue": 2,
+        "MaxValue": 2
       },
       "Town": false,
-      "TreasureBlocksScalingFromTownDist": true,
-      "DistBetweenTreasureBlocks": {
-        "MinValue": 5,
-        "MaxValue": 8
+      "Taverns": {
+        "MinValue": 3,
+        "MaxValue": 3
+      },
+      "EnlightenmentStones": {
+        "MinValue": 0,
+        "MaxValue": 0
+      },
+      "WisdomStones": {
+        "MinValue": 3,
+        "MaxValue": 3
+      },
+      "AdditionalMapObjectConfig": {
+        "StaticObjects": [
+          {
+            "BuildingId": 7,
+            "Count": {
+              "MinValue": 3,
+              "MaxValue": 3
+            }
+          },
+          {
+            "BuildingId": 8,
+            "Count": {
+              "MinValue": 2,
+              "MaxValue": 2
+            }
+          },
+          {
+            "BuildingId": 9,
+            "Count": {
+              "MinValue": 2,
+              "MaxValue": 2
+            }
+          }
+        ],
+        "StaticObjectsByCastle": {},
+        "ByPointModels": [],
+        "FewOfModels": [],
+        "ArtifactsGenerationModels": []
       }
+    },
+    {
+      "ZoneId": 4,
+      "TerrainType": "Terrain1",
+      "MirrorZoneId": 3
+    },
+    {
+      "ZoneId": 5,
+      "TerrainType": "Terrain2",
+      "UpgBuildingsDensity": {
+        "MinValue": 0,
+        "MaxValue": 0
+      },
+      "TreasureDensity": {
+        "MinValue": 10,
+        "MaxValue": 10
+      },
+      "TreasureChestDensity": {
+        "MinValue": 5,
+        "MaxValue": 5
+      },
+      "Prisons": {
+        "MinValue": 0,
+        "MaxValue": 0
+      },
+      "ShopPoints": {
+        "MinValue": 25,
+        "MaxValue": 25
+      },
+      "ShrinePoints": {
+        "MinValue": 20,
+        "MaxValue": 20
+      },
+      "LuckMoralBuildingsDensity": {
+        "MinValue": 30,
+        "MaxValue": 30
+      },
+      "ResourceBuildingsDensity": {
+        "MinValue": 30,
+        "MaxValue": 30
+      },
+      "TreasureBuildingPoints": {
+        "MinValue": 50,
+        "MaxValue": 60
+      },
+      "TreasureBlocksTotalValue": {
+        "MinValue": 90000,
+        "MaxValue": 95000
+      },
+      "DenOfThieves": {
+        "MinValue": 1,
+        "MaxValue": 1
+      },
+      "RedwoodObservatoryDensity": {
+        "MinValue": 1,
+        "MaxValue": 1
+      },
+      "Town": false,
+      "DistBetweenTreasureBlocks": {
+        "MinValue": 4,
+        "MaxValue": 4
+      },
+      "Taverns": {
+        "MinValue": 3,
+        "MaxValue": 3
+      },
+      "EnlightenmentStones": {
+        "MinValue": 3,
+        "MaxValue": 3
+      },
+      "WisdomStones": {
+        "MinValue": 0,
+        "MaxValue": 0
+      },
+      "AdditionalMapObjectConfig": {
+        "StaticObjects": [
+          {
+            "BuildingId": 1,
+            "Count": {
+              "MinValue": 2,
+              "MaxValue": 2
+            }
+          },
+          {
+            "BuildingId": 2,
+            "Count": {
+              "MinValue": 2,
+              "MaxValue": 2
+            }
+          },
+          {
+            "BuildingId": 3,
+            "Count": {
+              "MinValue": 3,
+              "MaxValue": 4
+            }
+          },
+          {
+            "BuildingId": 4,
+            "Count": {
+              "MinValue": 3,
+              "MaxValue": 4
+            }
+          },
+          {
+            "BuildingId": 5,
+            "Count": {
+              "MinValue": 3,
+              "MaxValue": 4
+            }
+          },
+          {
+            "BuildingId": 6,
+            "Count": {
+              "MinValue": 3,
+              "MaxValue": 4
+            }
+          }
+        ],
+        "StaticObjectsByCastle": {},
+        "ByPointModels": [],
+        "FewOfModels": [],
+        "ArtifactsGenerationModels": []
+      }
+    },
+    {
+      "ZoneId": 6,
+      "TerrainType": "Terrain2",
+      "MirrorZoneId": 5
     }
   ],
   "Connections": [
     {
       "SourceZoneIndex": 1,
-      "DestZoneIndex": 2,
+      "DestZoneIndex": 3,
+      "IsMain": false,
+      "RemoveConnection": true
+    },
+    {
+      "SourceZoneIndex": 1,
+      "DestZoneIndex": 3,
       "IsMain": true,
-      "RemoveConnection": false,
-      "TwoWay": true,
-      "GuardStrenght": 3,
-      "Guarded": true,
-      "Wide": false,
-      "StaticPos": true,
-      "StartPointX": 100,
-      "StartPointY": 200,
-      "MinRadiusToSearch": 50,
-      "MaxRadiusToSearch": 150,
-      "MinRadiusToMain": 10,
-      "MaxRadiusToMain": 100,
-      "RoadType": 1
+      "RemoveConnection": true
     },
     {
       "SourceZoneIndex": 2,
-      "DestZoneIndex": 3,
+      "DestZoneIndex": 4,
       "IsMain": false,
-      "RemoveConnection": null,
-      "TwoWay": false,
-      "GuardStrenght": null,
-      "Guarded": false,
-      "Wide": true,
-      "StaticPos": null,
-      "StartPointX": null,
-      "StartPointY": null,
-      "MinRadiusToSearch": null,
-      "MaxRadiusToSearch": null,
-      "MinRadiusToMain": null,
-      "MaxRadiusToMain": null,
-      "RoadType": 2
+      "RemoveConnection": true
     },
     {
-      "SourceZoneIndex": 3,
-      "DestZoneIndex": 1,
+      "SourceZoneIndex": 2,
+      "DestZoneIndex": 4,
       "IsMain": true,
-      "RemoveConnection": true,
-      "TwoWay": null,
-      "GuardStrenght": 5,
-      "Guarded": null,
-      "Wide": null,
-      "StaticPos": false,
-      "StartPointX": 300,
-      "StartPointY": 400,
-      "MinRadiusToSearch": 20,
-      "MaxRadiusToSearch": 200,
-      "MinRadiusToMain": null,
-      "MaxRadiusToMain": null,
-      "RoadType": null
+      "RemoveConnection": true
+    },
+    {
+      "SourceZoneIndex": 1,
+      "DestZoneIndex": 5,
+      "IsMain": false,
+      "GuardStrenght": 7
+    },
+    {
+      "SourceZoneIndex": 1,
+      "DestZoneIndex": 5,
+      "IsMain": true,
+      "GuardStrenght": 7
+    },
+    {
+      "SourceZoneIndex": 2,
+      "DestZoneIndex": 6,
+      "IsMain": false,
+      "GuardStrenght": 7
+    },
+    {
+      "SourceZoneIndex": 2,
+      "DestZoneIndex": 6,
+      "IsMain": true,
+      "GuardStrenght": 7
     },
     {
       "SourceZoneIndex": 4,
       "DestZoneIndex": 5,
       "IsMain": false,
-      "RemoveConnection": false,
-      "TwoWay": true,
-      "GuardStrenght": null,
-      "Guarded": true,
-      "Wide": false,
-      "StaticPos": null,
-      "StartPointX": null,
-      "StartPointY": null,
-      "MinRadiusToSearch": null,
-      "MaxRadiusToSearch": null,
-      "MinRadiusToMain": null,
-      "MaxRadiusToMain": null,
-      "RoadType": 3
+      "GuardStrenght": 20
+    },
+    {
+      "SourceZoneIndex": 4,
+      "DestZoneIndex": 5,
+      "IsMain": true,
+      "GuardStrenght": 20
+    },
+    {
+      "SourceZoneIndex": 3,
+      "DestZoneIndex": 6,
+      "IsMain": false,
+      "GuardStrenght": 20
+    },
+    {
+      "SourceZoneIndex": 3,
+      "DestZoneIndex": 6,
+      "IsMain": true,
+      "GuardStrenght": 20
     },
     {
       "SourceZoneIndex": 5,
-      "DestZoneIndex": 1,
+      "DestZoneIndex": 6,
+      "IsMain": false,
+      "RemoveConnection": true
+    },
+    {
+      "SourceZoneIndex": 5,
+      "DestZoneIndex": 6,
       "IsMain": true,
-      "RemoveConnection": null,
-      "TwoWay": null,
-      "GuardStrenght": 2,
-      "Guarded": false,
-      "Wide": true,
-      "StaticPos": true,
-      "StartPointX": 150,
-      "StartPointY": 250,
-      "MinRadiusToSearch": 30,
-      "MaxRadiusToSearch": 180,
-      "MinRadiusToMain": 5,
-      "MaxRadiusToMain": 80,
-      "RoadType": 1
+      "RemoveConnection": true
     }
   ],
-  "TerrainConfigs": [
+  "TerrainConfig": [
     {
       "TerrainType": "FirstPlayer",
-      "MirrorTerrainType": "SecondPlayer",
-      "BuildingsToDelete": ["building1", "building2"],
-      "BuildingsToAdd": [101, 102, 103],
-      "NewLuckMoraleBuildings": {
-        "ClearBuildings": true,
-        "BuildingsToDelete": ["old_luck_building"],
-        "BuildingsToAdd": [201, 202],
-        "AddCreatureBanksPool": false
-      },
-      "NewShopBuildings": {
-        "BuildingsToDelete": [],
-        "BuildingsToAdd": [301]
+      "MirrorTerrainType": "Null",
+      "BuildingsToDelete": [
+        "Magic_Spring",
+        "Tree_of_Knowledge",
+        "LibraryOfEnlightenment"
+      ],
+      "BuildingsToAdd": [],
+      "NewTreasuryBuildings": {
+        "BuildingsToDelete": [
+          "DwarvenTreasury",
+          "Elemantal_Stockpile"
+        ],
+        "BuildingsToAdd": []
       }
     },
     {
-      "TerrainType": "Terrain1",
-      "BuildingsToDelete": ["building3", "building4"],
-      "BuildingsToAdd": [104, 105],
-      "NewResourceGivers": {
-        "ClearBuildings": false,
-        "BuildingsToDelete": ["old_resource_building"],
-        "BuildingsToAdd": [401, 402, 403],
-        "AddCreatureBanksPool": true
-      },
-      "NewUpgradeBuildings": {
-        "BuildingsToDelete": ["old_upgrade"],
-        "BuildingsToAdd": [501]
-      }
+      "TerrainType": "SecondPlayer",
+      "MirrorTerrainType": "FirstPlayer",
+      "BuildingsToDelete": [],
+      "BuildingsToAdd": []
     },
     {
       "TerrainType": "Terrain2",
-      "MirrorTerrainType": "Terrain3",
-      "BuildingsToDelete": [],
-      "BuildingsToAdd": [106],
-      "NewShrines": {
-        "BuildingsToAdd": [601]
-      },
-      "NewTreasuryBuildings": {
-        "ClearBuildings": true,
-        "BuildingsToAdd": [701, 702]
-      }
+      "MirrorTerrainType": "Null",
+      "BuildingsToDelete": [
+        "Magic_Spring",
+        "Tree_of_Knowledge",
+        "LibraryOfEnlightenment",
+        "OrcDeposit",
+        "Monasterybank",
+        "Dragon_Utopia"
+      ],
+      "BuildingsToAdd": []
     },
     {
-      "TerrainType": "Terrain4",
-      "BuildingsToDelete": ["building5"],
-      "BuildingsToAdd": [],
-      "NewBuffBuildings": {
-        "BuildingsToDelete": ["old_buff"],
-        "BuildingsToAdd": [801, 802, 803]
-      }
-    },
-    {
-      "TerrainType": "Terrain6",
-      "BuildingsToDelete": ["building6", "building7", "building8"],
-      "BuildingsToAdd": [107, 108]
+      "TerrainType": "Terrain2",
+      "MirrorTerrainType": "Null",
+      "BuildingsToDelete": [
+        "Magic_Spring",
+        "Tree_of_Knowledge",
+        "LibraryOfEnlightenment",
+        "OrcDeposit",
+        "Monasterybank",
+        "Dragon_Utopia"
+      ],
+      "BuildingsToAdd": []
     }
   ],
+  "FactionTerrainConfigs": {},
   "StartBuildingConfigs": [
     {
       "ApplyAllTerrains": true,
       "TerrainType": "FirstPlayer",
-      "CastleType": "Humans",
+      "CastleType": "Undefined",
       "Buildings": [
-        "T1",
-        "T1G",
-        "T2",
-        "Tavern",
+        "Forge",
         "Market1",
-        "GM1"
-      ],
-      "BuildingMode": "All"
-    },
-    {
-      "ApplyAllTerrains": null,
-      "TerrainType": "Inferno",
-      "CastleType": "Inferno",
-      "Buildings": [
-        "T1",
-        "T2",
-        "T3",
-        "InfernoHellGates",
-        "InfernoDemonsGrow"
-      ],
-      "BuildingMode": "StartCastle"
-    },
-    {
-      "ApplyAllTerrains": false,
-      "TerrainType": "Necropolis",
-      "CastleType": "Necropolis",
-      "Buildings": [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "NecromancyAmplifier",
-        "NecromancyGraves"
-      ],
-      "BuildingMode": "NeutralCastle"
-    },
-    {
-      "ApplyAllTerrains": null,
-      "TerrainType": "Elves",
-      "CastleType": "Elves",
-      "Buildings": [
-        "T1",
-        "T2",
-        "PreserveAvengerGuild",
-        "PreserveMysticPond"
-      ],
-      "BuildingMode": "All"
-    },
-    {
-      "ApplyAllTerrains": true,
-      "TerrainType": "Random",
-      "CastleType": "Random",
-      "Buildings": [
-        "T1",
-        "T2",
-        "T3",
-        "Tavern",
-        "Market1"
+        "Tavern"
       ],
       "BuildingMode": "All"
     }
   ],
-  "GeneralData": {
-    "Mine1LevelGuardLevel": 5,
-    "Mine2LevelGuardLevel": 3,
-    "MineGoldGuardLevel": 7
-  },
-  "BaseArmyMultiplier": 1.5,
+  "SpecificCastlesStartBuildings": [],
+  "BaseArmyMultiplier": 1.0,
   "ArmyMultipliers": {
-    "unit_type_1": 1.2,
-    "unit_type_2": 0.8
+    "Elves": 0.4,
+    "Liga": 0.6,
+    "Necropolis": 0.6,
+    "Horde": 0.5,
+    "Dwarfs": 1.2
   },
   "ScriptFeaturesConfig": {
-    "id": "script_features_1"
-  },
-  "EntitiesBanConfig": {
-    "id": "entities_ban_1"
-  },
-  "StartSpellsConfig": {
-    "GlobalSpells": ["Fireball", "Teleport"],
-    "SpellsByPlayers": [
+    "GloballyDisabledBuildingsProps": {
+      "Buildings": [
+        "NecromancyUnholyTemple"
+      ]
+    },
+    "ForcedFinalBattleProps": [
       {
-        "PlayerType": "FIRST",
-        "Spells": ["Haste", "CelestialShield"]
+        "Week": 2,
+        "Day": 3
       },
       {
-        "PlayerType": "SECOND",
-        "Spells": ["Slow", "Curse"]
+        "Week": 2,
+        "Day": 4
+      },
+      {
+        "Week": 2,
+        "Day": 5
+      },
+      {
+        "Week": 2,
+        "Day": 6
+      },
+      {
+        "Week": 2,
+        "Day": 7
+      },
+      {
+        "Week": 3,
+        "Day": 1
+      },
+      {
+        "Week": 3,
+        "Day": 2
       }
     ],
-    "SpellsByRaces": [
-      {
-        "CastleType": "Humans",
-        "Spells": ["HolyWord", "Resurrect"]
-      },
-      {
-        "CastleType": "Necropolis",
-        "Spells": ["MeteorShower", "ChainLightning"]
-      }
-    ],
-    "SpellsByHeroes": [
-      {
-        "HeroType": "Nadaur",
-        "Spells": ["MagicFist", "DisruptingRay"]
-      },
-      {
-        "HeroType": "Vegeyr",
-        "Spells": ["Stoneskin", "Bloodlust"]
-      }
-    ]
+    "AdditionalStartCastles": []
   },
   "CustomBuildingConfigs": [
     {
-      "id": "custom_building_1"
+      "Id": 1,
+      "GuardStrenght": 12,
+      "BuildingTexture": "Null",
+      "RoadType": "NoRoad",
+      "MapObjectXdb": {
+        "MapObject": "Arena"
+      }
+    },
+    {
+      "Id": 2,
+      "GuardStrenght": 12,
+      "BuildingTexture": "Null",
+      "RoadType": "NoRoad",
+      "MapObjectXdb": {
+        "MapObject": "SchoolOfMagic"
+      }
+    },
+    {
+      "Id": 3,
+      "GuardStrenght": 8,
+      "BuildingTexture": "Null",
+      "RoadType": "NoRoad",
+      "MapObjectXdb": {
+        "MapObject": "MercenaryCamp"
+      }
+    },
+    {
+      "Id": 4,
+      "GuardStrenght": 8,
+      "BuildingTexture": "Null",
+      "RoadType": "NoRoad",
+      "MapObjectXdb": {
+        "MapObject": "MarlettoTower"
+      }
+    },
+    {
+      "Id": 5,
+      "GuardStrenght": 8,
+      "BuildingTexture": "Null",
+      "RoadType": "NoRoad",
+      "MapObjectXdb": {
+        "MapObject": "GardenOfRevelation"
+      }
+    },
+    {
+      "Id": 6,
+      "GuardStrenght": 8,
+      "BuildingTexture": "Null",
+      "RoadType": "NoRoad",
+      "MapObjectXdb": {
+        "MapObject": "StarAxis"
+      }
+    },
+    {
+      "Id": 7,
+      "GuardStrenght": 16,
+      "BuildingTexture": "Null",
+      "RoadType": "NoRoad",
+      "MapObjectXdb": {
+        "MapObject": "TreeOfKnowledge"
+      }
+    },
+    {
+      "Id": 8,
+      "GuardStrenght": 0,
+      "BuildingTexture": "Null",
+      "RoadType": "NoRoad",
+      "MapObjectXdb": {
+        "MapObject": "OrcDeposit"
+      }
+    },
+    {
+      "Id": 9,
+      "GuardStrenght": 0,
+      "BuildingTexture": "Null",
+      "RoadType": "NoRoad",
+      "MapObjectXdb": {
+        "MapObject": "DragonUtopia"
+      }
     }
-  ],
-  "CreatureBanksPool": {
-    "id": "creature_banks_1"
-  },
-  "ZoneRandomizationConfig": {
-    "ZonesToSwap": [
-      [1, 2],
-      [3, 4],
-      [5, 6]
-    ],
-    "IsSymmetricalSwap": true,
-    "ZonesToRandomize": [10, 20, 30, 40]
-  }
+  ]
 }

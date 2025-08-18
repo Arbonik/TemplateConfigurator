@@ -42,7 +42,7 @@ fun openFile(readerText: (String) -> Unit, onError : (String) -> Unit) {
 // Открытие файла
 fun openFileUi(readerText: (String) -> Unit, onError : (String) -> Unit) {
     try {
-        val file = File("/Users/arbonik/KMPProject/TemplateConfigurator/composeApp/src/commonMain/resources/Moon_Mega_Treasure.json")
+        val file = File("C:\\Users\\stimc\\IdeaProjects\\TemplateConfigurator\\composeApp\\src\\commonMain\\resources\\uitest.json")
         readerText(file?.readText() ?: "")
     } catch (e: Exception) {
         onError(e.localizedMessage)
@@ -74,12 +74,6 @@ fun App() {
 
                 var isFileOpen by remember { mutableStateOf(false) }
 
-                LaunchedEffect(Unit){
-                    openFileUi({ text ->
-                        config = json.decodeFromString<TemplateGenerationConfig>(text ?: "")
-                        isFileOpen = true
-                    }, onError = { error = it })
-                }
                 if (isFileOpen) {
                     TemplateConfigEditor(
                         config = config!!,

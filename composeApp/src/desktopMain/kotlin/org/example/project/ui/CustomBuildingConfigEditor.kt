@@ -77,16 +77,17 @@ fun BuildingConfigEditor(
                 .width(1.dp)
         )
 
-        CustomBuildingConfigEditor(
-            config = buildingConfigs[selectedConnectionIndex],
-            onConfigChanged = { updated ->
-                onConfigsUpdated(
-                    buildingConfigs.toMutableList().apply {
-                        set(selectedConnectionIndex, updated)
-                    }
-                )
-            }
-        )
+        if (buildingConfigs.isNotEmpty())
+            CustomBuildingConfigEditor(
+                config = buildingConfigs[selectedConnectionIndex],
+                onConfigChanged = { updated ->
+                    onConfigsUpdated(
+                        buildingConfigs.toMutableList().apply {
+                            set(selectedConnectionIndex, updated)
+                        }
+                    )
+                }
+            )
     }
 }
 

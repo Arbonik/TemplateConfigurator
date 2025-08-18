@@ -12,6 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import kotlinx.serialization.Serializable
+import org.example.project.json
+import org.example.project.openFile
+import org.example.project.saveFile
 import org.example.project.ui.*
 
 
@@ -39,6 +42,7 @@ sealed class NavigationItem(
     val titleResId: String, // В реальном приложении это будет ID строкового ресурса
     val icon: ImageVector
 ) {
+    object File : NavigationItem("file", "File", Icons.Default.FilePresent)
     object General : NavigationItem("general", "General", Icons.Default.Settings)
     object Zones : NavigationItem("zones", "Zones", Icons.Default.Map)
     object Connections : NavigationItem("connections", "Connections", Icons.Default.Link)
@@ -176,6 +180,21 @@ fun TemplateConfigEditor(
                         config.Zones,
                         connections = config.Connections
                     )
+
+                    is NavigationItem.File -> {
+                        FilePickerScreen(
+                            openFile = {
+                                openFile({ text ->
+                                    onConfigChanged(json.decodeFromString<TemplateGenerationConfig>(text ?: ""))
+                                }, onError = { })
+                            },
+                            saveFile = {
+                                saveFile(
+                                    json.encodeToString<TemplateGenerationConfig>(config)
+                                )
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -219,6 +238,7 @@ private fun NavigationPanel(
                 NavigationItem.CreatureBanks,
                 NavigationItem.ZoneRandomization,
                 NavigationItem.PNG,
+                NavigationItem.File
             )
 
             navItems.forEach { item ->
