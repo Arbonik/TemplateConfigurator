@@ -1,5 +1,6 @@
 package project.ui.theme
 
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.Typography
@@ -55,8 +56,8 @@ val LocalBodyTextStyle = staticCompositionLocalOf {
  */
 @Composable
 fun AppTheme(
-    headingFamily: FontFamily = _root_ide_package_.project.ui.theme.AppFontsConfig.headingFamily,
-    bodyFamily: FontFamily = _root_ide_package_.project.ui.theme.AppFontsConfig.bodyFamily,
+    headingFamily: FontFamily = AppFontsConfig.headingFamily,
+    bodyFamily: FontFamily = AppFontsConfig.bodyFamily,
     content: @Composable () -> Unit
 ) {
     val typography = Typography(
@@ -82,20 +83,23 @@ fun AppTheme(
     )
 
     CompositionLocalProvider(
-        _root_ide_package_.project.ui.theme.LocalHeadingTextStyle provides TextStyle(
+        LocalHeadingTextStyle provides TextStyle(
             fontFamily = headingFamily,
             fontWeight = FontWeight.SemiBold,
-            fontSize = _root_ide_package_.project.ui.theme.AppFontsConfig.headingSize
+            fontSize = AppFontsConfig.headingSize
         ),
-        _root_ide_package_.project.ui.theme.LocalBodyTextStyle provides TextStyle(
+        LocalBodyTextStyle provides TextStyle(
             fontFamily = bodyFamily,
             fontWeight = FontWeight.Normal,
-            fontSize = _root_ide_package_.project.ui.theme.AppFontsConfig.bodySize
+            fontSize = AppFontsConfig.bodySize
         )
     ) {
         MaterialTheme(
             typography = typography,
-            content = content
+            content = content,
+            colorScheme = MaterialTheme.colorScheme.copy(
+                primary = Color.Black.copy(alpha = 0.9f),
+            )
         )
     }
 }
@@ -109,5 +113,5 @@ fun HeadingText(
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.onSurface
 ) {
-    Text(text = text, style = _root_ide_package_.project.ui.theme.LocalHeadingTextStyle.current, modifier = modifier, color = color)
+    Text(text = text, style = LocalHeadingTextStyle.current, modifier = modifier, color = color)
 }

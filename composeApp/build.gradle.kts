@@ -2,7 +2,6 @@
 
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -14,8 +13,9 @@ plugins {
 
 kotlin {
     jvm("desktop")
-    
+
     wasmJs {
+
         outputModuleName.set("composeApp")
         browser()
         binaries.executable()

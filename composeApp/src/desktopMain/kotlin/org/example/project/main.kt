@@ -10,7 +10,7 @@ fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         state = WindowState(placement = WindowPlacement.Maximized),
-        title = "TemplateConfigurator",
+        title = "H5 Lobby - Template Editor",
     ) {
         App()
     }

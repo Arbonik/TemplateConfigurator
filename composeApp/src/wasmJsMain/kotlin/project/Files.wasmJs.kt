@@ -1,20 +1,12 @@
 package project
 
 import io.github.vinceglb.filekit.FileKit
-import io.github.vinceglb.filekit.dialogs.deprecated.openFileSaver
-import io.github.vinceglb.filekit.dialogs.openFilePicker
 import io.github.vinceglb.filekit.download
-import io.github.vinceglb.filekit.withScopedAccess
 import kotlinx.browser.document
-import kotlinx.browser.window
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.w3c.dom.HTMLAnchorElement
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
-import org.w3c.dom.url.URL
-import org.w3c.files.Blob
-import org.w3c.files.BlobPropertyBag
 import org.w3c.files.FileReader
 
 actual object Files {

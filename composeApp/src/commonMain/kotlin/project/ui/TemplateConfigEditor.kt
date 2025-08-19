@@ -82,16 +82,7 @@ fun TemplateConfigEditor(
 ) {
     var currentScreen by remember { mutableStateOf<NavigationItem>(NavigationItem.General) }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(config.TemplateName) },
-                actions = {
-                    LanguageSwitcher()
-                }
-            )
-        }
-    ) { padding ->
+    Scaffold { padding ->
         Row(
             modifier = Modifier
                 .fillMaxSize()
@@ -99,7 +90,6 @@ fun TemplateConfigEditor(
         ) {
             // Фиксированное меню навигации
             NavigationPanel(
-                currentScreen = currentScreen,
                 onItemSelected = { currentScreen = it },
                 modifier = Modifier.width(250.dp)
             )
@@ -225,7 +215,6 @@ fun TemplateConfigEditor(
 
 @Composable
 private fun NavigationPanel(
-    currentScreen: NavigationItem,
     onItemSelected: (NavigationItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -239,7 +228,7 @@ private fun NavigationPanel(
                 .padding(8.dp)
         ) {
             Text(
-                text = "Configuration",
+                text = "H5 Lobby - Template Editor",
                 modifier = Modifier.padding(16.dp)
             )
 
@@ -265,7 +254,6 @@ private fun NavigationPanel(
             navItems.forEach { item ->
                 NavigationButton(
                     item = item,
-                    isSelected = currentScreen == item,
                     onClick = { onItemSelected(item) }
                 )
             }
@@ -340,22 +328,13 @@ private fun SwitchWithLabel(
 @Composable
 private fun NavigationButton(
     item: NavigationItem,
-    isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val backgroundColor =
-        if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f) else MaterialTheme.colorScheme.surface
-    val contentColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
-
     Button(
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
-        colors = ButtonDefaults.buttonColors(
-            contentColor = backgroundColor,
-            containerColor = contentColor
-        ),
         elevation = null
     ) {
         Row(

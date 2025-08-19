@@ -21,6 +21,8 @@ import StartSpellsByRace
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -38,6 +40,17 @@ fun StartSpellsConfigEditor(
     onConfigChanged: (StartSpellsConfig) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    LaunchedEffect(Unit) {
+        if (config == null)
+            onConfigChanged(
+                StartSpellsConfig(
+                    emptyList(),
+                    emptyList(),
+                    emptyList(),
+                    emptyList()
+                )
+            )
+    }
     var showGlobalSpellsPicker by remember { mutableStateOf(false) }
     var showPlayerSpellsPicker by remember { mutableStateOf<StartSpellsByPlayer?>(null) }
     var showRaceSpellsPicker by remember { mutableStateOf<StartSpellsByRace?>(null) }
@@ -50,33 +63,30 @@ fun StartSpellsConfigEditor(
         PlayerType.values().toList() - (config?.SpellsByPlayers?.map { it.PlayerType } ?: emptyList()).toSet()
     }
 
-    LazyColumn(
-        modifier = modifier.padding(16.dp),
+    FlowColumn(
+        modifier = modifier.padding(16.dp).verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item {
-            ConfigSectionHeader(
-                title = "Global Spells",
-                onAddClick = { showGlobalSpellsPicker = true }
-            )
-            SpellsList(
-                spells = config?.GlobalSpells ?: emptyList(),
-                onEditClick = null,
-                onRemoveClick = { spell ->
-                    if (config != null)
-                        onConfigChanged(config.copy(GlobalSpells = config.GlobalSpells - spell))
-                }
-            )
-        }
+        ConfigSectionHeader(
+            title = "Global Spells",
+            onAddClick = { showGlobalSpellsPicker = true }
+        )
+        SpellsList(
+            spells = config?.GlobalSpells ?: emptyList(),
+            onEditClick = null,
+            onRemoveClick = { spell ->
+                if (config != null)
+                    onConfigChanged(config.copy(GlobalSpells = config.GlobalSpells - spell))
+            }
+        )
 
-        item {
-            ConfigSectionHeader(
-                title = "Spells by Player",
-                onAddClick = if (playersType.isNotEmpty()) {
-                    { showAddPlayerConfig = true }
-                } else null
-            )
-            if (config != null)
+        ConfigSectionHeader(
+            title = "Spells by Player",
+            onAddClick = if (playersType.isNotEmpty()) {
+                { showAddPlayerConfig = true }
+            } else null
+        )
+        if (config != null)
             config.SpellsByPlayers.forEach { playerConfig ->
                 PlayerConfigItem(
                     config = playerConfig,
@@ -90,14 +100,12 @@ fun StartSpellsConfigEditor(
                     }
                 )
             }
-        }
 
-        item {
-            ConfigSectionHeader(
-                title = "Spells by Race",
-                onAddClick = { showAddRaceConfig = true }
-            )
-            if (config != null)
+        ConfigSectionHeader(
+            title = "Spells by Race",
+            onAddClick = { showAddRaceConfig = true }
+        )
+        if (config != null)
             config.SpellsByRaces.forEach { raceConfig ->
                 RaceConfigItem(
                     config = raceConfig,
@@ -111,14 +119,12 @@ fun StartSpellsConfigEditor(
                     }
                 )
             }
-        }
 
-        item {
-            ConfigSectionHeader(
-                title = "Spells by Hero",
-                onAddClick = { showAddHeroConfig = true }
-            )
-            if (config != null)
+        ConfigSectionHeader(
+            title = "Spells by Hero",
+            onAddClick = { showAddHeroConfig = true }
+        )
+        if (config != null)
             config.SpellsByHeroes.forEach { heroConfig ->
                 HeroConfigItem(
                     config = heroConfig,
@@ -132,7 +138,6 @@ fun StartSpellsConfigEditor(
                     }
                 )
             }
-        }
     }
 
     // Dialogs for picking spells
@@ -142,7 +147,7 @@ fun StartSpellsConfigEditor(
             onDismiss = { showGlobalSpellsPicker = false },
             onConfirm = { spells ->
                 if (config != null)
-                onConfigChanged(config.copy(GlobalSpells = spells))
+                    onConfigChanged(config.copy(GlobalSpells = spells))
                 showGlobalSpellsPicker = false
             }
         )
