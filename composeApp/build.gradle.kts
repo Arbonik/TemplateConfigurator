@@ -1,4 +1,8 @@
+@file:OptIn(ExperimentalWasmDsl::class)
+
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -11,9 +15,15 @@ plugins {
 kotlin {
     jvm("desktop")
     
+    wasmJs {
+        outputModuleName.set("composeApp")
+        browser()
+        binaries.executable()
+    }
+
     sourceSets {
         val desktopMain by getting
-        
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -32,6 +42,20 @@ kotlin {
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+        }
+
+        // Зависимости для веб-версии на WASM
+        val wasmJsMain by getting
+        wasmJsMain.dependencies {
+            // Enables FileKit dialogs without Compose dependencies
+            implementation("io.github.vinceglb:filekit-dialogs:0.10.0")
+
+// Enables FileKit dialogs with Composable utilities
+            implementation("io.github.vinceglb:filekit-dialogs-compose:0.10.0")
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.ui)
         }
     }
 }
