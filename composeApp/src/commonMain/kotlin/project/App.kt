@@ -24,15 +24,6 @@ val json = Json {
     decodeEnumsCaseInsensitive = true
 }
 
-
-// Сохранение файла
-//fun saveFile(content: String) {
-//    val dialog = FileDialog(null as Frame?, "Сохранить файл", FileDialog.SAVE)
-//    dialog.isVisible = true
-//    val file = dialog.file?.let { File(dialog.directory, it) }
-//    file?.writeText(content)
-//}
-
 @Composable
 fun App() {
     AppTheme {

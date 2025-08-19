@@ -1,11 +1,3 @@
-import AllowedTiersInput
-import DwellingValue
-import FactionSpecificEditors
-import NumberInput
-import SectionTitle
-import TierCheckbox
-import TierNumberInput
-import TierRangeInput
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -17,8 +9,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import project.data.enums.CastleType
-import project.ui.dwellingGenerationConfig.DwellingValueEditor
 
 @Composable
 fun DwellingByPointsConfigScreen(

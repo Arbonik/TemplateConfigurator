@@ -4,20 +4,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,12 +13,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.serialization.Serializable
 import project.Files
 import project.json
-import project.ui.ArmySection
-import project.ui.BansConfigSection
-import project.ui.ConnectionModelEditor
-import project.ui.GeneralDataEditor
-import project.ui.TerrainConfigSection
-import project.ui.ZoneRandomizationConfigEditor
+import project.ui.*
 
 
 @Serializable
@@ -349,34 +331,6 @@ private fun NavigationButton(
             )
             Spacer(modifier = Modifier.width(16.dp))
             Text(text = item.titleResId)
-        }
-    }
-}
-
-@Composable
-private fun LanguageSwitcher() {
-    var expanded by remember { mutableStateOf(false) }
-    val languages = listOf("English", "Русский")
-    var selectedLanguage by remember { mutableStateOf(languages[0]) }
-
-    Box {
-        IconButton(onClick = { expanded = true }) {
-            Icon(Icons.Default.Language, contentDescription = "Switch language")
-        }
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            languages.forEach { language ->
-                DropdownMenuItem(onClick = {
-                    selectedLanguage = language
-                    expanded = false
-                    // Здесь будет логика смены локализации
-                }, text = {
-                    Text(language)
-                })
-            }
         }
     }
 }
