@@ -1,60 +1,15 @@
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import kotlinx.serialization.Serializable
 import project.Files
 import project.json
 import project.ui.*
-
-
-@Serializable
-data class TemplateGenerationConfig(
-    val TemplateName: String,
-    val Zones: List<ZoneGenerationConfig>,
-    val Connections: List<ConnectionModel>,
-    val TerrainConfigs: List<TerrainConfig> = listOf(),
-    val StartBuildingConfigs: List<StartBuildingConfig> = listOf(),
-    val GeneralData: GeneralData? = null,
-    val BaseArmyMultiplier: Double? = null,
-    val multipliers: Map<String, Double> = mapOf(),
-    val ScriptFeaturesConfig: ScriptFeaturesConfig,
-    val EntitiesBanConfig: EntitiesBanModel = EntitiesBanModel(),
-    val StartSpellsConfig: StartSpellsConfig? = null,
-    val CustomBuildingConfigs: List<CustomBuildingConfig>,
-    val CreatureBanksPool: CreatureBanksPool? = null,
-    val ZoneRandomizationConfig: ZoneRandomizationConfig? = null
-)
-
-// Модель для пунктов навигации
-sealed class NavigationItem(
-    val route: String,
-    val titleResId: String, // В реальном приложении это будет ID строкового ресурса
-    val icon: ImageVector
-) {
-    object File : NavigationItem("file", "File", Icons.Default.FilePresent)
-    object General : NavigationItem("general", "General", Icons.Default.Settings)
-    object Zones : NavigationItem("zones", "Zones", Icons.Default.Map)
-    object Connections : NavigationItem("connections", "Connections", Icons.Default.Link)
-    object Terrain : NavigationItem("terrain", "Terrain", Icons.Default.Terrain)
-    object StartBuildings : NavigationItem("start_buildings", "Start Buildings", Icons.Default.Home)
-    object Army : NavigationItem("army", "Army", Icons.Default.Security)
-    object ScriptFeatures : NavigationItem("script_features", "Script Features", Icons.Default.Code)
-    object BannedEntities : NavigationItem("banned_entities", "Banned Entities", Icons.Default.Block)
-    object StartSpells : NavigationItem("start_spells", "Start Spells", Icons.Default.AutoAwesome)
-    object CustomBuildings : NavigationItem("custom_buildings", "Custom Buildings", Icons.Default.Build)
-    object CreatureBanks : NavigationItem("creature_banks", "Creature Banks", Icons.Default.AccountTree)
-    object ZoneRandomization : NavigationItem("zone_randomization", "Zone Randomization", Icons.Default.Shuffle)
-//    object PNG : NavigationItem("png", "Graph Scheme", Icons.Default.AttachFile)
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -166,11 +121,6 @@ fun TemplateConfigEditor(
                         availableZoneIds = config.Zones.map { it.ZoneId }
                     )
 
-//                    is NavigationItem.PNG -> ZonesGraphInteractiveScreen(
-//                        config.Zones,
-//                        connections = config.Connections
-//                    )
-
                     is NavigationItem.File -> {
                         FilePickerScreen(
                             openFile = {
@@ -249,28 +199,27 @@ fun CreatureBankConfigEditor(
     onConfigChanged: (CreatureBanksPool?) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    LaunchedEffect(Unit){
+        if (config == null) {
+            onConfigChanged(CreatureBanksPool())
+        }
+    }
     Column(modifier = modifier.padding(16.dp)) {
         Text("Creature Banks Configuration")
         Spacer(modifier = Modifier.height(16.dp))
 
-        // NonPlayerFactions toggle
-        var nonPlayerFactions by remember { mutableStateOf(config?.NonPlayerFactions ?: false) }
-        SwitchWithLabel(
+       SwitchWithLabel(
             label = "Include Non-Player Factions",
-            checked = nonPlayerFactions,
+            checked = config?.NonPlayerFactions,
             onCheckedChange = {
-                nonPlayerFactions = it
                 onConfigChanged(config?.copy(NonPlayerFactions = it))
             }
         )
 
-        // PlayerFactions toggle
-        var playerFactions by remember { mutableStateOf(config?.PlayerFactions ?: false) }
-        SwitchWithLabel(
+         SwitchWithLabel(
             label = "Include Player Factions",
-            checked = playerFactions,
+            checked = config?.PlayerFactions,
             onCheckedChange = {
-                playerFactions = it
                 onConfigChanged(config?.copy(PlayerFactions = it))
             }
         )
@@ -291,8 +240,8 @@ fun CreatureBankConfigEditor(
 @Composable
 private fun SwitchWithLabel(
     label: String,
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
+    checked: Boolean?,
+    onCheckedChange: (Boolean?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -301,8 +250,10 @@ private fun SwitchWithLabel(
     ) {
         Text(text = label, modifier = Modifier.weight(1f))
         Switch(
-            checked = checked,
-            onCheckedChange = onCheckedChange
+            checked = checked == true,
+            onCheckedChange = {
+                onCheckedChange(it)
+            }
         )
     }
 }

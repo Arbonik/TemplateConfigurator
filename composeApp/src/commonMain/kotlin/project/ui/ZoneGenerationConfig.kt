@@ -1092,49 +1092,6 @@ fun NullableIntValueConfigEditor(
 }
 
 @Composable
-private fun IntValueConfigEditor(
-    config: IntValueConfig,
-    label: String,
-    onConfigUpdated: (IntValueConfig) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    var currentConfig by remember { mutableStateOf(config) }
-
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        Text(label, style = MaterialTheme.typography.labelMedium)
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            OutlinedTextField(
-                value = currentConfig.MinValue?.toString() ?: "",
-                onValueChange = {
-                    val newValue = it.toIntOrNull()
-                    currentConfig = currentConfig.copy(MinValue = newValue)
-                    onConfigUpdated(currentConfig)
-                },
-                label = { Text("Min") },
-                modifier = Modifier.weight(1f)
-            )
-
-            OutlinedTextField(
-                value = currentConfig.MaxValue?.toString() ?: "",
-                onValueChange = {
-                    val newValue = it.toIntOrNull()
-                    currentConfig = currentConfig.copy(MaxValue = newValue)
-                    onConfigUpdated(currentConfig)
-                },
-                label = { Text("Max") },
-                modifier = Modifier.weight(1f)
-            )
-        }
-    }
-}
-
-@Composable
 fun CreaturesConfigEditor(
     config: CreaturesConfiguration,
     onConfigChanged: (CreaturesConfiguration) -> Unit,

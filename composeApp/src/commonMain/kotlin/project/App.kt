@@ -2,7 +2,7 @@ package project
 
 import FilePickerScreen
 import TemplateConfigEditor
-import TemplateGenerationConfig
+import project.ui.TemplateGenerationConfig
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeContentPadding
