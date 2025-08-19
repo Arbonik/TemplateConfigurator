@@ -66,6 +66,7 @@ fun ConnectionModelEditor(
         Column(
             modifier = Modifier
                 .padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(
                 onClick = {
@@ -82,7 +83,7 @@ fun ConnectionModelEditor(
                 Text("Добавить зону")
             }
 
-            _root_ide_package_.project.ui.ConnectionModelList(
+            ConnectionModelList(
                 connections = connections,
                 selectedIndex = selectedConnectionIndex,
                 onZoneSelected = { index -> selectedConnectionIndex = index },
@@ -103,20 +104,17 @@ fun ConnectionModelEditor(
                 .width(1.dp)
         )
 
-        if (selectedConnectionIndex != null)
-            _root_ide_package_.project.ui.ConnectionEditor(
-                zones = zones,
-                connection = connections.getOrNull(selectedConnectionIndex),
-                onConnectionChanged = { updatedConnection ->
-                    onConnectionaUpdated(
-                        connections.toMutableList().apply {
-                            set(selectedConnectionIndex ?: 0, updatedConnection)
-                        }
-                    )
-                }
-            )
-        else
-            Text("Нет зон для отображения")
+        ConnectionEditor(
+            zones = zones,
+            connection = connections.getOrNull(selectedConnectionIndex),
+            onConnectionChanged = { updatedConnection ->
+                onConnectionaUpdated(
+                    connections.toMutableList().apply {
+                        set(selectedConnectionIndex, updatedConnection)
+                    }
+                )
+            }
+        )
     }
 }
 
@@ -130,7 +128,7 @@ private fun ConnectionModelList(
 ) {
     LazyColumn(modifier = modifier) {
         itemsIndexed(connections) { index, connection ->
-            _root_ide_package_.project.ui.CompactConnectionListItem(
+            CompactConnectionListItem(
                 connection,
                 {
                     onZoneSelected(index)

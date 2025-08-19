@@ -39,6 +39,7 @@ fun ZoneGenerationConfigEditor(
         Column(
             modifier = Modifier
                 .padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Button(
                 onClick = {
@@ -1032,7 +1033,7 @@ private fun <T : Enum<T>> EnumDropdown(
 }
 
 @Composable
-private fun CheckboxWithLabel(
+fun CheckboxWithLabel(
     label: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
@@ -1072,16 +1073,16 @@ fun NullableIntValueConfigEditor(
                 checked = !isNull,
                 onCheckedChange = {
                     isNull = !it
-                    if (!isNull && config == null) {
-                        onConfigChanged(IntValueConfig(0))
-                    } else {
+                    if (isNull) {
                         onConfigChanged(null)
+                    } else {
+                        onConfigChanged(IntValueConfig(0))
                     }
                 }
             )
         }
 
-        if (!isNull && config != null) {
+        if (!isNull) {
             IntValueConfigWidget(
                 label = "",
                 config = config,

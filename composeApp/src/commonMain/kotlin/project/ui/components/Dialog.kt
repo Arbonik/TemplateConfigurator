@@ -41,10 +41,10 @@ fun<T> PickerDialog(
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
-                    _root_ide_package_.project.ui.components.DynamicColumnTable(
+                    DynamicColumnTable(
                         data = items,
                     ) { item ->
-                        _root_ide_package_.project.ui.components.PickerItem(
+                        PickerItem(
                             text = text(item),
                             onClick = { onBuildingSelected(item) }
                         )

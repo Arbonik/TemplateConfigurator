@@ -57,10 +57,6 @@ fun FileButton(
 ) {
     Button(
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFB71C1C), // Красный вместо фиолетового
-            contentColor = Color.White
-        ),
         modifier = modifier.size(width = 200.dp, height = 60.dp)
     ) {
         Text(

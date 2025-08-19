@@ -3,6 +3,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,19 +24,17 @@ fun TemplateConfigEditor(
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
         ) {
             // Фиксированное меню навигации
             NavigationPanel(
                 onItemSelected = { currentScreen = it },
-                modifier = Modifier.width(250.dp)
+                modifier = Modifier.width(230.dp)
             )
 
             // Основное содержание
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
             ) {
                 when (currentScreen) {
                     is NavigationItem.General -> GeneralDataEditor(
@@ -101,18 +100,21 @@ fun TemplateConfigEditor(
                             onConfigChanged(config.copy(StartSpellsConfig = it))
                         }
                     )
+
                     is NavigationItem.CustomBuildings -> BuildingConfigEditor(
                         buildingConfigs = config.CustomBuildingConfigs,
                         onConfigsUpdated = { it ->
                             onConfigChanged(config.copy(CustomBuildingConfigs = it))
                         }
                     )
+
                     is NavigationItem.CreatureBanks -> CreatureBankConfigEditor(
-                       config =  config.CreatureBanksPool,
+                        config = config.CreatureBanksPool,
                         onConfigChanged = {
-                            config.copy(CreatureBanksPool = it)
+                            onConfigChanged(config.copy(CreatureBanksPool = it))
                         }
                     )
+
                     is NavigationItem.ZoneRandomization -> ZoneRandomizationConfigEditor(
                         config.ZoneRandomizationConfig,
                         onConfigChanged = {
@@ -126,7 +128,7 @@ fun TemplateConfigEditor(
                             openFile = {
                                 Files.openFile({ text ->
                                     onConfigChanged(
-                                        _root_ide_package_.project.json.decodeFromString<TemplateGenerationConfig>(
+                                        json.decodeFromString<TemplateGenerationConfig>(
                                             text ?: ""
                                         )
                                     )
@@ -199,60 +201,36 @@ fun CreatureBankConfigEditor(
     onConfigChanged: (CreatureBanksPool?) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LaunchedEffect(Unit){
-        if (config == null) {
-            onConfigChanged(CreatureBanksPool())
-        }
-    }
     Column(modifier = modifier.padding(16.dp)) {
         Text("Creature Banks Configuration")
         Spacer(modifier = Modifier.height(16.dp))
 
-       SwitchWithLabel(
+        CheckboxWithLabel(
             label = "Include Non-Player Factions",
-            checked = config?.NonPlayerFactions,
+            checked = config?.NonPlayerFactions ?: false,
             onCheckedChange = {
-                onConfigChanged(config?.copy(NonPlayerFactions = it))
+                val base = config ?: CreatureBanksPool()
+                onConfigChanged(base.copy(NonPlayerFactions = it))
             }
         )
 
-         SwitchWithLabel(
+        CheckboxWithLabel(
             label = "Include Player Factions",
-            checked = config?.PlayerFactions,
+            checked = config?.PlayerFactions ?: false,
             onCheckedChange = {
-                onConfigChanged(config?.copy(PlayerFactions = it))
+                val base = config ?: CreatureBanksPool()
+                onConfigChanged(base.copy(PlayerFactions = it))
             }
         )
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         NullableIntValueConfigEditor(
             label = "Banks Amount",
             config = config?.BanksAmount,
             onConfigChanged = { newValueConfig ->
-                onConfigChanged(config?.copy(BanksAmount = newValueConfig))
-            },
-            modifier = Modifier.padding(start = 16.dp)
-        )
-    }
-}
-
-@Composable
-private fun SwitchWithLabel(
-    label: String,
-    checked: Boolean?,
-    onCheckedChange: (Boolean?) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Text(text = label, modifier = Modifier.weight(1f))
-        Switch(
-            checked = checked == true,
-            onCheckedChange = {
-                onCheckedChange(it)
+                val base = config ?: CreatureBanksPool()
+                onConfigChanged(
+                    base.copy(BanksAmount = newValueConfig)
+                )
             }
         )
     }
