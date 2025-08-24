@@ -1,6 +1,8 @@
 package project.ui
 
 import ConnectionModel
+import EnumDropdownRow
+import RoadType
 import ZoneGenerationConfig
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,9 +46,7 @@ fun ConnectionEditor(
     onConnectionChanged: (ConnectionModel) -> Unit,
 ) {
     if (connection != null) {
-        Column(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
-            Text("Connection Configuration", style = MaterialTheme.typography.headlineMedium)
-
+        Column(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(8.dp)) {
             Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
                 Text(
                     "Connection ${connection.SourceZoneIndex} → ${connection.DestZoneIndex}",
@@ -54,71 +54,27 @@ fun ConnectionEditor(
                 )
             }
 
-            Box(modifier = Modifier.padding(8.dp)) {
-                var sourceExpanded by remember { mutableStateOf(false) }
-                ExposedDropdownMenuBox(
-                    expanded = sourceExpanded,
-                    onExpandedChange = { sourceExpanded = !sourceExpanded }
-                ) {
-                    OutlinedTextField(
-                        value = connection.SourceZoneIndex.toString(),
-                        onValueChange = {},
-                        label = { Text("Source Zone") },
-                        readOnly = true,
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = sourceExpanded) },
-                        modifier = Modifier.fillMaxWidth().menuAnchor()
-                    )
+            EnumDropdownRow(
+                label = "Source Zone:",
+                currentValue = connection.SourceZoneIndex,
+                itemTitle = { it.toString() },
+                values = zones.map { it.ZoneId },
+                onValueSelected = {
+                    onConnectionChanged(connection.copy(SourceZoneIndex = it))
+                },
+            )
 
-                    ExposedDropdownMenu(
-                        expanded = sourceExpanded,
-                        onDismissRequest = { sourceExpanded = false }
-                    ) {
-                        zones.map { it.ZoneId }.forEach { type ->
-                            DropdownMenuItem(
-                                text = { Text(type.toString()) },
-                                onClick = {
-                                    onConnectionChanged(connection.copy(SourceZoneIndex = type))
-                                    sourceExpanded = false
-                                }
-                            )
-                        }
-                    }
-                }
-            }
+            EnumDropdownRow(
+                label = "Destination Zone:",
+                currentValue = connection.DestZoneIndex,
+                itemTitle = { it.toString() },
+                values = zones.map { it.ZoneId },
+                onValueSelected = {
+                    onConnectionChanged(connection.copy(DestZoneIndex = it))
+                },
+            )
 
-            Box(modifier = Modifier.padding(8.dp)) {
-                var destExpanded by remember { mutableStateOf(false) }
-                ExposedDropdownMenuBox(
-                    expanded = destExpanded,
-                    onExpandedChange = { destExpanded = !destExpanded }
-                ) {
-                    OutlinedTextField(
-                        value = connection.DestZoneIndex.toString(),
-                        onValueChange = {},
-                        label = { Text("Destination Zone") },
-                        readOnly = true,
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = destExpanded) },
-                        modifier = Modifier.fillMaxWidth().menuAnchor()
-                    )
-
-                    ExposedDropdownMenu(
-                        expanded = destExpanded,
-                        onDismissRequest = { destExpanded = false }
-                    ) {
-                        zones.map { it.ZoneId }.forEach { type ->
-                            DropdownMenuItem(
-                                text = { Text(type.toString()) },
-                                onClick = {
-                                    onConnectionChanged(connection.copy(DestZoneIndex = type))
-                                    destExpanded = false
-                                }
-                            )
-                        }
-                    }
-                }
-            }
-
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier) {
                 Checkbox(
                     checked = connection.IsMain,
                     onCheckedChange = { newValue ->
@@ -128,7 +84,7 @@ fun ConnectionEditor(
                 Text("Is Main Connection", modifier = Modifier.padding(start = 8.dp))
             }
 
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier) {
                 Checkbox(
                     checked = connection.RemoveConnection ?: false,
                     onCheckedChange = { newValue ->
@@ -140,7 +96,7 @@ fun ConnectionEditor(
 
             if (connection.RemoveConnection != true) {
 
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier) {
                     Checkbox(
                         checked = connection.TwoWay ?: false,
                         onCheckedChange = { newValue ->
@@ -150,7 +106,7 @@ fun ConnectionEditor(
                     Text("Two Way", modifier = Modifier.padding(start = 8.dp))
                 }
 
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier) {
                     Checkbox(
                         checked = connection.Guarded ?: false,
                         onCheckedChange = { newValue ->
@@ -161,17 +117,17 @@ fun ConnectionEditor(
                 }
 
                 connection.Guarded?.let {
-                    _root_ide_package_.project.ui.common.DecimalInputField(
+                    DecimalInputField(
                         value = connection.GuardStrenght?.toString() ?: "",
                         title = "Guard Strength",
-                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         onValueChange = { newValue ->
                             onConnectionChanged(connection.copy(GuardStrenght = newValue.toIntOrNull()))
                         }
                     )
                 }
 
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier) {
                     Checkbox(
                         checked = connection.Wide ?: false,
                         onCheckedChange = { newValue ->
@@ -181,7 +137,7 @@ fun ConnectionEditor(
                     Text("Wide", modifier = Modifier.padding(start = 8.dp))
                 }
 
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier) {
                     Checkbox(
                         checked = connection.StaticPos ?: false,
                         onCheckedChange = { newValue ->
@@ -192,8 +148,8 @@ fun ConnectionEditor(
                 }
 
                 if (connection.StaticPos == true) {
-                    Row(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-                        _root_ide_package_.project.ui.common.DecimalInputField(
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        DecimalInputField(
                             value = connection.StartPointX?.toString() ?: "",
                             title = "Start Point X",
                             modifier = Modifier.weight(1f).padding(end = 4.dp),
@@ -202,7 +158,7 @@ fun ConnectionEditor(
                             }
                         )
 
-                        _root_ide_package_.project.ui.common.DecimalInputField(
+                        DecimalInputField(
                             value = connection.StartPointY?.toString() ?: "",
                             title = "Start Point Y",
                             modifier = Modifier.weight(1f).padding(start = 4.dp),
@@ -212,83 +168,59 @@ fun ConnectionEditor(
                         )
                     }
 
-                    _root_ide_package_.project.ui.common.DecimalInputField(
+                    DecimalInputField(
                         value = connection.MinRadiusToSearch?.toString() ?: "",
                         title = "Min Radius To Search",
                         onValueChange = { newValue ->
                             onConnectionChanged(connection.copy(MinRadiusToSearch = newValue.toIntOrNull()))
                         },
-                        modifier = Modifier.fillMaxWidth().padding(8.dp)
+                        modifier = Modifier.fillMaxWidth()
                     )
 
-                    _root_ide_package_.project.ui.common.DecimalInputField(
+                    DecimalInputField(
                         value = connection.MaxRadiusToSearch?.toString() ?: "",
                         title = "Max Radius To Search",
                         onValueChange = { newValue ->
                             onConnectionChanged(connection.copy(MaxRadiusToSearch = newValue.toIntOrNull()))
                         },
-                        modifier = Modifier.fillMaxWidth().padding(8.dp)
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
 
 
                 if (connection.IsMain == false) {
-                    _root_ide_package_.project.ui.common.DecimalInputField(
+                    DecimalInputField(
                         value = connection.MinRadiusToMain?.toString() ?: "",
                         title = "Min Radius To Main",
                         onValueChange = { newValue ->
                             onConnectionChanged(connection.copy(MinRadiusToMain = newValue.toIntOrNull()))
                         },
-                        modifier = Modifier.fillMaxWidth().padding(8.dp)
+                        modifier = Modifier.fillMaxWidth()
                     )
 
-                    _root_ide_package_.project.ui.common.DecimalInputField(
+                    DecimalInputField(
                         value = connection.MaxRadiusToMain?.toString() ?: "",
                         title = "Max Radius To Main",
                         onValueChange = { newValue ->
                             onConnectionChanged(connection.copy(MaxRadiusToMain = newValue.toIntOrNull()))
                         },
-                        modifier = Modifier.fillMaxWidth().padding(8.dp)
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
-                Box(modifier = Modifier.padding(8.dp)) {
-                    var expanded by remember { mutableStateOf(false) }
-                    ExposedDropdownMenuBox(
-                        expanded = expanded,
-                        onExpandedChange = { expanded = !expanded }
-                    ) {
-                        OutlinedTextField(
-                            value = connection.RoadType?.toString() ?: "",
-                            onValueChange = {},
-                            label = { Text("Road Type") },
-                            readOnly = true,
-                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                            modifier = Modifier.fillMaxWidth().menuAnchor()
-                        )
 
-                        ExposedDropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false }
-                        ) {
-                            listOf(0, 1, 2).forEach { type ->
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(
-                                            when (type) {
-                                                0 -> "Без дороги"; 1 -> "земляная"; 2 -> "каменная"
-                                                else -> ""
-                                            }
-                                        )
-                                    },
-                                    onClick = {
-                                        onConnectionChanged(connection.copy(RoadType = type))
-                                        expanded = false
-                                    }
-                                )
-                            }
-                        }
-                    }
-                }
+                EnumDropdownRow(
+                    label = "Road Type:",
+                    currentValue = RoadType.entries.find {
+                        it.number == connection.RoadType
+                    } ?: RoadType.MAINROAD,
+                    values = RoadType.entries.toList(),
+                    itemTitle = {
+                        "${it.description} (${it.name})"
+                    },
+                    onValueSelected = {
+                        onConnectionChanged(connection.copy(RoadType = (it as RoadType).number))
+                    },
+                )
             }
         }
     } else Text("Зона не выбрана")

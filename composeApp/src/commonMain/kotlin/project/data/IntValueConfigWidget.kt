@@ -1,65 +1,30 @@
-import IntValueConfig
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.animation.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.SizeTransform
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
-import androidx.compose.animation.with
-import androidx.compose.foundation.layout.Arrangement
-import updateConfig
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun IntValueConfigWidget(
-    config: IntValueConfig?,
+    config: IntValueConfig,
     onConfigChanged: (IntValueConfig) -> Unit,
-    label: String = "",
     modifier: Modifier = Modifier
 ) {
-    var isRandomized by remember(config) { mutableStateOf(config?.MinValue != config?.MaxValue) }
-    var minValueText by remember(config) { mutableStateOf(TextFieldValue(config?.MinValue?.toString() ?: "")) }
-    var maxValueText by remember(config) { mutableStateOf(TextFieldValue(config?.MaxValue?.toString() ?: "")) }
+    var isRandomized by remember { mutableStateOf(config.MinValue != config.MaxValue) }
+    var minValueText by remember { mutableStateOf(config.MinValue?.toString() ?: "") }
+    var maxValueText by remember { mutableStateOf(config.MaxValue?.toString() ?: "") }
+
+    val isError by remember(minValueText, maxValueText) {
+        derivedStateOf {
+            (maxValueText.toIntOrNull() ?: 0) < (minValueText.toIntOrNull() ?: 0)
+        }
+    }
 
     Column(modifier = modifier) {
-        if (label.isNotEmpty()) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelMedium,
-                modifier = Modifier.padding(bottom = 4.dp)
-            )
-        }
-
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -72,12 +37,20 @@ fun IntValueConfigWidget(
                     checked = isRandomized,
                     onCheckedChange = { newValue ->
                         isRandomized = newValue
-                        if (!newValue) {
+                        if (isRandomized) {
                             // Синхронизация значений при отключении рандома
-                            val commonValue = minValueText.text.ifEmpty { maxValueText.text }
-                            minValueText = TextFieldValue(commonValue)
-                            maxValueText = TextFieldValue(commonValue)
-                            updateConfig(commonValue, commonValue, onConfigChanged)
+                            minValueText = (config.MinValue ?: config.MaxValue ?: 0).toString()
+                            maxValueText = (config.MaxValue ?: config.MinValue ?: 0).toString()
+                            onConfigChanged(
+                                IntValueConfig(
+                                    MinValue = minValueText.toIntOrNull() ?: 0,
+                                    MaxValue = maxValueText.toIntOrNull() ?: 0
+                                )
+                            )
+                        } else {
+                            minValueText = config.MinValue?.toString() ?: ""
+                            maxValueText = config.MinValue?.toString() ?: ""
+                            onConfigChanged(IntValueConfig(config.MinValue))
                         }
                     },
                     modifier = Modifier.padding(end = 8.dp)
@@ -114,11 +87,12 @@ fun IntValueConfigWidget(
                         OutlinedTextField(
                             value = minValueText,
                             onValueChange = { newValue ->
-                                if (newValue.text.isEmpty() || newValue.text.toIntOrNull() != null) {
+                                if (newValue.isEmpty() || newValue.toIntOrNull() != null) {
                                     minValueText = newValue
-                                    updateConfig(newValue.text, maxValueText.text, onConfigChanged)
+                                    onConfigChanged(config.copy(MinValue = newValue.toIntOrNull()))
                                 }
                             },
+                            isError = minValueText.toIntOrNull() == null || isError,
                             label = { Text("Min") },
                             singleLine = true,
                             modifier = Modifier.weight(1f)
@@ -127,11 +101,12 @@ fun IntValueConfigWidget(
                         OutlinedTextField(
                             value = maxValueText,
                             onValueChange = { newValue ->
-                                if (newValue.text.isEmpty() || newValue.text.toIntOrNull() != null) {
+                                if (newValue.isEmpty() || newValue.toIntOrNull() != null) {
                                     maxValueText = newValue
-                                    updateConfig(minValueText.text, newValue.text, onConfigChanged)
+                                    onConfigChanged(config.copy(MaxValue = newValue.toIntOrNull()))
                                 }
                             },
+                            isError = maxValueText.toIntOrNull() == null || isError,
                             label = { Text("Max") },
                             singleLine = true,
                             modifier = Modifier.weight(1f)
@@ -141,12 +116,13 @@ fun IntValueConfigWidget(
                     OutlinedTextField(
                         value = minValueText,
                         onValueChange = { newValue ->
-                            if (newValue.text.isEmpty() || newValue.text.toIntOrNull() != null) {
+                            if (newValue.isEmpty() || newValue.toIntOrNull() != null) {
                                 minValueText = newValue
                                 maxValueText = newValue
-                                updateConfig(newValue.text, newValue.text, onConfigChanged)
+                                onConfigChanged(config.copy(MinValue = newValue.toIntOrNull(), MaxValue = newValue.toIntOrNull()))
                             }
                         },
+                        isError = minValueText.toIntOrNull() == null,
                         label = { Text("Value") },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
@@ -154,21 +130,5 @@ fun IntValueConfigWidget(
                 }
             }
         }
-    }
-}
-
-private fun updateConfig(
-    minText: String,
-    maxText: String,
-    onConfigChanged: (IntValueConfig) -> Unit
-) {
-    val minValue = minText.toIntOrNull()
-    val maxValue = maxText.toIntOrNull()
-
-    when {
-        minValue != null && maxValue != null -> onConfigChanged(IntValueConfig(minValue, maxValue))
-        minValue != null -> onConfigChanged(IntValueConfig(minValue, minValue))
-        maxValue != null -> onConfigChanged(IntValueConfig(maxValue, maxValue))
-        else -> onConfigChanged(IntValueConfig(null, null))
     }
 }

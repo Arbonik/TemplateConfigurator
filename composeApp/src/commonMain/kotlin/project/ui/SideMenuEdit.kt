@@ -1,6 +1,8 @@
 package project.ui
 
 
+import EnumDropdownRow
+import SearchableEnumDialog
 import TerrainBuildingsConfig
 import TerrainConfig
 import TerrainType
@@ -21,8 +23,8 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import project.ui.common.EnumDropdown
+import project.ui.common.CommonListItem
+import project.ui.common.NullableFiled
 
 @Composable
 fun TerrainConfigSection(
@@ -31,54 +33,70 @@ fun TerrainConfigSection(
 ) {
     var selectedTerrainIndex by remember { mutableStateOf<Int?>(null) }
 
+    var isShowDialog by remember { mutableStateOf(false) }
+
+    if (isShowDialog)
+        SearchableEnumDialog(
+            label = "Select Terrain Type",
+            items = TerrainType.entries.filter { type ->
+                terrains.none { it.TerrainType == type }
+            },
+            itemTitle = { it.toString() },
+            onItemSelected = { newTerrainType ->
+                val newTerrain = TerrainConfig(
+                    newTerrainType,
+                    MirrorTerrainType = null,
+                    BuildingsToDelete = emptyList(),
+                    BuildingsToAdd = emptyList(),
+                    NewLuckMoraleBuildings = null,
+                    NewShopBuildings = null,
+                    NewResourceGivers = null,
+                    NewUpgradeBuildings = null,
+                    NewShrines = null,
+                    NewTreasuryBuildings = null,
+                    NewBuffBuildings = null
+                )
+                onTerrainsChanged(terrains + newTerrain)
+                isShowDialog = false
+            },
+            onDismiss = { isShowDialog = false }
+        )
+
     Row(modifier = Modifier.fillMaxSize()) {
-        // Terrain list
-        Column(modifier = Modifier.width(200.dp).padding(8.dp).verticalScroll(rememberScrollState())) {
-            Text("Terrain Configs", style = MaterialTheme.typography.headlineSmall)
-            HorizontalDivider()
-
-            terrains.forEachIndexed { index, terrain ->
-                Button(
-                    onClick = { selectedTerrainIndex = index },
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (selectedTerrainIndex == index)
-                            MaterialTheme.colorScheme.primaryContainer
-                        else MaterialTheme.colorScheme.surface
-                    )
-                ) {
-                    Text(terrain.TerrainType.toString(), color = MaterialTheme.colorScheme.onSurface)
-                }
-            }
-
+        Column(
+            modifier = Modifier
+                .width(200.dp)
+                .padding(8.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
             if (terrains.size < TerrainType.entries.size)
                 Button(
                     onClick = {
-                        val nextTerrainType = TerrainType.entries.first { type ->
-                            terrains.none { it.TerrainType == type }
-                        }
-                        val newTerrain = TerrainConfig(
-                            nextTerrainType,
-                            MirrorTerrainType = null,
-                            BuildingsToDelete = emptyList(),
-                            BuildingsToAdd = emptyList(),
-                            NewLuckMoraleBuildings = null,
-                            NewShopBuildings = null,
-                            NewResourceGivers = null,
-                            NewUpgradeBuildings = null,
-                            NewShrines = null,
-                            NewTreasuryBuildings = null,
-                            NewBuffBuildings = null
-                        )
-                        onTerrainsChanged(terrains + newTerrain)
+                        isShowDialog = true
                     },
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
                 ) {
                     Text("Add Terrain Config")
                 }
+
+            terrains.forEachIndexed { index, terrain ->
+                CommonListItem(
+                    item = terrain,
+                    isSelected = selectedTerrainIndex == index,
+                    onDelete = {
+                        onTerrainsChanged(terrains.toMutableList().apply { removeAt(index) })
+                        selectedTerrainIndex = null
+                    },
+                    onSelected = { selectedTerrainIndex = index }
+                ) {
+                    Text(
+                        terrain.TerrainType.toString(),
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+            }
         }
 
-        // Terrain details
         Box(modifier = Modifier.weight(1f).padding(8.dp)) {
             selectedTerrainIndex?.let { index ->
                 TerrainEditor(
@@ -87,10 +105,6 @@ fun TerrainConfigSection(
                         onTerrainsChanged(terrains.toMutableList().apply {
                             set(index, updatedTerrain)
                         })
-                    },
-                    onDelete = {
-                        onTerrainsChanged(terrains.toMutableList().apply { removeAt(index) })
-                        selectedTerrainIndex = null
                     }
                 )
             } ?: run {
@@ -107,53 +121,40 @@ fun TerrainConfigSection(
 fun TerrainEditor(
     terrain: TerrainConfig,
     onTerrainChanged: (TerrainConfig) -> Unit,
-    onDelete: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
-        Text("Terrain Configuration", style = MaterialTheme.typography.headlineMedium)
-
-        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-            Text(terrain.TerrainType.toString(), style = MaterialTheme.typography.titleMedium)
-            Button(
-                onClick = onDelete,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.errorContainer
-                )
-            ) {
-                Text("Delete Config")
-            }
-        }
-
-
-        var mirrorCheck by remember(terrain) { mutableStateOf(terrain.MirrorTerrainType != null) }
-
         Row(
             verticalAlignment = CenterVertically,
         ) {
-            Text("Mirror enable")
-            Checkbox(
-                checked = mirrorCheck,
-                onCheckedChange = {
-                    mirrorCheck = it
-                },
-            )
-            if (mirrorCheck) {
-                EnumDropdown(
-                    value = (terrain.MirrorTerrainType ?: TerrainType.SecondPlayer).name,
-                    label = "Mirror Terrain Type ID",
-                    values = TerrainType.entries.map { it.name },
-                    onBuildingChanged = { building ->
-                        onTerrainChanged(
-                            terrain.copy(
-                                MirrorTerrainType = TerrainType.valueOf(building)
-                            )
+            NullableFiled(
+                value = terrain.MirrorTerrainType,
+                onValueChange = { building ->
+                    onTerrainChanged(
+                        terrain.copy(
+                            MirrorTerrainType = building
                         )
-                    }
-                )
+                    )
+                },
+                label = "Mirror Terrain",
+                defaultValue = TerrainType.SecondPlayer,
+            ) {
+                if (terrain.MirrorTerrainType != null)
+                    EnumDropdownRow(
+                        label = "",
+                        currentValue = terrain.MirrorTerrainType,
+                        itemTitle = { it.toString() },
+                        values = TerrainType.entries,
+                        onValueSelected = { building ->
+                            onTerrainChanged(
+                                terrain.copy(
+                                    MirrorTerrainType = building
+                                )
+                            )
+                        }
+                    )
             }
         }
-        if (mirrorCheck.not()) {
-            // Buildings to Delete
+        if (terrain.MirrorTerrainType == null) {
             Text(
                 "Buildings to Delete", style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(top = 16.dp)
@@ -303,18 +304,7 @@ fun TerrainBuildingsConfigEditor(
         Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Configuration", style = MaterialTheme.typography.titleSmall)
-                    IconButton(onClick = onDelete) {
-                        Icon(Icons.Default.Delete, contentDescription = "Delete")
-                    }
-                }
-
-                // Clear Buildings checkbox
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = CenterVertically,
                     modifier = Modifier.padding(vertical = 8.dp)
                 ) {
                     Checkbox(
@@ -324,6 +314,10 @@ fun TerrainBuildingsConfigEditor(
                         }
                     )
                     Text("Clear Existing Buildings", modifier = Modifier.padding(start = 8.dp))
+                    Spacer(Modifier.weight(1f))
+                    IconButton(onClick = onDelete) {
+                        Icon(Icons.Default.Delete, contentDescription = "Delete")
+                    }
                 }
                 if (config.ClearBuildings != true) {
                     // Buildings to Delete
@@ -340,7 +334,10 @@ fun TerrainBuildingsConfigEditor(
                         title = { it }
                     )
                     var newBuildingToDelete by remember { mutableStateOf("") }
-                    Row(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                        verticalAlignment = CenterVertically
+                    ) {
                         OutlinedTextField(
                             value = newBuildingToDelete,
                             onValueChange = { newBuildingToDelete = it },
@@ -383,7 +380,10 @@ fun TerrainBuildingsConfigEditor(
                         title = { it }
                     )
                     var newBuildingToAdd by remember { mutableStateOf("") }
-                    Row(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                        verticalAlignment = CenterVertically
+                    ) {
                         OutlinedTextField(
                             value = newBuildingToAdd,
                             onValueChange = { newBuildingToAdd = it },

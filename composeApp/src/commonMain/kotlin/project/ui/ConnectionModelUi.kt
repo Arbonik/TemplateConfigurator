@@ -43,10 +43,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import project.ui.common.CommonListItem
 
 @Composable
 fun ConnectionModelEditor(
@@ -76,11 +78,13 @@ fun ConnectionModelEditor(
                         IsMain = true
                     )
                     onConnectionaUpdated(connections + newconnection)
+                    selectedConnectionIndex = connections.lastIndex
+
                 },
                 enabled = true
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
-                Text("Добавить зону")
+                Text("Добавить связь")
             }
 
             ConnectionModelList(
@@ -97,11 +101,8 @@ fun ConnectionModelEditor(
             )
         }
 
-        Divider(
+        VerticalDivider(
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-            modifier = Modifier
-                .fillMaxHeight()
-                .width(1.dp)
         )
 
         ConnectionEditor(
@@ -128,160 +129,67 @@ private fun ConnectionModelList(
 ) {
     LazyColumn(modifier = modifier) {
         itemsIndexed(connections) { index, connection ->
-            CompactConnectionListItem(
-                connection,
-                {
-                    onZoneSelected(index)
-                },
+            CommonListItem(
+                item = connection,
                 isSelected = selectedIndex == index,
-                onDelete = { deleteZone(connection) }
-            )
-        }
-    }
-}
-
-@Composable
-fun <T> MyListItem(
-    item: T,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-    deleteZone: (T) -> Unit,
-    content: @Composable RowScope.(T) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val backgroundColor = if (isSelected) {
-        MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
-    } else {
-        MaterialTheme.colorScheme.background
-    }
-
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        color = backgroundColor,
-        onClick = onClick
-    ) {
-        Row {
-            content(item)
-            Spacer(Modifier.weight(1f))
-            Button(
-                onClick = { deleteZone(item) },
-                modifier = Modifier.align(Alignment.CenterVertically)
+                onDelete = deleteZone,
+                onSelected = { onZoneSelected(index) }
             ) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete")
-            }
-        }
-    }
-}
-
-@Composable
-fun CompactConnectionListItem(
-    connection: ConnectionModel,
-    onClick: () -> Unit,
-    onDelete: () -> Unit,  // Новый параметр для обработки удаления
-    modifier: Modifier = Modifier,
-    isSelected: Boolean = false
-) {
-    Box(
-        modifier = modifier
-            .width(200.dp)
-            .padding(horizontal = 4.dp, vertical = 2.dp)
-            .clip(RoundedCornerShape(4.dp))
-            .border(
-                width = if (isSelected) 2.dp else 1.dp,
-                color = when {
-                    isSelected -> MaterialTheme.colorScheme.secondary
-                    connection.IsMain -> MaterialTheme.colorScheme.primary
-                    else -> Color.Gray
-                },
-                shape = RoundedCornerShape(4.dp)
-            )
-            .background(
-                when {
-                    isSelected -> MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f)
-                    connection.IsMain -> MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-                    else -> MaterialTheme.colorScheme.surface
-                }
-            )
-            .clickable(onClick = onClick)
-            .padding(8.dp)
-    ) {
-        Column {
-            // Первая строка - основная информация и кнопка удаления
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Основная информация о соединении
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.weight(1f)
+                Column(
+                    modifier = Modifier.padding(16.dp),
                 ) {
-                    Text(
-                        text = "${connection.SourceZoneIndex}",
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.Start,
-                        color = if (isSelected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSurface
-                    )
+                    Row(
+                        modifier = Modifier,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Text(
+                                text = "${connection.SourceZoneIndex}",
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Start,
+                            )
 
-                    Icon(
-                        imageVector = Icons.Default.SwapHoriz,
-                        contentDescription = "Direction",
-                        modifier = Modifier.size(16.dp),
-                        tint = when {
-                            isSelected -> MaterialTheme.colorScheme.secondary
-                            connection.IsMain -> MaterialTheme.colorScheme.primary
-                            else -> Color.Gray
+                            Icon(
+                                imageVector = Icons.Default.SwapHoriz,
+                                contentDescription = "Direction",
+                                modifier = Modifier.size(16.dp),
+                                tint = when {
+                                    connection.IsMain -> MaterialTheme.colorScheme.primary
+                                    else -> Color.Gray
+                                }
+                            )
+
+                            Text(
+                                text = "${connection.DestZoneIndex}",
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.End,
+                            )
                         }
-                    )
+                    }
+                    Row(
+                        modifier = Modifier,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = if (connection.IsMain) "MAIN" else "secondary",
+                            color = when {
+                                connection.IsMain -> MaterialTheme.colorScheme.primary
+                                else -> Color.Gray
+                            },
+                            style = MaterialTheme.typography.labelSmall,
+                        )
 
-                    Text(
-                        text = "${connection.DestZoneIndex}",
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.End,
-                        color = if (isSelected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSurface
-                    )
-                }
-
-                // Кнопка удаления
-                IconButton(
-                    onClick = { onDelete() },
-                    modifier = Modifier.size(24.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Delete connection",
-                        tint = MaterialTheme.colorScheme.error
-                    )
-                }
-            }
-
-            // Вторая строка - статус
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = if (connection.IsMain) "MAIN" else "secondary",
-                    color = when {
-                        isSelected -> MaterialTheme.colorScheme.secondary
-                        connection.IsMain -> MaterialTheme.colorScheme.primary
-                        else -> Color.Gray
-                    },
-                    style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-
-                if (connection.Guarded == true) {
-                    Text(
-                        text = "GUARDED ${connection.GuardStrenght}",
-                        color = if (isSelected) MaterialTheme.colorScheme.secondary else Color.Red,
-                        style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
+                        if (connection.Guarded == true) {
+                            Text(
+                                text = "GUARDED ${connection.GuardStrenght}",
+                                style = MaterialTheme.typography.labelSmall,
+                            )
+                        }
+                    }
                 }
             }
         }

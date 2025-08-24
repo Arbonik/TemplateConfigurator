@@ -6,9 +6,9 @@ import BasesBanModel
 import EntitiesBanModel
 import HeroClassType
 import HeroType
+import SearchableEnumDialog
 import SkillType
 import SpellType
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,14 +24,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import project.ui.common.AddButton
-import project.ui.components.PickerDialog
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.AlertDialog
@@ -57,7 +54,7 @@ fun BansConfigSection(
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(top = 8.dp)
         )
-        _root_ide_package_.project.ui.ChipGroup(
+        ChipGroup(
             items = bans.BannedArtifacts,
             title = { it.description },
             onItemRemoved = { artifact ->
@@ -67,23 +64,25 @@ fun BansConfigSection(
 
         Row(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
             var isDialogOpen by remember { mutableStateOf(false) }
-            _root_ide_package_.project.ui.components.PickerDialog(
-                show = isDialogOpen,
-                onDismiss = { isDialogOpen = false },
-                items = ArtifactType.values().toList(),
-                text = { it.description },
-                onBuildingSelected = { artifact ->
-                    onBansChanged(
-                        bans.copy(BannedArtifacts = bans.BannedArtifacts + artifact)
-                    )
-                    isDialogOpen = false
-                }
-            )
-            _root_ide_package_.project.ui.common.AddButton { isDialogOpen = true }
+
+            if (isDialogOpen)
+                SearchableEnumDialog(
+                    label = "Select Arifact",
+                    items = ArtifactType.values().toList(),
+                    itemTitle = { "${(it as ArtifactType).description} (${it.name})" },
+                    onItemSelected = { artifact ->
+                        onBansChanged(
+                            bans.copy(BannedArtifacts = bans.BannedArtifacts + artifact as ArtifactType)
+                        )
+                        isDialogOpen = false
+                    },
+                    onDismiss = { isDialogOpen = false }
+                )
+            AddButton { isDialogOpen = true }
         }
 
         Text("Banned Heroes", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 16.dp))
-        _root_ide_package_.project.ui.ChipGroup(
+        ChipGroup(
             items = bans.BannedHeroes,
             title = { it.description.ifEmpty { it.name } },
             onItemRemoved = { hero ->
@@ -93,21 +92,22 @@ fun BansConfigSection(
 
         Row(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
             var isDialogOpen by remember { mutableStateOf(false) }
-            _root_ide_package_.project.ui.components.PickerDialog(
-                show = isDialogOpen,
-                onDismiss = { isDialogOpen = false },
-                items = HeroType.values().toList(),
-                text = { it.description.ifEmpty { it.name } },
-                onBuildingSelected = { hero ->
-                    onBansChanged(bans.copy(BannedHeroes = bans.BannedHeroes + hero))
-                    isDialogOpen = false
-                }
-            )
-            _root_ide_package_.project.ui.common.AddButton { isDialogOpen = true }
+            if (isDialogOpen)
+                SearchableEnumDialog(
+                    label = "Select Hero",
+                    onDismiss = { isDialogOpen = false },
+                    items = HeroType.values().toList(),
+                    itemTitle = { (it as HeroType).description.ifEmpty { it.name } },
+                    onItemSelected = { hero ->
+                        onBansChanged(bans.copy(BannedHeroes = bans.BannedHeroes + (hero as HeroType)))
+                        isDialogOpen = false
+                    }
+                )
+            AddButton { isDialogOpen = true }
         }
 
         Text("Banned Spells", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 16.dp))
-        _root_ide_package_.project.ui.ChipGroup(
+        ChipGroup(
             items = bans.BannedSpells,
             title = { it.description.ifEmpty { it.name } },
             onItemRemoved = { spell ->
@@ -117,17 +117,18 @@ fun BansConfigSection(
 
         Row(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
             var isDialogOpen by remember { mutableStateOf(false) }
-            _root_ide_package_.project.ui.components.PickerDialog(
-                show = isDialogOpen,
-                onDismiss = { isDialogOpen = false },
-                items = SpellType.values().toList(),
-                text = { it.description.ifEmpty { it.name } },
-                onBuildingSelected = { newSpell ->
-                    onBansChanged(bans.copy(BannedSpells = bans.BannedSpells + newSpell))
-                    isDialogOpen = false
-                }
-            )
-            _root_ide_package_.project.ui.common.AddButton { isDialogOpen = true }
+            if (isDialogOpen)
+                SearchableEnumDialog(
+                    label = "Select Spell",
+                    onDismiss = { isDialogOpen = false },
+                    items = SpellType.values().toList(),
+                    itemTitle = { (it as SpellType).description.ifEmpty { it.name } },
+                    onItemSelected = { newSpell ->
+                        onBansChanged(bans.copy(BannedSpells = bans.BannedSpells + (newSpell as SpellType)))
+                        isDialogOpen = false
+                    }
+                )
+            AddButton { isDialogOpen = true }
         }
 
         Text("забанить мародерство?")
@@ -146,7 +147,7 @@ fun BansConfigSection(
             modifier = Modifier.padding(top = 16.dp)
         )
 
-        _root_ide_package_.project.ui.BasesBanEditor(
+        BasesBanEditor(
             bans.BannedBases,
             onModelChanged = { newBases ->
                 onBansChanged(bans.copy(BannedBases = newBases))
@@ -168,7 +169,7 @@ fun BasesBanEditor(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Common banned skills section
-        _root_ide_package_.project.ui.CommonBannedSkillsEditor(
+        CommonBannedSkillsEditor(
             skills = currentModel.CommonBannedSkills,
             onSkillsChanged = { newSkills ->
                 currentModel = currentModel.copy(CommonBannedSkills = newSkills)
@@ -179,7 +180,7 @@ fun BasesBanEditor(
         Spacer(modifier = Modifier.height(24.dp))
 
         // Class-specific bans section
-        _root_ide_package_.project.ui.ClassSpecificBansEditor(
+        ClassSpecificBansEditor(
             bans = currentModel.SkillsBannedForClass,
             onBansChanged = { newBans ->
                 currentModel = currentModel.copy(SkillsBannedForClass = newBans)
@@ -241,7 +242,7 @@ private fun CommonBannedSkillsEditor(
         } else {
             FlowColumn(modifier = Modifier.fillMaxWidth()) {
                 skills.forEach { skill ->
-                    _root_ide_package_.project.ui.SkillItem(
+                    SkillItem(
                         skill = skill,
                         onRemove = {
                             val newList = skills - skill
@@ -279,7 +280,7 @@ private fun ClassSpecificBansEditor(
         } else {
             FlowColumn(modifier = Modifier.fillMaxWidth()) {
                 bans.forEach { ban ->
-                    _root_ide_package_.project.ui.ClassBanItem(
+                    ClassBanItem(
                         ban = ban,
                         onRemove = {
                             onBansChanged(bans - ban)
@@ -294,7 +295,7 @@ private fun ClassSpecificBansEditor(
     }
 
     if (showAddDialog) {
-        _root_ide_package_.project.ui.AddClassBanDialog(
+        AddClassBanDialog(
             existingClasses = bans.map { it.Class },
             onAdd = { newBan ->
                 onBansChanged(bans + newBan)
@@ -366,7 +367,7 @@ private fun ClassBanItem(
                 Text("Banned skills:")
                 FlowRow(modifier = Modifier.padding(top = 4.dp)) {
                     ban.Skills.forEach { skill ->
-                        _root_ide_package_.project.ui.Chip(
+                        Chip(
                             text = skill.description,
                             onRemove = {
                                 onBanChanged(ban.copy(Skills = ban.Skills - skill))
@@ -379,7 +380,7 @@ private fun ClassBanItem(
     }
 
     if (showEditDialog) {
-        _root_ide_package_.project.ui.EditClassBanDialog(
+        EditClassBanDialog(
             ban = ban,
             onSave = { updatedBan ->
                 onBanChanged(updatedBan)
@@ -408,7 +409,7 @@ private fun AddClassBanDialog(
             Column {
                 Text("Select class to ban skills for:")
                 Spacer(modifier = Modifier.height(8.dp))
-                _root_ide_package_.project.ui.DropdownMenuBox(
+                DropdownMenuBox(
                     items = availableClasses,
                     selectedItem = selectedClass,
                     onItemSelected = { selectedClass = it },

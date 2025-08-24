@@ -1,20 +1,31 @@
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import project.ui.EnumDialogData
+import project.ui.components.DynamicColumnTable
+import project.ui.components.PickerItem
 
 @Composable
 fun BuildingConfigEditor(
@@ -87,7 +98,6 @@ fun CustomBuildingConfigEditor(
     onConfigChanged: (CustomBuildingConfig) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var showEnumDialog by remember(config) { mutableStateOf<EnumDialogData<*>?>(null) }
     var currentSealedType by remember(config) { mutableStateOf(config.getActiveSealedType()) }
 
     Column(
@@ -133,11 +143,11 @@ fun CustomBuildingConfigEditor(
             label = "Building Texture:",
             currentValue = config.BuildingTexture ?: BuildingTextureConfig.DefaultDwellingByTerrain,
             values = BuildingTextureConfig.entries.toList(),
+            itemTitle = {
+                "${it.description} (${it.name})"
+            },
             onValueSelected = {
                 onConfigChanged(config.copy(BuildingTexture = it as BuildingTextureConfig))
-            },
-            showDialog = {
-                showEnumDialog = it
             }
         )
 
@@ -145,10 +155,10 @@ fun CustomBuildingConfigEditor(
             label = "Road Type:",
             currentValue = config.RoadType ?: RoadType.MAINROAD,
             values = RoadType.entries.toList(),
+            itemTitle = {
+                "${it.description} (${it.name})"
+            },
             onValueSelected = { onConfigChanged(config.copy(RoadType = it as RoadType)) },
-            showDialog = {
-                showEnumDialog = it
-            }
         )
 
         // Sealed type selector
@@ -225,21 +235,10 @@ fun CustomBuildingConfigEditor(
                     onConfigChanged(config.copy(CreatureBankConfig = newConfig))
                 }
             )
-            else -> { /* No sealed type selected */ }
-        }
-    }
 
-    // Enum selection dialog
-    showEnumDialog?.let { dialogData ->
-        SearchableEnumDialog(
-            title = dialogData.title,
-            items = dialogData.items,
-            onDismiss = { showEnumDialog = null },
-            onItemSelected = { selected ->
-                dialogData.onSelected(selected)
-                showEnumDialog = null
+            else -> { /* No sealed type selected */
             }
-        )
+        }
     }
 }
 
@@ -503,7 +502,7 @@ private fun BuildingSelectionDialog(
                             it.name.contains(searchQuery, ignoreCase = true)
                 }
 
-                LazyColumn (
+                LazyColumn(
                     modifier = Modifier.heightIn(max = 400.dp)//.verticalScroll(rememberScrollState())
                 ) {
                     items(filteredBuildings) { building ->
@@ -1141,7 +1140,7 @@ fun ScriptBuildingConfigEditor(
 }
 
 @Composable
-private fun BuildingConfigItem(
+fun BuildingConfigItem(
     config: CustomBuildingConfig,
     isSelected: Boolean,
     modifier: Modifier = Modifier
@@ -1197,24 +1196,27 @@ private fun BuildingConfigItem(
 }
 
 @Composable
-private fun <T : Enum<*>> EnumDropdownRow(
+fun <T> EnumDropdownRow(
     label: String,
     currentValue: T,
+    itemTitle: (T) -> String,
     values: List<T>,
-    onValueSelected: (Enum<*>) -> Unit,
-    showDialog: (EnumDialogData<T>) -> Unit
+    onValueSelected: (T) -> Unit,
 ) {
+    var showEnumDialog by remember {
+        mutableStateOf<EnumDialogData<T>?>(null)
+    }
+
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(label, modifier = Modifier.width(100.dp))
+        if (label.isNotEmpty())
+            Text(label, modifier = Modifier.width(100.dp))
         OutlinedButton(
             onClick = {
-                showDialog(
-                    EnumDialogData(
-                        title = label.trimEnd(':'),
-                        items = values,
-                        currentSelected = currentValue,
-                        onSelected = onValueSelected
-                    )
+                showEnumDialog = EnumDialogData(
+                    title = label.trimEnd(':'),
+                    items = values,
+                    currentSelected = currentValue,
+                    onSelected = onValueSelected
                 )
             },
             modifier = Modifier.weight(1f)
@@ -1222,6 +1224,19 @@ private fun <T : Enum<*>> EnumDropdownRow(
             Text(currentValue.toString(), modifier = Modifier.weight(1f))
             Icon(Icons.Default.ArrowDropDown, contentDescription = "Dropdown")
         }
+    }
+    // Enum selection dialog
+    showEnumDialog?.let { dialogData ->
+        SearchableEnumDialog(
+            label = dialogData.title,
+            items = dialogData.items,
+            itemTitle = itemTitle as (Any?) -> String,
+            onDismiss = { showEnumDialog = null },
+            onItemSelected = { selected ->
+                dialogData.onSelected(selected)
+                showEnumDialog = null
+            }
+        )
     }
 }
 
@@ -1600,55 +1615,33 @@ private fun XdbRefEditor(
     }
 }
 
-// Implement similar editor components for other sealed types...
-
-// Dialog data class
-private data class EnumDialogData<T : Enum<*>>(
-    val title: String,
-    val items: List<T>,
-    val currentSelected: T,
-    val onSelected: (Enum<*>) -> Unit
-)
-
 // Searchable enum dialog
 @Composable
-private fun SearchableEnumDialog(
-    title: String,
-    items: List<Enum<*>>,
+fun<T> SearchableEnumDialog(
+    label: String,
+    items: List<T>,
+    itemTitle: (T) -> String,
     onDismiss: () -> Unit,
-    onItemSelected: (Enum<*>) -> Unit
+    onItemSelected: (T) -> Unit
 ) {
     var searchText by remember { mutableStateOf("") }
-    val filteredItems = items.filter { it.toString().contains(searchText, ignoreCase = true) }
 
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(title) },
-        text = {
-            Column {
-                OutlinedTextField(
-                    value = searchText,
-                    onValueChange = { searchText = it },
-                    label = { Text("Search") },
-                    modifier = Modifier.fillMaxWidth()
-                )
+    val filteredItems = items.filter {
+        itemTitle(it).contains(searchText, ignoreCase = true)
+    }
 
-                FlowColumn(modifier = Modifier.heightIn(max = 400.dp)) {
-                    filteredItems.forEach { item ->
-                        ListItem(
-                            headlineContent = { Text(item.toString()) },
-                            modifier = Modifier.clickable {
-                                onItemSelected(item)
-                            }
-                        )
-                    }
-                }
-            }
+
+    BeautifulAnimatedDialog(
+        onDismiss = onDismiss,
+        label = label,
+        searchText = searchText,
+        onSearchTextChange = { searchText = it },
+        filteredItems = filteredItems,
+        onItemSelected = { item ->
+            onItemSelected(item)
         },
-        confirmButton = {
-            Button(onClick = onDismiss) {
-                Text("Cancel")
-            }
+        itemTitle = { item ->
+            itemTitle(item)
         }
     )
 }
@@ -1696,5 +1689,185 @@ private fun CustomBuildingConfig.setSealedType(type: Any?): CustomBuildingConfig
         is DefaultBuildingConfig -> copy(DefaultBuildingConfig = type)
         is CreatureBankConfig -> copy(CreatureBankConfig = type)
         else -> this
+    }
+}
+
+
+@Composable
+fun <T> BeautifulAnimatedDialog(
+    onDismiss: () -> Unit,
+    label: String,
+    searchText: String,
+    onSearchTextChange: (String) -> Unit,
+    filteredItems: List<T>,
+    onItemSelected: (T) -> Unit,
+    itemTitle: (T) -> String
+) {
+    var animationState by remember { mutableStateOf(0f) }
+    val infiniteTransition = rememberInfiniteTransition(label = "infinite_animation")
+    val shimmer by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(4000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ), label = ""
+    )
+
+    // Анимация появления
+    val scale by animateFloatAsState(
+        targetValue = if (animationState == 1f) 1f else 0.8f,
+        animationSpec = spring(dampingRatio = 0.6f, stiffness = 200f), label = ""
+    )
+
+    val alpha by animateFloatAsState(
+        targetValue = if (animationState == 1f) 1f else 0f,
+        animationSpec = tween(durationMillis = 800), label = ""
+    )
+
+    LaunchedEffect(Unit) {
+        animationState = 1f
+    }
+
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Box(
+            modifier = Modifier
+                .background(Color.Black.copy(alpha = 0.6f))
+                .clickable { onDismiss() }
+        ) {
+            // Фоновые эффекты
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                drawCircle(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            Color(0xFF667EEA).copy(alpha = 0.3f),
+                            Color(0xFF764BA2).copy(alpha = 0.1f),
+                            Color.Transparent
+                        ),
+                        center = center,
+                        radius = size.maxDimension * 0.8f
+                    ),
+                    radius = size.maxDimension * 0.8f,
+                    center = center,
+                    blendMode = BlendMode.Screen
+                )
+            }
+
+            // Основной диалог
+            Card(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .widthIn(max = 500.dp)
+                    .heightIn(max = 600.dp)
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                        rotationZ = (1 - scale) * 5
+                    }
+                    .border(
+                        width = 2.dp,
+                        brush = Brush.linearGradient(
+                            colors = listOf(
+                                Color(0xFF00DBDE),
+                                Color(0xFFFC00FF),
+                                Color(0xFF00DBDE)
+                            ),
+                            start = Offset(-1000f, -1000f),
+                            end = Offset(2000f * shimmer, 2000f * shimmer)
+                        ),
+                        shape = RoundedCornerShape(24.dp)
+                    )
+                    .shadow(24.dp, RoundedCornerShape(24.dp), spotColor = Color(0xFF667EEA)),
+                shape = RoundedCornerShape(24.dp),
+                elevation = CardDefaults.cardElevation(8.dp)
+            ) {
+                BoxWithConstraints(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    Color(0xFF0F2027),
+                                    Color(0xFF203A43),
+                                    Color(0xFF2C5364)
+                                )
+                            )
+                        )
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(24.dp)
+                    ) {
+                        // Анимированный заголовок
+                        Text(
+                            text = label,
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = Color.White,
+                            modifier = Modifier
+                                .padding(bottom = 16.dp)
+                                .graphicsLayer {
+                                    translationY = (1 - alpha) * 50
+                                }
+                                .animateContentSize()
+                        )
+
+                        // Поле поиска с анимацией
+                        var isFocused by remember { mutableStateOf(false) }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 16.dp)
+                        ) {
+                            OutlinedTextField(
+                                value = searchText,
+                                onValueChange = onSearchTextChange,
+                                label = {
+                                    Text(
+                                        "Search...",
+                                        color = Color.White.copy(alpha = 0.7f)
+                                    )
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = TextFieldDefaults.colors(
+                                    focusedContainerColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
+                                    focusedTextColor = Color.White,
+                                    unfocusedTextColor = Color.White.copy(alpha = 0.8f),
+                                    cursorColor = Color(0xFF00DBDE),
+                                    focusedIndicatorColor = Color(0xFF00DBDE),
+                                    unfocusedIndicatorColor = Color.White.copy(alpha = 0.3f),
+                                    focusedLabelColor = Color(0xFF00DBDE),
+                                    unfocusedLabelColor = Color.White.copy(alpha = 0.5f)
+                                ),
+                                textStyle = MaterialTheme.typography.bodyLarge,
+                                singleLine = true,
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Search,
+                                        contentDescription = null,
+                                        tint = if (isFocused) Color(0xFF00DBDE) else Color.White.copy(alpha = 0.7f)
+                                    )
+                                },
+                            )
+                        }
+
+                        DynamicColumnTable(
+                            data = filteredItems,
+                        ) {
+                            PickerItem(
+                                text = itemTitle(it),
+                                onClick = {
+                                    onItemSelected(it)
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 }

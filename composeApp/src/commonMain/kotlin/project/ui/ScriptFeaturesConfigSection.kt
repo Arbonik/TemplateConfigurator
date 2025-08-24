@@ -318,31 +318,19 @@ private fun GloballyDisabledBuildingsEditor(
             }
 
             if (showSelector) {
-                AlertDialog(
-                    onDismissRequest = { showSelector = false },
-                    title = { Text("Select Building to Disable") },
-                    text = {
-                        FlowColumn {
-                            allBuildingTypes.filter { it !in currentModel.Buildings }.forEach { building ->
-                                Button(
-                                    onClick = {
-                                        currentModel = currentModel.copy(
-                                            Buildings = currentModel.Buildings + building
-                                        )
-                                        onModelChanged(currentModel)
-                                        showSelector = false
-                                    },
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Text(building.description)
-                                }
-                            }
-                        }
+                SearchableEnumDialog(
+                    label = "Select Building to Disable" ,
+                    onDismiss = { showSelector = false },
+                    items = allBuildingTypes.filter { it !in currentModel.Buildings },
+                    onItemSelected = { building ->
+                        currentModel = currentModel.copy(
+                            Buildings = currentModel.Buildings + (building as BuildingType)
+                        )
+                        onModelChanged(currentModel)
+                        showSelector = false
                     },
-                    confirmButton = {
-                        Button(onClick = { showSelector = false }) {
-                            Text("Cancel")
-                        }
+                    itemTitle = {
+                        "${(it as BuildingType).description} (${it.name})"
                     }
                 )
             }

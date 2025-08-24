@@ -1,37 +1,34 @@
 package project.ui.common
 
-import IntValueConfig
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.material3.Text
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
-
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.TextFieldValue
-import project.ui.theme.HeadingText
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EnumDropdown(
-    value : String,
-    label : String,
-    values : List<String>,
-    onBuildingChanged : (String) -> Unit,
-){
+    value: String,
+    label: String,
+    values: List<String>,
+    onBuildingChanged: (String) -> Unit,
+) {
     var expanded by remember { mutableStateOf(false) }
     Box(modifier = Modifier.padding(8.dp)) {
         ExposedDropdownMenuBox(
@@ -80,7 +77,7 @@ fun AddButton(onClick: () -> Unit) {
 @Composable
 fun DecimalInputField(
     value: String,
-    title : String,
+    title: String,
     modifier: Modifier = Modifier,
     onValueChange: (String) -> Unit,
 ) {
@@ -103,97 +100,110 @@ fun DecimalInputField(
     )
 }
 
-
 @Composable
-fun IntValueConfigEditor(
-    config: IntValueConfig?,
-    onConfigChanged: (IntValueConfig?) -> Unit,
-    modifier: Modifier = Modifier
+fun <T> NullableFiled(
+    value: T?,
+    onValueChange: (T?) -> Unit,
+    label: String,
+    defaultValue: T,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
 ) {
-    var isRandom by remember { mutableStateOf(config?.MinValue != config?.MaxValue) }
-    var minValueText by remember {
-        mutableStateOf(TextFieldValue(config?.MinValue?.toString() ?: ""))
-    }
-    var maxValueText by remember {
-        mutableStateOf(TextFieldValue(config?.MaxValue?.toString() ?: ""))
-    }
-
-    Column(modifier = modifier) {
+    var isNull by remember(value) { mutableStateOf(value == null) }
+    Column(modifier = modifier.padding(vertical = 8.dp)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(bottom = 8.dp)
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
         ) {
             Checkbox(
-                checked = isRandom,
+                checked = !isNull,
                 onCheckedChange = {
-                    isRandom = it
-                    if (!it) {
-                        // Если рандом выключен, копируем minValue в maxValue
-                        maxValueText = minValueText
-                        _root_ide_package_.project.ui.common.updateConfig(
-                            minValueText.text,
-                            minValueText.text,
-                            onConfigChanged
-                        )
+                    isNull = !it
+                    if (isNull) {
+                        onValueChange(null)
                     } else {
-                        // Если рандом включен, сохраняем текущие значения
-                        _root_ide_package_.project.ui.common.updateConfig(
-                            minValueText.text,
-                            maxValueText.text,
-                            onConfigChanged
-                        )
+                        onValueChange(defaultValue)
                     }
                 }
             )
-            _root_ide_package_.project.ui.theme.HeadingText("Рандом")
-        }
 
-        if (isRandom) {
-            // Режим рандома - два поля ввода
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                TextField(
-                    value = minValueText,
-                    onValueChange = {
-                        minValueText = it
-                        _root_ide_package_.project.ui.common.updateConfig(it.text, maxValueText.text, onConfigChanged)
-                    },
-                    label = { Text("Min значение") },
-                    modifier = Modifier.weight(1f)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                TextField(
-                    value = maxValueText,
-                    onValueChange = {
-                        maxValueText = it
-                        _root_ide_package_.project.ui.common.updateConfig(minValueText.text, it.text, onConfigChanged)
-                    },
-                    label = { Text("Max значение") },
-                    modifier = Modifier.weight(1f)
-                )
-            }
-        } else {
-            // Одиночный режим - одно поле ввода
-            TextField(
-                value = minValueText,
-                onValueChange = {
-                    minValueText = it
-                    maxValueText = it
-                    _root_ide_package_.project.ui.common.updateConfig(it.text, it.text, onConfigChanged)
-                },
-                label = { Text("Значение") },
-                modifier = Modifier.fillMaxWidth()
-            )
+            Text(label)
+        }
+        if (value != null) {
+            content()
         }
     }
 }
 
-private fun updateConfig(
-    minText: String,
-    maxText: String,
-    onConfigChanged: (IntValueConfig) -> Unit
+@Composable
+fun <T> CommonListItem(
+    item: T,
+    isSelected: Boolean,
+    onDelete: (T) -> Unit,
+    onSelected: () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable (T) -> Unit,
 ) {
-    val minValue = minText.toIntOrNull()
-    val maxValue = maxText.toIntOrNull()
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
-    onConfigChanged(IntValueConfig(minValue, maxValue))
+    // Диалог подтверждения удаления
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Подтверждение удаления") },
+            text = { Text("Вы уверены, что хотите удалить этот элемент?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showDeleteDialog = false
+                        onDelete(item)
+                    }
+                ) {
+                    Text("Удалить")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showDeleteDialog = false }
+                ) {
+                    Text("Отмена")
+                }
+            }
+        )
+    }
+
+    Card(
+        modifier = modifier.fillMaxWidth().padding(1.dp).clickable(onClick = onSelected),
+        elevation = CardDefaults.cardElevation(if (isSelected) 8.dp else 2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected) {
+                MaterialTheme.colorScheme.primaryContainer
+            } else {
+                MaterialTheme.colorScheme.surface
+            }
+        ),
+        border = if (isSelected) {
+            BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
+        } else {
+            null
+        }
+    ) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            content(item)
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                onClick = {
+                    showDeleteDialog = true
+                }
+            ) {
+                Icon(Icons.Default.Delete, contentDescription = "Delete")
+            }
+        }
+    }
 }
