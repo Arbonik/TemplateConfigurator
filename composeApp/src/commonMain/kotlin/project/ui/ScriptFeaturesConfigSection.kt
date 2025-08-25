@@ -543,7 +543,7 @@ private fun AdditionalStartCastleItem(
                 label = "Search Radius",
                 value = currentCastle.SearchRadius,
                 onValueChanged = {
-                    currentCastle = currentCastle.copy(SearchRadius = it?.toInt())
+                    currentCastle = currentCastle.copy(SearchRadius = it)
                     onCastleChanged(currentCastle)
                 }
             )
@@ -620,7 +620,7 @@ private fun NumberInput(
 }
 
 @Composable
-private fun CheckboxInput(
+fun CheckboxInput(
     label: String,
     checked: Boolean,
     onCheckedChanged: (Boolean) -> Unit,

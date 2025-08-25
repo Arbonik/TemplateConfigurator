@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import project.ui.EnumDialogData
+import project.ui.common.CommonVerticalListItem
 import project.ui.components.DynamicColumnTable
 import project.ui.components.PickerItem
 
@@ -59,23 +60,29 @@ fun BuildingConfigEditor(
             }
 
             FlowColumn(
-                modifier = Modifier.width(200.dp),
+                modifier = Modifier.width(200.dp).verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 buildingConfigs.forEachIndexed { index, config ->
-                    BuildingConfigItem(
-                        config = config,
+                    CommonVerticalListItem(
+                        item = config,
                         isSelected = index == selectedConnectionIndex,
-                        modifier = Modifier.clickable(onClick = { selectedConnectionIndex = index })
-                    )
+                        onDelete = {
+                            onConfigsUpdated(buildingConfigs - config)
+                        },
+                        onSelected = {
+                            selectedConnectionIndex = index
+                        }
+                    ) {
+                        BuildingConfigItem(
+                            config = config
+                        )
+                    }
                 }
             }
         }
-        Divider(
+        VerticalDivider(
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-            modifier = Modifier
-                .fillMaxHeight()
-                .width(1.dp)
         )
 
         if (buildingConfigs.isNotEmpty())
@@ -104,35 +111,22 @@ fun CustomBuildingConfigEditor(
         modifier = modifier.padding(16.dp).verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Basic fields
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("ID:", modifier = Modifier.width(100.dp))
-            OutlinedTextField(
-                value = config.Id.toString(),
-                onValueChange = { onConfigChanged(config.copy(Id = it.toIntOrNull() ?: config.Id)) },
-                modifier = Modifier.weight(1f)
-            )
-        }
-
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Value:", modifier = Modifier.width(100.dp))
-            OutlinedTextField(
-                value = config.Value.toString(),
-                onValueChange = { onConfigChanged(config.copy(Value = it.toLongOrNull() ?: config.Value)) },
-                modifier = Modifier.weight(1f)
-            )
-        }
-
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Guard Strength:", modifier = Modifier.width(100.dp))
-            OutlinedTextField(
-                value = config.GuardStrenght.toString(),
+            NumberInputNullable(
+                label = "Value:",
+                value = config.Value,
                 onValueChange = {
-                    onConfigChanged(
-                        config.copy(
-                            GuardStrenght = it.toLongOrNull() ?: config.GuardStrenght
-                        )
-                    )
+                    onConfigChanged(config.copy(Value = it as Long?))
+                }
+            )
+        }
+
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            NumberInputNullable(
+                label = "Guard Strength:",
+                value = config.GuardStrenght,
+                onValueChange = {
+                    onConfigChanged(config.copy(GuardStrenght = it as? Long?))
                 },
                 modifier = Modifier.weight(1f)
             )
@@ -147,7 +141,7 @@ fun CustomBuildingConfigEditor(
                 "${it.description} (${it.name})"
             },
             onValueSelected = {
-                onConfigChanged(config.copy(BuildingTexture = it as BuildingTextureConfig))
+                onConfigChanged(config.copy(BuildingTexture = it))
             }
         )
 
@@ -158,14 +152,21 @@ fun CustomBuildingConfigEditor(
             itemTitle = {
                 "${it.description} (${it.name})"
             },
-            onValueSelected = { onConfigChanged(config.copy(RoadType = it as RoadType)) },
+            onValueSelected = { onConfigChanged(config.copy(RoadType = it)) },
         )
 
-        // Sealed type selector
-        Text("Building Type:", style = MaterialTheme.typography.titleMedium)
-        SealedTypeSelector(
-            currentType = currentSealedType,
-            onTypeSelected = { newType ->
+        EnumDropdownRow(
+            label = "Building Type",
+            currentValue = currentSealedType,
+            values = types.map { it.second },
+            itemTitle = { item ->
+                types.find {
+                    if (item != null && it.second != null)
+                        item::class.simpleName == it.second!!::class.simpleName
+                    else item == it.second
+                }?.first ?: "None"
+            },
+            onValueSelected = { newType ->
                 currentSealedType = newType
                 onConfigChanged(config.clearSealedTypes().setSealedType(newType))
             }
@@ -1142,56 +1143,25 @@ fun ScriptBuildingConfigEditor(
 @Composable
 fun BuildingConfigItem(
     config: CustomBuildingConfig,
-    isSelected: Boolean,
-    modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(if (isSelected) 8.dp else 2.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) {
-                MaterialTheme.colorScheme.primaryContainer
-            } else {
-                MaterialTheme.colorScheme.surface
-            }
-        ),
-        border = if (isSelected) {
-            BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
-        } else {
-            null
-        }
+    Column(
+        modifier = Modifier
+            .wrapContentSize().padding(4.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            modifier = Modifier.padding(8.dp)
-        ) {
+        Text(
+            "Building Id:${config.Id}"
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        if (config.Value != null)
             Text(
-                "Building #${config.Id}",
-                style = MaterialTheme.typography.labelMedium,
-                color = if (isSelected) {
-                    MaterialTheme.colorScheme.onPrimaryContainer
-                } else {
-                    MaterialTheme.colorScheme.onSurface
-                }
+                "Value " + config.Value
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                "Value " + config.Value.toString(),
-                color = if (isSelected) {
-                    MaterialTheme.colorScheme.onPrimaryContainer
-                } else {
-                    MaterialTheme.colorScheme.onSurface
-                }
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                "GuardStrenght " + config.GuardStrenght.toString(),
-                color = if (isSelected) {
-                    MaterialTheme.colorScheme.onPrimaryContainer
-                } else {
-                    MaterialTheme.colorScheme.onSurface
-                }
-            )
-        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            "GuardStrenght " + config.GuardStrenght.toString(),
+        )
     }
 }
 
@@ -1221,7 +1191,7 @@ fun <T> EnumDropdownRow(
             },
             modifier = Modifier.weight(1f)
         ) {
-            Text(currentValue.toString(), modifier = Modifier.weight(1f))
+            Text(itemTitle(currentValue), modifier = Modifier.weight(1f))
             Icon(Icons.Default.ArrowDropDown, contentDescription = "Dropdown")
         }
     }
@@ -1240,35 +1210,35 @@ fun <T> EnumDropdownRow(
     }
 }
 
+val types = listOf(
+    "Creature Building" to CreatureBuildingConfig(
+        TiersPool = emptyList(),
+        PlayerType = PlayerType.ANY,
+        CreatureIds = emptyList()
+    ),
+    "Xdb Reference" to "",
+    "Pandora Box" to PandoraBoxConfig(
+        GoldAmount = emptyList(),
+        ExpAmount = emptyList(),
+        Artifacts = emptyList(),
+        PandoraCreatureConfig = emptyList(),
+        Spells = emptyList(),
+        Resources = emptyList()
+    ),
+    "Script Building" to ScriptBuildingConfig(ScriptBuilding.TowerPortal),
+    "Resource Building" to ResourceBuildingConfig(emptyList()),
+    "Mage Eye" to MageEyeConfig(0, 0),
+    "Runic Chest" to RunicChestConfig(emptyList(), emptyList()),
+    "Default Building" to DefaultBuildingConfig(DefaultBuilding.GoldChest5k),
+    "Creature Bank" to CreatureBankConfig("", emptyList(), emptyList()),
+    "None" to null
+)
+
 @Composable
 private fun SealedTypeSelector(
     currentType: Any?,
     onTypeSelected: (Any?) -> Unit
 ) {
-    val types = listOf(
-        "Creature Building" to CreatureBuildingConfig(
-            TiersPool = emptyList(),
-            PlayerType = PlayerType.ANY,
-            CreatureIds = emptyList()
-        ),
-        "Xdb Reference" to "",
-        "Pandora Box" to PandoraBoxConfig(
-            GoldAmount = emptyList(),
-            ExpAmount = emptyList(),
-            Artifacts = emptyList(),
-            PandoraCreatureConfig = emptyList(),
-            Spells = emptyList(),
-            Resources = emptyList()
-        ),
-        "Script Building" to ScriptBuildingConfig(ScriptBuilding.TowerPortal),
-        "Resource Building" to ResourceBuildingConfig(emptyList()),
-        "Mage Eye" to MageEyeConfig(0, 0),
-        "Runic Chest" to RunicChestConfig(emptyList(), emptyList()),
-        "Default Building" to DefaultBuildingConfig(DefaultBuilding.GoldChest5k),
-        "Creature Bank" to CreatureBankConfig("", emptyList(), emptyList()),
-        "None" to null
-    )
-
     var expanded by remember { mutableStateOf(false) }
     val selectedLabel = types.find { it.second == currentType }?.first ?: "None"
 
@@ -1309,63 +1279,62 @@ fun CreatureBuildingConfigEditor(
     modifier: Modifier = Modifier
 ) {
     FlowColumn(
-        modifier = modifier.fillMaxSize().padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        Text("Creature Building Configuration", style = MaterialTheme.typography.headlineMedium)
-        TiersPoolEditor(
-            tiers = config.TiersPool,
-            onTiersChanged = { newTiers ->
+        AllowedTiersInput(
+            label = "Tiers pool",
+            AllowedTiers = config.TiersPool,
+            onConfigChanged = { newTiers ->
                 onConfigChanged(config.copy(TiersPool = newTiers))
             }
         )
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Filters", style = MaterialTheme.typography.titleMedium)
+        CheckboxInput(
+            label = "No Grades",
+            checked = config.NoGrades ?: false,
+            onCheckedChanged = { checked ->
+                onConfigChanged(config.copy(NoGrades = checked))
+            }
+        )
 
-            // Boolean switches
-            SwitchWithLabel(
-                label = "No Grades",
-                checked = config.NoGrades ?: false,
-                onCheckedChange = { checked ->
-                    onConfigChanged(config.copy(NoGrades = checked))
-                }
-            )
+        CheckboxInput(
+            label = "Grades",
+            checked = config.Grades ?: false,
+            onCheckedChanged = { checked ->
+                onConfigChanged(config.copy(Grades = checked))
+            }
+        )
 
-            SwitchWithLabel(
-                label = "Grades",
-                checked = config.Grades ?: false,
-                onCheckedChange = { checked ->
-                    onConfigChanged(config.copy(Grades = checked))
-                }
-            )
+        CheckboxInput(
+            label = "Neutrals",
+            checked = config.Neutrals ?: false,
+            onCheckedChanged = { checked ->
+                onConfigChanged(config.copy(Neutrals = checked))
+            }
+        )
 
-            SwitchWithLabel(
-                label = "Neutrals",
-                checked = config.Neutrals ?: false,
-                onCheckedChange = { checked ->
-                    onConfigChanged(config.copy(Neutrals = checked))
-                }
-            )
+        CheckboxInput(
+            label = "Non-Player Factions",
+            checked = config.NonPLayerFactions ?: false,
+            onCheckedChanged = { checked ->
+                onConfigChanged(config.copy(NonPLayerFactions = checked))
+            }
+        )
 
-            SwitchWithLabel(
-                label = "Non-Player Factions",
-                checked = config.NonPLayerFactions ?: false,
-                onCheckedChange = { checked ->
-                    onConfigChanged(config.copy(NonPLayerFactions = checked))
-                }
-            )
+        CheckboxInput(
+            label = "Player Factions",
+            checked = config.PLayerFactions ?: false,
+            onCheckedChanged = { checked ->
+                onConfigChanged(config.copy(PLayerFactions = checked))
+            }
+        )
 
-            SwitchWithLabel(
-                label = "Player Factions",
-                checked = config.PLayerFactions ?: false,
-                onCheckedChange = { checked ->
-                    onConfigChanged(config.copy(PLayerFactions = checked))
-                }
-            )
-        }
-        PlayerTypeSelector(
-            playerType = config.PlayerType,
-            onPlayerTypeChanged = { newType ->
+        EnumDropdownRow(
+            label = "Player Type",
+            currentValue = config.PlayerType,
+            itemTitle = { it.description },
+            values = PlayerType.entries,
+            onValueSelected = { newType ->
                 onConfigChanged(config.copy(PlayerType = newType))
             }
         )
@@ -1377,118 +1346,44 @@ fun CreatureBuildingConfigEditor(
             }
         )
 
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Multipliers", style = MaterialTheme.typography.titleMedium)
+        NullableNumberInputField(
+            label = "Cost Multiplier",
+            value = config.CostMultiplier,
+            onValueChange = { newValue ->
+                onConfigChanged(config.copy(CostMultiplier = newValue))
+            }
+        )
+        NullableNumberInputField(
+            label = "Resources Multiplier",
+            value = config.ResourcesMultiplier,
+            onValueChange = { newValue ->
+                onConfigChanged(config.copy(ResourcesMultiplier = newValue))
+            }
+        )
 
-            NullableNumberInputField(
-                label = "Cost Multiplier",
-                value = config.CostMultiplier,
-                onValueChange = { newValue ->
-                    onConfigChanged(config.copy(CostMultiplier = newValue))
-                }
-            )
-            NullableNumberInputField(
-                label = "Resources Multiplier",
-                value = config.ResourcesMultiplier,
-                onValueChange = { newValue ->
-                    onConfigChanged(config.copy(ResourcesMultiplier = newValue))
-                }
-            )
+        NullableNumberInputField(
+            label = "Grow Multiplier",
+            value = config.GrowMultiplier,
+            onValueChange = { newValue ->
+                onConfigChanged(config.copy(GrowMultiplier = newValue))
+            }
+        )
 
-            NullableNumberInputField(
-                label = "Grow Multiplier",
-                value = config.GrowMultiplier,
-                onValueChange = { newValue ->
-                    onConfigChanged(config.copy(GrowMultiplier = newValue))
-                }
-            )
+        NullableNumberInputField(
+            label = "Grow Multiplier",
+            value = config.GrowMultiplier,
+            onValueChange = { newValue ->
+                onConfigChanged(config.copy(GrowMultiplier = newValue))
+            }
+        )
 
-            NullableNumberInputField(
-                label = "Grow Multiplier",
-                value = config.GrowMultiplier,
-                onValueChange = { newValue ->
-                    onConfigChanged(config.copy(GrowMultiplier = newValue))
-                }
-            )
-        }
-
-        SwitchWithLabel(
+        CheckboxInput(
             label = "Is Dwelling",
             checked = config.IsDwelling ?: false,
-            onCheckedChange = { checked ->
+            onCheckedChanged = { checked ->
                 onConfigChanged(config.copy(IsDwelling = checked))
             }
         )
-    }
-}
-
-@Composable
-private fun TiersPoolEditor(
-    tiers: List<Long>,
-    onTiersChanged: (List<Long>) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    var newTier by remember { mutableStateOf("") }
-
-    Column(modifier = modifier) {
-        Text("Tiers Pool", style = MaterialTheme.typography.titleMedium)
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            OutlinedTextField(
-                value = newTier,
-                onValueChange = { newTier = it },
-                label = { Text("Add tier") },
-                modifier = Modifier.weight(1f)
-            )
-
-            Button(
-                onClick = {
-                    val tier = newTier.toLongOrNull()
-                    if (tier != null) {
-                        onTiersChanged(tiers + tier)
-                        newTier = ""
-                    }
-                },
-                modifier = Modifier.padding(start = 8.dp)
-            ) {
-                Text("Add")
-            }
-        }
-
-        if (tiers.isNotEmpty()) {
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(top = 8.dp)
-            ) {
-                tiers.forEach { tier ->
-                    Chip(
-                        label = { Text(tier.toString()) },
-                        trailingIcon = { Icon(Icons.Default.Close, contentDescription = "Remove") },
-                        modifier = Modifier.clickable { onTiersChanged(tiers - tier) }
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun PlayerTypeSelector(
-    playerType: PlayerType,
-    onPlayerTypeChanged: (PlayerType) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(modifier = modifier) {
-        Text("Player Type", style = MaterialTheme.typography.titleMedium)
-
-        PlayerType.values().forEach { type ->
-            RadioButtonWithLabel(
-                text = type.description,
-                selected = playerType == type,
-                onSelect = { onPlayerTypeChanged(type) }
-            )
-        }
     }
 }
 
@@ -1614,7 +1509,7 @@ private fun XdbRefEditor(
 
 // Searchable enum dialog
 @Composable
-fun<T> SearchableEnumDialog(
+fun <T> SearchableEnumDialog(
     label: String,
     items: List<T>,
     itemTitle: (T) -> String,
