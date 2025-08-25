@@ -860,7 +860,6 @@ enum class HeroType(
     val number: Int,
     val description: String
 ) {
-    NotSelected(0, ""),
     Brand(1, "Бранд"),
     Bersy(2, "Ибба"),
     Egil(3, "Эрлинг"),
@@ -1082,7 +1081,6 @@ enum class SpellType(
     val number: Int,
     val description: String
 ) {
-    SpellNone(0, ""),
     MagicArrow(1, "Магическая стрела"),
     MagicFist(2, "Магический кулак"),
     LightningBolt(3, "Молния"),

@@ -6,10 +6,7 @@ import SearchableEnumDialog
 import TerrainBuildingsConfig
 import TerrainConfig
 import TerrainType
-import ZoneRandomizationConfig
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -23,7 +20,7 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import project.ui.common.CommonListItem
+import project.ui.common.CommonVerticalListItem
 import project.ui.common.NullableFiled
 
 @Composable
@@ -80,7 +77,7 @@ fun TerrainConfigSection(
                 }
 
             terrains.forEachIndexed { index, terrain ->
-                CommonListItem(
+                CommonVerticalListItem(
                     item = terrain,
                     isSelected = selectedTerrainIndex == index,
                     onDelete = {

@@ -19,7 +19,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
-import project.ui.common.CommonListItem
+import project.ui.common.CommonVerticalListItem
 import project.ui.common.NullableFiled
 import project.ui.dwellingGenerationConfig.DependantDwellingConfigEditor
 
@@ -107,7 +107,7 @@ private fun ZoneList(
 ) {
     LazyColumn(modifier = modifier) {
         items(zones) { zone ->
-            CommonListItem(
+            CommonVerticalListItem(
                 item = zone,
                 isSelected = selectedIndex == zones.indexOf(zone),
                 onDelete = deleteZone,

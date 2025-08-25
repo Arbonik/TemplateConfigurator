@@ -1463,9 +1463,9 @@ private fun TiersPoolEditor(
             ) {
                 tiers.forEach { tier ->
                     Chip(
-                        onClick = { onTiersChanged(tiers - tier) },
                         label = { Text(tier.toString()) },
-                        trailingIcon = { Icon(Icons.Default.Close, contentDescription = "Remove") }
+                        trailingIcon = { Icon(Icons.Default.Close, contentDescription = "Remove") },
+                        modifier = Modifier.clickable { onTiersChanged(tiers - tier) }
                     )
                 }
             }
@@ -1532,9 +1532,9 @@ private fun CreatureIdsEditor(
             ) {
                 creatureIds.forEach { id ->
                     Chip(
-                        onClick = { onCreatureIdsChanged(creatureIds - id) },
                         label = { Text(id) },
-                        trailingIcon = { Icon(Icons.Default.Close, contentDescription = "Remove") }
+                        trailingIcon = { Icon(Icons.Default.Close, contentDescription = "Remove") },
+                        modifier = Modifier.clickable { onCreatureIdsChanged(creatureIds - id) }
                     )
                 }
             }
@@ -1574,10 +1574,8 @@ private fun RadioButtonWithLabel(
     }
 }
 
-// Simple Chip component implementation
 @Composable
-private fun Chip(
-    onClick: () -> Unit,
+fun Chip(
     label: @Composable () -> Unit,
     trailingIcon: @Composable (() -> Unit)? = null,
     modifier: Modifier = Modifier
@@ -1585,7 +1583,6 @@ private fun Chip(
     Surface(
         shape = MaterialTheme.shapes.small,
         color = MaterialTheme.colorScheme.surfaceVariant,
-        onClick = onClick,
         modifier = modifier
     ) {
         Row(

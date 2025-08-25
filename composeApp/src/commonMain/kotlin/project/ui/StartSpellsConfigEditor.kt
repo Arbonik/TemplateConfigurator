@@ -1,3 +1,4 @@
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -5,6 +6,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
@@ -13,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import kotlin.text.ifEmpty
 
 @Composable
 fun StartSpellsConfigEditor(
@@ -40,12 +43,11 @@ fun StartSpellsConfigEditor(
     var showAddHeroConfig by remember { mutableStateOf(false) }
 
     val playersType = remember(config) {
-        PlayerType.values().toList() - (config?.SpellsByPlayers?.map { it.PlayerType } ?: emptyList()).toSet()
+        PlayerType.entries - (config?.SpellsByPlayers?.map { it.PlayerType } ?: emptyList()).toSet()
     }
 
     FlowColumn(
         modifier = modifier.padding(16.dp).verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         ConfigSectionHeader(
             title = "Global Spells",
@@ -53,7 +55,6 @@ fun StartSpellsConfigEditor(
         )
         SpellsList(
             spells = config?.GlobalSpells ?: emptyList(),
-            onEditClick = null,
             onRemoveClick = { spell ->
                 if (config != null)
                     onConfigChanged(config.copy(GlobalSpells = config.GlobalSpells - spell))
@@ -62,62 +63,84 @@ fun StartSpellsConfigEditor(
 
         ConfigSectionHeader(
             title = "Spells by Player",
-            onAddClick = if (playersType.isNotEmpty()) {
-                { showAddPlayerConfig = true }
-            } else null
+            onAddClick = { showAddPlayerConfig = true }
         )
-        if (config != null)
-            config.SpellsByPlayers.forEach { playerConfig ->
-                PlayerConfigItem(
-                    config = playerConfig,
-                    onEditSpells = { showPlayerSpellsPicker = playerConfig },
-                    onRemove = {
-                        onConfigChanged(
-                            config.copy(
-                                SpellsByPlayers = config.SpellsByPlayers - playerConfig
-                            )
+        config?.SpellsByPlayers?.forEach { playerConfig ->
+            PlayerConfigItem(
+                config = playerConfig,
+                onEditSpells = { showPlayerSpellsPicker = playerConfig },
+                onRemove = {
+                    onConfigChanged(
+                        config.copy(
+                            SpellsByPlayers = config.SpellsByPlayers - playerConfig
                         )
-                    }
-                )
-            }
+                    )
+                },
+                onRemoveSpell = { spell ->
+                    onConfigChanged(
+                        config.copy(
+                            SpellsByPlayers = config.SpellsByPlayers.map {
+                                it.copy(Spells = it.Spells - spell)
+                            }
+                        )
+                    )
+                }
+            )
+        }
 
         ConfigSectionHeader(
             title = "Spells by Race",
             onAddClick = { showAddRaceConfig = true }
         )
-        if (config != null)
-            config.SpellsByRaces.forEach { raceConfig ->
-                RaceConfigItem(
-                    config = raceConfig,
-                    onEditSpells = { showRaceSpellsPicker = raceConfig },
-                    onRemove = {
-                        onConfigChanged(
-                            config.copy(
-                                SpellsByRaces = config.SpellsByRaces - raceConfig
-                            )
+        config?.SpellsByRaces?.forEach { raceConfig ->
+            RaceConfigItem(
+                config = raceConfig,
+                onEditSpells = { showRaceSpellsPicker = raceConfig },
+                onRemove = {
+                    onConfigChanged(
+                        config.copy(
+                            SpellsByRaces = config.SpellsByRaces - raceConfig
                         )
-                    }
-                )
-            }
+                    )
+                },
+                onRemoveSpell = { spell ->
+                    onConfigChanged(
+                        config.copy(
+                            SpellsByRaces = config.SpellsByRaces.map {
+                                it.copy(Spells = it.Spells - spell)
+                            }
+                        )
+                    )
+                }
+            )
+        }
 
         ConfigSectionHeader(
             title = "Spells by Hero",
             onAddClick = { showAddHeroConfig = true }
         )
-        if (config != null)
-            config.SpellsByHeroes.forEach { heroConfig ->
-                HeroConfigItem(
-                    config = heroConfig,
-                    onEditSpells = { showHeroSpellsPicker = heroConfig },
-                    onRemove = {
-                        onConfigChanged(
-                            config.copy(
-                                SpellsByHeroes = config.SpellsByHeroes - heroConfig
-                            )
+        config?.SpellsByHeroes?.forEach { heroConfig ->
+            HeroConfigItem(
+                config = heroConfig,
+                onEditSpells = { showHeroSpellsPicker = heroConfig },
+                onRemove = {
+                    onConfigChanged(
+                        config.copy(
+                            SpellsByHeroes = config.SpellsByHeroes - heroConfig
                         )
-                    }
-                )
-            }
+                    )
+                },
+                onRemoveSpell = { spell ->
+                    onConfigChanged(
+                        config.copy(
+                            SpellsByHeroes = config.SpellsByHeroes.map {
+                                it.copy(Spells = it.Spells - spell)
+                            }
+                        )
+                    )
+                }
+            )
+        }
     }
 
     // Dialogs for picking spells
@@ -241,78 +264,48 @@ fun StartSpellsConfigEditor(
 @Composable
 private fun ConfigSectionHeader(
     title: String,
-    onAddClick: (() -> Unit)?,
+    onAddClick: (() -> Unit),
     modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
     ) {
+        IconButton(onClick = onAddClick) {
+            Icon(Icons.Default.Add, contentDescription = "Add")
+        }
         Text(
             text = title,
             style = MaterialTheme.typography.headlineSmall
         )
-        if (onAddClick != null)
-            IconButton(onClick = onAddClick) {
-                Icon(Icons.Default.Add, contentDescription = "Add")
-            }
     }
 }
 
 @Composable
 private fun SpellsList(
     spells: List<SpellType>,
-    onEditClick: (() -> Unit)?,
     onRemoveClick: (SpellType) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (spells.isEmpty() && onEditClick != null) {
-        OutlinedButton(
-            onClick = onEditClick,
-            modifier = modifier.fillMaxWidth()
-        ) {
-            Text("Add Spells")
-        }
-    } else {
-        Column(
-            modifier = modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            spells.forEach { spell ->
-                SpellItem(
-                    spell = spell,
-                    onRemoveClick = { onRemoveClick(spell) }
-                )
-            }
-            if (onEditClick != null) {
-                Button(
-                    onClick = onEditClick,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Edit Spells")
-                }
-            }
-        }
-    }
-}
 
-@Composable
-private fun SpellItem(
-    spell: SpellType,
-    onRemoveClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Card(modifier = modifier.fillMaxWidth()) {
-        Row(
-            modifier = Modifier.padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(spell.name)
-            IconButton(onClick = onRemoveClick) {
-                Icon(Icons.Default.Delete, contentDescription = "Remove")
-            }
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        spells.forEach { spell ->
+            Chip(
+                label = { Text(spell.description.ifEmpty { spell.name }) },
+                modifier = Modifier.padding(4.dp).clickable {
+                    onRemoveClick(spell)
+                },
+                trailingIcon = {
+                    Icon(
+                        Icons.Default.Close,
+                        contentDescription = "Remove",
+                        modifier = Modifier.size(16.dp).align(Alignment.CenterVertically)
+                    )
+                }
+            )
         }
     }
 }
@@ -322,12 +315,13 @@ private fun PlayerConfigItem(
     config: StartSpellsByPlayer,
     onEditSpells: () -> Unit,
     onRemove: () -> Unit,
+    onRemoveSpell: (SpellType) -> Unit,
     modifier: Modifier = Modifier
 ) {
     ConfigItem(
         title = config.PlayerType.description,
         content = {
-            SpellsPreview(spells = config.Spells)
+            SpellsPreview(spells = config.Spells, onRemoveSpell)
         },
         onEditClick = onEditSpells,
         onRemoveClick = onRemove,
@@ -340,12 +334,13 @@ private fun RaceConfigItem(
     config: StartSpellsByRace,
     onEditSpells: () -> Unit,
     onRemove: () -> Unit,
+    onRemoveSpell: (SpellType) -> Unit,
     modifier: Modifier = Modifier
 ) {
     ConfigItem(
         title = config.CastleType.name,
         content = {
-            SpellsPreview(spells = config.Spells)
+            SpellsPreview(spells = config.Spells, onRemoveSpell)
         },
         onEditClick = onEditSpells,
         onRemoveClick = onRemove,
@@ -357,13 +352,14 @@ private fun RaceConfigItem(
 private fun HeroConfigItem(
     config: StartSpellsByHero,
     onEditSpells: () -> Unit,
+    onRemoveSpell: (SpellType) -> Unit,
     onRemove: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     ConfigItem(
-        title = config.HeroType.name,
+        title = config.HeroType.description.ifEmpty { config.HeroType.name },
         content = {
-            SpellsPreview(spells = config.Spells)
+            SpellsPreview(spells = config.Spells, onRemoveSpell)
         },
         onEditClick = onEditSpells,
         onRemoveClick = onRemove,
@@ -383,9 +379,11 @@ private fun ConfigItem(
         Column(modifier = Modifier.padding(12.dp)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
+                IconButton(onClick = onEditClick) {
+                    Icon(Icons.Default.Add, contentDescription = "add")
+                }
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleMedium
@@ -396,43 +394,34 @@ private fun ConfigItem(
             }
 
             Spacer(modifier = Modifier.height(8.dp))
-
             content()
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Button(
-                onClick = onEditClick,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Edit Spells")
-            }
         }
     }
 }
 
 @Composable
-private fun SpellsPreview(spells: List<SpellType>) {
-    if (spells.isEmpty()) {
-        Text(
-            text = "No spells selected",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    } else {
-        val displayedSpells = if (spells.size > 3) {
-            spells.take(3) + SpellType.Bless
-        } else {
-            spells
-        }
-
-        Column {
-            displayedSpells.forEach { spell ->
-                Text(
-                    text = "• ${spell.name}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
+private fun SpellsPreview(
+    spells: List<SpellType>,
+    onDelete: (SpellType) -> Unit,
+) {
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        spells.forEach { spell ->
+            Chip(
+                label = { Text(spell.description.ifEmpty { spell.name }) },
+                modifier = Modifier.padding(4.dp).clickable {
+                    onDelete(spell)
+                },
+                trailingIcon = {
+                    Icon(
+                        Icons.Default.Close,
+                        contentDescription = "Remove",
+                        modifier = Modifier.size(16.dp).align(Alignment.CenterVertically)
+                    )
+                }
+            )
         }
     }
 }
@@ -443,103 +432,15 @@ private fun SpellPickerDialog(
     onDismiss: () -> Unit,
     onConfirm: (List<SpellType>) -> Unit
 ) {
-    var currentSelection by remember { mutableStateOf(selectedSpells.toSet()) }
-    var searchQuery by remember { mutableStateOf("") }
-
-    Dialog(onDismissRequest = onDismiss) {
-        Surface(
-            shape = MaterialTheme.shapes.extraLarge,
-            modifier = Modifier.width(400.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(24.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Text(
-                    text = "Select Spells",
-                    style = MaterialTheme.typography.headlineSmall
-                )
-
-                OutlinedTextField(
-                    value = searchQuery,
-                    onValueChange = { searchQuery = it },
-                    label = { Text("Search spells") },
-                    leadingIcon = { Icon(Icons.Default.Search, null) },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                val filteredSpells = remember(searchQuery) {
-                    if (searchQuery.isBlank()) {
-                        SpellType.values().toList()
-                    } else {
-                        SpellType.values().filter {
-                            it.name.contains(searchQuery, ignoreCase = true)
-                        }
-                    }
-                }
-
-                LazyColumn(
-                    modifier = Modifier.heightIn(max = 400.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(filteredSpells) { spell ->
-                        SpellSelectionItem(
-                            spell = spell,
-                            isSelected = currentSelection.contains(spell),
-                            onSelectionChange = { selected ->
-                                currentSelection = if (selected) {
-                                    currentSelection + spell
-                                } else {
-                                    currentSelection - spell
-                                }
-                            }
-                        )
-                    }
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    TextButton(onClick = onDismiss) {
-                        Text("Cancel")
-                    }
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Button(onClick = {
-                        onConfirm(currentSelection.toList())
-                    }
-                    ) {
-                        Text("Confirm")
-                    }
-                }
-            }
+    SearchableEnumDialog(
+        label = "Select Spels",
+        items = SpellType.entries - selectedSpells.toSet(),
+        itemTitle = { it.description.ifEmpty { it.name } },
+        onDismiss = onDismiss,
+        onItemSelected = {
+            onConfirm(selectedSpells + it)
         }
-    }
-}
-
-@Composable
-private fun SpellSelectionItem(
-    spell: SpellType,
-    isSelected: Boolean,
-    onSelectionChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Checkbox(
-            checked = isSelected,
-            onCheckedChange = onSelectionChange
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = spell.name,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.weight(1f)
-        )
-    }
+    )
 }
 
 @Composable
@@ -548,12 +449,12 @@ private fun PlayerTypePickerDialog(
     onDismiss: () -> Unit,
     onConfirm: (PlayerType) -> Unit
 ) {
-    SelectionDialog(
-        title = "Select Player Type",
+    SearchableEnumDialog(
+        label = "Select Player Type",
         items = items,
-        itemName = { it.description },
+        itemTitle = { it.description },
         onDismiss = onDismiss,
-        onConfirm = onConfirm
+        onItemSelected = onConfirm
     )
 }
 
@@ -562,12 +463,12 @@ private fun CastleTypePickerDialog(
     onDismiss: () -> Unit,
     onConfirm: (project.data.enums.CastleType) -> Unit
 ) {
-    SelectionDialog(
-        title = "Select Race",
-        items = _root_ide_package_.project.data.enums.CastleType.values().toList(),
-        itemName = { it.name },
+    SearchableEnumDialog(
+        label = "Select Race",
+        items = project.data.enums.CastleType.values().toList(),
+        itemTitle = { it.name },
         onDismiss = onDismiss,
-        onConfirm = onConfirm
+        onItemSelected = onConfirm
     )
 }
 
@@ -576,85 +477,11 @@ private fun HeroTypePickerDialog(
     onDismiss: () -> Unit,
     onConfirm: (HeroType) -> Unit
 ) {
-    SelectionDialog(
-        title = "Select Hero",
-        items = HeroType.values().toList(),
-        itemName = { it.name },
+    SearchableEnumDialog(
+        label = "Select Hero",
+        items = HeroType.entries,
+        itemTitle = { it.description.ifEmpty { it.name } },
         onDismiss = onDismiss,
-        onConfirm = onConfirm
+        onItemSelected = onConfirm
     )
-}
-
-@Composable
-private fun <T> SelectionDialog(
-    title: String,
-    items: List<T>,
-    itemName: (T) -> String,
-    onDismiss: () -> Unit,
-    onConfirm: (T) -> Unit
-) {
-    var searchQuery by remember { mutableStateOf("") }
-
-    Dialog(onDismissRequest = onDismiss) {
-        Surface(
-            shape = MaterialTheme.shapes.extraLarge,
-            modifier = Modifier.width(400.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(24.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.headlineSmall
-                )
-
-                OutlinedTextField(
-                    value = searchQuery,
-                    onValueChange = { searchQuery = it },
-                    label = { Text("Search") },
-                    leadingIcon = { Icon(Icons.Default.Search, null) },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                val filteredItems = remember(searchQuery) {
-                    if (searchQuery.isBlank()) {
-                        items
-                    } else {
-                        items.filter {
-                            itemName(it).contains(searchQuery, ignoreCase = true)
-                        }
-                    }
-                }
-
-                LazyColumn(
-                    modifier = Modifier.heightIn(max = 400.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(filteredItems) { item ->
-                        Card(
-                            onClick = {
-                                onConfirm(item)
-                                onDismiss()
-                            },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text(
-                                text = itemName(item),
-                                modifier = Modifier.padding(16.dp),
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                        }
-                    }
-                }
-
-                Button(
-                    onClick = onDismiss,
-                    modifier = Modifier.align(Alignment.End)
-                ) {
-                    Text("Cancel")
-                }
-            }
-        }
-    }
 }

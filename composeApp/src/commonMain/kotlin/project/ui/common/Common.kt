@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -61,16 +60,6 @@ fun EnumDropdown(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun AddButton(onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier.padding(start = 8.dp)
-    ) {
-        Text("Add")
     }
 }
 
@@ -137,7 +126,7 @@ fun <T> NullableFiled(
 }
 
 @Composable
-fun <T> CommonListItem(
+fun <T> CommonVerticalListItem(
     item: T,
     isSelected: Boolean,
     onDelete: (T) -> Unit,

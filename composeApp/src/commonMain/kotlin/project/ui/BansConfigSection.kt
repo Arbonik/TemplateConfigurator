@@ -3,12 +3,14 @@ package project.ui
 import ArtifactType
 import BannedBasesByClass
 import BasesBanModel
+import Chip
 import EntitiesBanModel
 import HeroClassType
 import HeroType
 import SearchableEnumDialog
 import SkillType
 import SpellType
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import project.ui.common.AddButton
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -40,36 +41,27 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.ui.Alignment
+import kotlin.text.ifEmpty
 
 @Composable
 fun BansConfigSection(
     bans: EntitiesBanModel,
     onBansChanged: (EntitiesBanModel) -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
-        Text("Баны", style = MaterialTheme.typography.headlineMedium)
-
-        Text(
-            "Banned Artifacts",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(top = 8.dp)
-        )
-        ChipGroup(
-            items = bans.BannedArtifacts,
-            title = { it.description },
-            onItemRemoved = { artifact ->
-                onBansChanged(bans.copy(BannedArtifacts = bans.BannedArtifacts - artifact))
-            }
-        )
-
-        Row(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
+    Column(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(16.dp)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                "Banned Artifacts",
+            )
             var isDialogOpen by remember { mutableStateOf(false) }
 
             if (isDialogOpen)
                 SearchableEnumDialog(
                     label = "Select Arifact",
-                    items = ArtifactType.values().toList(),
-                    itemTitle = { "${(it as ArtifactType).description} (${it.name})" },
+                    items = ArtifactType.entries - bans.BannedArtifacts.toSet(),
+                    itemTitle = { "${it.description} (${it.name})" },
                     onItemSelected = { artifact ->
                         onBansChanged(
                             bans.copy(BannedArtifacts = bans.BannedArtifacts + artifact as ArtifactType)
@@ -78,74 +70,136 @@ fun BansConfigSection(
                     },
                     onDismiss = { isDialogOpen = false }
                 )
-            AddButton { isDialogOpen = true }
+            IconButton(onClick = {
+                isDialogOpen = true
+            }) {
+                Icon(Icons.Default.Add, contentDescription = "Add")
+            }
+        }
+        // Show selected buildings as chips
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            bans.BannedArtifacts.forEach { artifact ->
+                Chip(
+                    label = { Text(artifact.description) },
+                    modifier = Modifier.padding(4.dp).clickable {
+                        onBansChanged(bans.copy(BannedArtifacts = bans.BannedArtifacts - artifact))
+                    },
+                    trailingIcon = {
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = "Remove",
+                            modifier = Modifier.size(16.dp).align(Alignment.CenterVertically)
+                        )
+                    }
+                )
+            }
         }
 
-        Text("Banned Heroes", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 16.dp))
-        ChipGroup(
-            items = bans.BannedHeroes,
-            title = { it.description.ifEmpty { it.name } },
-            onItemRemoved = { hero ->
-                onBansChanged(bans.copy(BannedHeroes = bans.BannedHeroes - hero))
-            }
-        )
-
-        Row(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text("Banned Heroes")
             var isDialogOpen by remember { mutableStateOf(false) }
             if (isDialogOpen)
                 SearchableEnumDialog(
                     label = "Select Hero",
                     onDismiss = { isDialogOpen = false },
-                    items = HeroType.values().toList(),
-                    itemTitle = { (it as HeroType).description.ifEmpty { it.name } },
+                    items = HeroType.entries - bans.BannedHeroes.toSet(),
+                    itemTitle = { it.description.ifEmpty { it.name } },
                     onItemSelected = { hero ->
-                        onBansChanged(bans.copy(BannedHeroes = bans.BannedHeroes + (hero as HeroType)))
+                        onBansChanged(bans.copy(BannedHeroes = bans.BannedHeroes + hero))
                         isDialogOpen = false
                     }
                 )
-            AddButton { isDialogOpen = true }
+
+            IconButton(onClick = {
+                isDialogOpen = true
+            }) {
+                Icon(Icons.Default.Add, contentDescription = "Add")
+            }
+        }
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            bans.BannedHeroes.forEach { hero ->
+                Chip(
+                    label = { Text(hero.description.ifEmpty { hero.name }) },
+                    modifier = Modifier.padding(4.dp).clickable {
+                        onBansChanged(bans.copy(BannedHeroes = bans.BannedHeroes - hero))
+                    },
+                    trailingIcon = {
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = "Remove",
+                            modifier = Modifier.size(16.dp).align(Alignment.CenterVertically)
+                        )
+                    }
+                )
+            }
         }
 
-        Text("Banned Spells", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 16.dp))
-        ChipGroup(
-            items = bans.BannedSpells,
-            title = { it.description.ifEmpty { it.name } },
-            onItemRemoved = { spell ->
-                onBansChanged(bans.copy(BannedSpells = bans.BannedSpells - spell))
-            }
-        )
-
-        Row(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text("Banned Spells")
             var isDialogOpen by remember { mutableStateOf(false) }
             if (isDialogOpen)
                 SearchableEnumDialog(
                     label = "Select Spell",
                     onDismiss = { isDialogOpen = false },
-                    items = SpellType.values().toList(),
-                    itemTitle = { (it as SpellType).description.ifEmpty { it.name } },
+                    items = SpellType.entries - bans.BannedSpells.toSet(),
+                    itemTitle = { it.description.ifEmpty { it.name } },
                     onItemSelected = { newSpell ->
-                        onBansChanged(bans.copy(BannedSpells = bans.BannedSpells + (newSpell as SpellType)))
+                        onBansChanged(bans.copy(BannedSpells = bans.BannedSpells + newSpell))
                         isDialogOpen = false
                     }
                 )
-            AddButton { isDialogOpen = true }
+
+            IconButton(onClick = {
+                isDialogOpen = true
+            }) {
+                Icon(Icons.Default.Add, contentDescription = "Add")
+            }
         }
 
-        Text("забанить мародерство?")
-        var banMaradeur by remember { mutableStateOf(bans.BanMaradeur == true) }
-        Checkbox(
-            checked = banMaradeur,
-            onCheckedChange = {
-                onBansChanged(bans.copy(BanMaradeur = it))
-                banMaradeur = it
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            bans.BannedSpells.forEach { spell ->
+                Chip(
+                    label = { Text(spell.description.ifEmpty { spell.name }) },
+                    modifier = Modifier.padding(4.dp).clickable {
+                        onBansChanged(bans.copy(BannedSpells = bans.BannedSpells - spell))
+                    },
+                    trailingIcon = {
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = "Remove",
+                            modifier = Modifier.size(16.dp).align(Alignment.CenterVertically)
+                        )
+                    }
+                )
             }
-        )
+        }
 
-        Text(
-            "забаненные базовые скиллы",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(top = 16.dp)
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text("забанить мародерство?")
+            var banMaradeur by remember { mutableStateOf(bans.BanMaradeur == true) }
+            Checkbox(
+                checked = banMaradeur,
+                onCheckedChange = {
+                    onBansChanged(bans.copy(BanMaradeur = it))
+                    banMaradeur = it
+                }
+            )
+        }
 
         BasesBanEditor(
             bans.BannedBases,
@@ -164,30 +218,22 @@ fun BasesBanEditor(
 ) {
     var currentModel by remember { mutableStateOf(model) }
 
-    Column(modifier = modifier.padding(16.dp)) {
-        Text("Bases Ban Editor")
-        Spacer(modifier = Modifier.height(16.dp))
+    CommonBannedSkillsEditor(
+        skills = currentModel.CommonBannedSkills,
+        onSkillsChanged = { newSkills ->
+            currentModel = currentModel.copy(CommonBannedSkills = newSkills)
+            onModelChanged(currentModel)
+        }
+    )
 
-        // Common banned skills section
-        CommonBannedSkillsEditor(
-            skills = currentModel.CommonBannedSkills,
-            onSkillsChanged = { newSkills ->
-                currentModel = currentModel.copy(CommonBannedSkills = newSkills)
-                onModelChanged(currentModel)
-            }
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Class-specific bans section
-        ClassSpecificBansEditor(
-            bans = currentModel.SkillsBannedForClass,
-            onBansChanged = { newBans ->
-                currentModel = currentModel.copy(SkillsBannedForClass = newBans)
-                onModelChanged(currentModel)
-            }
-        )
-    }
+    // Class-specific bans section
+    ClassSpecificBansEditor(
+        bans = currentModel.SkillsBannedForClass,
+        onBansChanged = { newBans ->
+            currentModel = currentModel.copy(SkillsBannedForClass = newBans)
+            onModelChanged(currentModel)
+        }
+    )
 }
 
 @Composable
@@ -197,9 +243,6 @@ private fun CommonBannedSkillsEditor(
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var availableSkills by remember {
-        mutableStateOf(SkillType.values().toList() - skills.toSet())
-    }
 
     Column(modifier = modifier) {
         Row(
@@ -211,46 +254,36 @@ private fun CommonBannedSkillsEditor(
                 Icon(Icons.Default.Add, "Add skill")
             }
         }
+        if (expanded)
+            SearchableEnumDialog(
+                label = "Select Skill",
+                onDismiss = { expanded = false },
+                items = SkillType.entries - skills.toSet(),
+                itemTitle = { it.description.ifEmpty { it.name } },
+                onItemSelected = { newSpell ->
+                    onSkillsChanged(skills + newSpell)
+                    expanded = false
+                }
+            )
 
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            if (availableSkills.isEmpty()) {
-                DropdownMenuItem(
-                    onClick = { expanded = false },
-                    text = {
-                        Text("All skills are banned")
+            skills.forEach { skill ->
+                Chip(
+                    label = { Text(skill.description.ifEmpty { skill.name }) },
+                    modifier = Modifier.padding(4.dp).clickable {
+                        onSkillsChanged(skills - skill)
+                    },
+                    trailingIcon = {
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = "Remove",
+                            modifier = Modifier.size(16.dp).align(Alignment.CenterVertically)
+                        )
                     }
                 )
-            } else {
-                availableSkills.forEach { skill ->
-                    DropdownMenuItem(onClick = {
-                        val newList = skills + skill
-                        onSkillsChanged(newList)
-                        availableSkills = availableSkills - skill
-                        expanded = false
-                    }, text = {
-                        Text("${skill.description} (${skill.number})")
-                    })
-                }
-            }
-        }
-
-        if (skills.isEmpty()) {
-            Text("No common banned skills")
-        } else {
-            FlowColumn(modifier = Modifier.fillMaxWidth()) {
-                skills.forEach { skill ->
-                    SkillItem(
-                        skill = skill,
-                        onRemove = {
-                            val newList = skills - skill
-                            onSkillsChanged(newList)
-                            availableSkills = availableSkills + skill
-                        }
-                    )
-                }
             }
         }
     }
@@ -275,58 +308,32 @@ private fun ClassSpecificBansEditor(
             }
         }
 
-        if (bans.isEmpty()) {
-            Text("No class-specific bans")
-        } else {
-            FlowColumn(modifier = Modifier.fillMaxWidth()) {
-                bans.forEach { ban ->
-                    ClassBanItem(
-                        ban = ban,
-                        onRemove = {
-                            onBansChanged(bans - ban)
-                        },
-                        onBanChanged = { updatedBan ->
-                            onBansChanged(bans.map { if (it.Class == updatedBan.Class) updatedBan else it })
-                        }
-                    )
-                }
+        FlowColumn(modifier = Modifier.fillMaxWidth()) {
+            bans.forEach { ban ->
+                ClassBanItem(
+                    ban = ban,
+                    onRemove = {
+                        onBansChanged(bans - ban)
+                    },
+                    onBanChanged = { updatedBan ->
+                        onBansChanged(bans.map { if (it.Class == updatedBan.Class) updatedBan else it })
+                    }
+                )
             }
         }
     }
 
     if (showAddDialog) {
-        AddClassBanDialog(
-            existingClasses = bans.map { it.Class },
-            onAdd = { newBan ->
-                onBansChanged(bans + newBan)
+        SearchableEnumDialog(
+            label = "Select class",
+            onDismiss = { showAddDialog = false },
+            items = HeroClassType.entries - bans.map { it.Class }.toSet(),
+            itemTitle = { it.description.ifEmpty { it.name } },
+            onItemSelected = { newBan ->
+                onBansChanged(bans + BannedBasesByClass(newBan, emptyList()))
                 showAddDialog = false
-            },
-            onDismiss = { showAddDialog = false }
-        )
-    }
-}
-
-@Composable
-private fun SkillItem(
-    skill: SkillType,
-    onRemove: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier.fillMaxWidth().padding(vertical = 4.dp),
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(8.dp)
-        ) {
-            Text(
-                text = "${skill.description} (${skill.number})",
-                modifier = Modifier.weight(1f)
-            )
-            IconButton(onClick = onRemove) {
-                Icon(Icons.Default.Delete, "Remove skill")
             }
-        }
+        )
     }
 }
 
@@ -345,225 +352,53 @@ private fun ClassBanItem(
         Column(modifier = Modifier.padding(8.dp)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
+                IconButton(onClick = { showEditDialog = true }) {
+                    Icon(Icons.Default.Add, "Add ban")
+                }
                 Text(
                     text = ban.Class.description
                 )
-                Row {
-                    IconButton(onClick = { showEditDialog = true }) {
-                        Icon(Icons.Default.Edit, "Edit ban")
-                    }
-                    IconButton(onClick = onRemove) {
-                        Icon(Icons.Default.Delete, "Remove ban")
-                    }
+
+                IconButton(onClick = onRemove) {
+                    Icon(Icons.Default.Delete, "Remove ban")
                 }
             }
 
-            if (ban.Skills.isEmpty()) {
-                Text("No skills banned for this class")
-            } else {
-                Text("Banned skills:")
-                FlowRow(modifier = Modifier.padding(top = 4.dp)) {
-                    ban.Skills.forEach { skill ->
-                        Chip(
-                            text = skill.description,
-                            onRemove = {
-                                onBanChanged(ban.copy(Skills = ban.Skills - skill))
-                            }
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    if (showEditDialog) {
-        EditClassBanDialog(
-            ban = ban,
-            onSave = { updatedBan ->
-                onBanChanged(updatedBan)
-                showEditDialog = false
-            },
-            onDismiss = { showEditDialog = false }
-        )
-    }
-}
-
-@Composable
-private fun AddClassBanDialog(
-    existingClasses: List<HeroClassType>,
-    onAdd: (BannedBasesByClass) -> Unit,
-    onDismiss: () -> Unit
-) {
-    var selectedClass by remember { mutableStateOf<HeroClassType?>(null) }
-    val availableClasses = remember(existingClasses) {
-        HeroClassType.values().toList() - existingClasses.toSet()
-    }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Add Class Ban") },
-        text = {
-            Column {
-                Text("Select class to ban skills for:")
-                Spacer(modifier = Modifier.height(8.dp))
-                DropdownMenuBox(
-                    items = availableClasses,
-                    selectedItem = selectedClass,
-                    onItemSelected = { selectedClass = it },
-                    itemText = {
-                        selectedClass?.description ?: "Select class"
-                    },
-                    itemContent = { it?.description ?: "" }
-                )
-            }
-        },
-        confirmButton = {
-
-            Button(
-                onClick = {
-                    selectedClass?.let {
-                        onAdd(BannedBasesByClass(it, emptyList()))
-                    }
-                },
-                enabled = selectedClass != null
+            Text("Banned skills:")
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Text("Add")
-            }
-        },
-        dismissButton = {
-
-            Button(
-                onClick = onDismiss,
-                modifier = Modifier.padding(end = 8.dp)
-            ) {
-                Text("Cancel")
-            }
-        },
-    )
-}
-
-@Composable
-private fun EditClassBanDialog(
-    ban: BannedBasesByClass,
-    onSave: (BannedBasesByClass) -> Unit,
-    onDismiss: () -> Unit
-) {
-    var selectedSkills by remember { mutableStateOf(ban.Skills.toSet()) }
-    val allSkills = SkillType.values().toList()
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Edit Ban for ${ban.Class.description}") },
-        text = {
-            Column {
-                Text("Select skills to ban:")
-                Spacer(modifier = Modifier.height(8.dp))
-
-                LazyColumn(modifier = Modifier.heightIn(max = 400.dp)) {
-                    items(allSkills) { skill ->
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth().padding(4.dp)
-                        ) {
-                            Checkbox(
-                                checked = selectedSkills.contains(skill),
-                                onCheckedChange = { checked ->
-                                    selectedSkills = if (checked) {
-                                        selectedSkills + skill
-                                    } else {
-                                        selectedSkills - skill
-                                    }
-                                }
-                            )
-                            Text(
-                                text = "${skill.description} (${skill.number})",
-                                modifier = Modifier.padding(start = 8.dp)
+                ban.Skills.forEach { skill ->
+                    Chip(
+                        label = { Text(skill.description.ifEmpty { skill.name }) },
+                        modifier = Modifier.padding(4.dp).clickable {
+                            onBanChanged(ban.copy(Skills = ban.Skills - skill))
+                        },
+                        trailingIcon = {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = "Remove",
+                                modifier = Modifier.size(16.dp).align(Alignment.CenterVertically)
                             )
                         }
-                    }
+                    )
                 }
-            }
-        },
-        confirmButton = {
-            Button(
-                onClick = {
-                    onSave(ban.copy(Skills = selectedSkills.toList()))
-                }
-            ) {
-                Text("Save")
-            }
-        },
-        dismissButton = {
-            Button(
-                onClick = onDismiss,
-                modifier = Modifier.padding(end = 8.dp)
-            ) {
-                Text("Cancel")
-            }
-        },
-    )
-}
-
-@Composable
-private fun Chip(
-    text: String,
-    onRemove: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier.padding(end = 4.dp, bottom = 4.dp),
-        shape = MaterialTheme.shapes.small
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(start = 8.dp, top = 4.dp, end = 4.dp, bottom = 4.dp)
-        ) {
-            Text(text)
-            IconButton(
-                onClick = onRemove,
-                modifier = Modifier.size(16.dp)
-            ) {
-                Icon(Icons.Default.Close, "Remove", modifier = Modifier.size(12.dp))
             }
         }
     }
-}
 
-@Composable
-private fun <T> DropdownMenuBox(
-    items: List<T>,
-    selectedItem: T?,
-    onItemSelected: (T) -> Unit,
-    itemText: @Composable () -> String,
-    itemContent: @Composable (T) -> String,
-    modifier: Modifier = Modifier
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box(modifier = modifier.wrapContentSize(Alignment.TopStart)) {
-        OutlinedButton(
-            onClick = { expanded = true },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(itemText())
-            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
-        }
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
-        ) {
-            items.forEach { item ->
-                DropdownMenuItem(onClick = {
-                    onItemSelected(item)
-                    expanded = false
-                }, text = {
-                    Text(itemContent(item))
-                })
+    if (showEditDialog)
+        SearchableEnumDialog(
+            label = "Select Skill",
+            onDismiss = { showEditDialog = false },
+            items = SkillType.entries - ban.Skills.toSet(),
+            itemTitle = { it.description.ifEmpty { it.name } },
+            onItemSelected = { newban ->
+                onBanChanged(ban.copy(Skills = ban.Skills + newban))
+                showEditDialog = false
             }
-        }
-    }
+        )
 }

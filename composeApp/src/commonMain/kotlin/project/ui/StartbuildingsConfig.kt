@@ -1,8 +1,5 @@
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -13,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import project.data.enums.CastleType
+import project.ui.common.CommonVerticalListItem
 import project.ui.common.NullableFiled
 import kotlin.collections.plus
 
@@ -58,32 +56,17 @@ fun StartBuildingConfigEditor(
                 modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())
             ) {
                 configs.forEachIndexed { index, config ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                selectionConfigIndex = index
-                            }
-                            .padding(8.dp),
+                    CommonVerticalListItem(
+                        item = config,
+                        isSelected = index == selectionConfigIndex,
+                        onDelete = {
+                            onConfigsUpdated(
+                                configs - config
+                            )
+                        },
+                        onSelected = { selectionConfigIndex = index },
                     ) {
-                        Column(modifier = Modifier.padding(8.dp)) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text("Config ${index + 1}")
-                                    IconButton(
-                                        onClick = {
-                                            onConfigsUpdated(
-                                                configs - config
-                                            )
-                                        }
-                                    ) {
-                                        Icon(Icons.Default.Delete, contentDescription = "Delete")
-                                    }
-                            }
-                        }
+                        Text("Config ${index + 1}", modifier = Modifier.padding(start = 8.dp))
                     }
                 }
             }
@@ -112,7 +95,6 @@ private fun ConfigEditor(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.padding(8.dp)) {
-        // ApplyAllTerrains toggle
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
@@ -170,79 +152,26 @@ private fun ConfigEditor(
         Text("Buildings", modifier = Modifier.padding(top = 8.dp))
 
         var showBuildingsDialog by remember { mutableStateOf(false) }
-        var buildingsSearchQuery by remember { mutableStateOf("") }
 
         Button(
             onClick = { showBuildingsDialog = true },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Select Buildings (${config.Buildings.size} selected)")
+            Text("Add Buildings (${config.Buildings.size} selected)")
         }
 
         if (showBuildingsDialog) {
-
-            val selectedBuildings = remember(config.Buildings) {
-                config.Buildings.toMutableStateList()
-            }
-
-            AlertDialog(
-                onDismissRequest = { showBuildingsDialog = false },
-                confirmButton = {
-                    Button(
-                        onClick = { showBuildingsDialog = false }
-                    ) {
-                        onConfigUpdated(config.copy(Buildings = selectedBuildings))
-                        Text("Apply")
-                    }
-                },
-                text = {
-                    Column {
-                        // Search field
-                        OutlinedTextField(
-                            value = buildingsSearchQuery,
-                            onValueChange = { buildingsSearchQuery = it },
-                            label = { Text("Search buildings") },
-                            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                            leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") }
-                        )
-
-                        // Filtered buildings list
-                        val filteredBuildings = BuildingType.values().filter {
-                            it.description.contains(buildingsSearchQuery, ignoreCase = true)
-                        }
-
-                        LazyColumn(modifier = Modifier.heightIn(max = 400.dp)) {
-                            items(filteredBuildings) { building ->
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            if (selectedBuildings.contains(building)) {
-                                                selectedBuildings.remove(building)
-                                            } else {
-                                                selectedBuildings.add(building)
-                                            }
-                                        }
-                                ) {
-                                    Checkbox(
-                                        checked = selectedBuildings.contains(building),
-                                        onCheckedChange = null // handled by row click
-                                    )
-                                    Text(
-                                        text = building.description,
-                                        modifier = Modifier.padding(start = 8.dp)
-                                    )
-                                }
-                                Divider()
-                            }
-                        }
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
+            SearchableEnumDialog(
+                label = "Select Building",
+                items = BuildingType.entries - config.Buildings.toSet(),
+                itemTitle = { it.description },
+                onDismiss = { showBuildingsDialog = false },
+                onItemSelected = { newBuilding ->
+                    onConfigUpdated(config.copy(Buildings = config.Buildings + newBuilding))
+                    showBuildingsDialog = false
+                }
             )
         }
-
         // Show selected buildings as chips
         FlowRow(
             modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
@@ -250,48 +179,23 @@ private fun ConfigEditor(
         ) {
             config.Buildings.forEach { building ->
                 Chip(
-                    onClick = {
+                    label = { Text(building.description) },
+                    modifier = Modifier.padding(4.dp).clickable {
                         onConfigUpdated(
                             config.copy(
                                 Buildings = config.Buildings - building
                             )
                         )
                     },
-                    modifier = Modifier.padding(4.dp)
-                ) {
-                    Text(building.description)
-                }
+                    trailingIcon = {
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = "Remove",
+                            modifier = Modifier.size(16.dp).align(Alignment.CenterVertically)
+                        )
+                    }
+                )
             }
-        }
-    }
-}
-
-// Simple Chip component
-@Composable
-fun Chip(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
-) {
-    Surface(
-        modifier = modifier,
-        shape = MaterialTheme.shapes.small,
-        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-        contentColor = MaterialTheme.colorScheme.primary,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(start = 8.dp, top = 4.dp, end = 8.dp, bottom = 4.dp)
-                .clickable(onClick = onClick),
-        ) {
-            content()
-            Spacer(Modifier.width(4.dp))
-            Icon(
-                Icons.Default.Close,
-                contentDescription = "Remove",
-                modifier = Modifier.size(16.dp)
-            )
         }
     }
 }

@@ -1,8 +1,10 @@
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -23,32 +25,24 @@ fun ScriptFeaturesConfigEditor(
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Text("Script Features Configuration", style = MaterialTheme.typography.headlineMedium)
-
         CastleCaptureEditor(
             model = currentConfig.CastleCaptureProps ?: CastleCaptureModel(),
             onModelChanged = {
-                currentConfig = currentConfig.copy(CastleCaptureProps = it.takeIf { model ->
-                    model != CastleCaptureModel() // Only include if not default
-                })
+                currentConfig = currentConfig.copy(CastleCaptureProps = it)
                 onConfigChanged(currentConfig)
             }
         )
         GmRebuildEditor(
-            model = currentConfig.GmRebuildProps ?: GMRebuildModel(),
+            model = currentConfig.GmRebuildProps,
             onModelChanged = {
-                currentConfig = currentConfig.copy(GmRebuildProps = it.takeIf { model ->
-                    model != GMRebuildModel() // Only include if not default
-                })
+                currentConfig = currentConfig.copy(GmRebuildProps = it)
                 onConfigChanged(currentConfig)
             }
         )
         GloballyDisabledBuildingsEditor(
             model = currentConfig.GloballyDisabledBuildingsProps ?: GloballyDisabledBuildingsModel(),
             onModelChanged = {
-                currentConfig = currentConfig.copy(GloballyDisabledBuildingsProps = it.takeIf { model ->
-                    model.Buildings.isNotEmpty() // Only include if not empty
-                })
+                currentConfig = currentConfig.copy(GloballyDisabledBuildingsProps = it)
                 onConfigChanged(currentConfig)
             }
         )
@@ -143,53 +137,71 @@ private fun CastleCaptureEditor(
 
 @Composable
 private fun GmRebuildEditor(
-    model: GMRebuildModel,
-    onModelChanged: (GMRebuildModel) -> Unit,
+    model: GMRebuildModel?,
+    onModelChanged: (GMRebuildModel?) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var currentModel by remember { mutableStateOf(model) }
-
     Card(modifier = modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Text("GM Rebuild Properties", style = MaterialTheme.typography.headlineSmall)
+        model?.let { currentModel ->
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text("GM Rebuild Properties", style = MaterialTheme.typography.headlineSmall)
 
-            NumberInput(
-                label = "Minimal GM Level",
-                value = currentModel.MinimalGMLevel,
-                onValueChanged = {
-                    currentModel = currentModel.copy(MinimalGMLevel = it)
-                    onModelChanged(currentModel)
-                }
-            )
-
-            NumberInput(
-                label = "Minimal War Cries Level",
-                value = currentModel.MinimalWarCriesLevel,
-                onValueChanged = {
-                    currentModel = currentModel.copy(MinimalWarCriesLevel = it)
-                    onModelChanged(currentModel)
-                }
-            )
-
-            Text("Rebuild Cost", style = MaterialTheme.typography.titleMedium)
-            currentModel.RebuildCost?.let { resources ->
-                ResourcesEditor(
-                    resources = resources,
-                    onResourcesChanged = {
-                        currentModel = currentModel.copy(RebuildCost = it)
-                        onModelChanged(currentModel)
+                NumberInput(
+                    label = "Minimal GM Level",
+                    value = currentModel.MinimalGMLevel,
+                    onValueChanged = {
+                        onModelChanged(currentModel.copy(MinimalGMLevel = it))
                     }
                 )
-            } ?: run {
-                Button(onClick = {
-                    currentModel = currentModel.copy(RebuildCost = ResourcesModel())
-                    onModelChanged(currentModel)
-                }) {
-                    Text("Add Rebuild Cost")
+
+                NumberInput(
+                    label = "Minimal War Cries Level",
+                    value = currentModel.MinimalWarCriesLevel,
+                    onValueChanged = {
+                        onModelChanged(
+                            currentModel.copy(MinimalWarCriesLevel = it)
+                        )
+                    }
+                )
+
+                Text("Rebuild Cost", style = MaterialTheme.typography.titleMedium)
+                currentModel.RebuildCost?.let { resources ->
+                    ResourcesEditor(
+                        resources = resources,
+                        onResourcesChanged = {
+                            onModelChanged(
+                                currentModel.copy(RebuildCost = it)
+                            )
+                        }
+                    )
+                } ?: run {
+                    Button(onClick = {
+                        onModelChanged(
+                            currentModel.copy(RebuildCost = ResourcesModel())
+                        )
+                    }) {
+                        Text("Add Rebuild Cost")
+                    }
                 }
+            }
+            Button(onClick = {
+                onModelChanged(null)
+            }) {
+                Text("Disable Rebuild GM")
+            }
+        } ?: run {
+            Button(onClick = {
+                onModelChanged(
+                    GMRebuildModel(0, 0,
+                        ResourcesModel(0, 0, 0,
+                            0, 0, 0, 0)
+                    )
+                )
+            }) {
+                Text("Enable GM Rebuild")
             }
         }
     }
@@ -286,53 +298,61 @@ private fun GloballyDisabledBuildingsEditor(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text("Globally Disabled Buildings", style = MaterialTheme.typography.headlineSmall)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text("Globally Disabled Buildings", style = MaterialTheme.typography.headlineSmall)
 
-            if (currentModel.Buildings.isEmpty()) {
-                Text("No buildings disabled", style = MaterialTheme.typography.bodyMedium)
-            } else {
-                FlowColumn {
-                    currentModel.Buildings.forEach { building ->
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(building.description)
-                            IconButton(onClick = {
-                                currentModel = currentModel.copy(
-                                    Buildings = currentModel.Buildings - building
-                                )
-                                onModelChanged(currentModel)
-                            }) {
-                                Icon(Icons.Default.Delete, "Remove")
-                            }
+                var showSelector by remember { mutableStateOf(false) }
+
+                IconButton(onClick = {
+                    showSelector = true }
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Add")
+                }
+
+                if (showSelector) {
+                    SearchableEnumDialog(
+                        label = "Select Building to Disable",
+                        onDismiss = { showSelector = false },
+                        items = allBuildingTypes.filter { it !in currentModel.Buildings },
+                        onItemSelected = { building ->
+                            currentModel = currentModel.copy(
+                                Buildings = currentModel.Buildings + building
+                            )
+                            onModelChanged(currentModel)
+                            showSelector = false
+                        },
+                        itemTitle = {
+                            "${it.description} (${it.name})"
                         }
-                    }
+                    )
                 }
             }
-
-            var showSelector by remember { mutableStateOf(false) }
-
-            Button(onClick = { showSelector = true }) {
-                Text("Add Building")
-            }
-
-            if (showSelector) {
-                SearchableEnumDialog(
-                    label = "Select Building to Disable" ,
-                    onDismiss = { showSelector = false },
-                    items = allBuildingTypes.filter { it !in currentModel.Buildings },
-                    onItemSelected = { building ->
-                        currentModel = currentModel.copy(
-                            Buildings = currentModel.Buildings + (building as BuildingType)
-                        )
-                        onModelChanged(currentModel)
-                        showSelector = false
-                    },
-                    itemTitle = {
-                        "${(it as BuildingType).description} (${it.name})"
-                    }
-                )
+            // Show selected buildings as chips
+            FlowRow(
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                model.Buildings.forEach { building ->
+                    Chip(
+                        label = { Text(building.description) },
+                        modifier = Modifier.padding(4.dp).clickable {
+                            onModelChanged(
+                                model.copy(
+                                    Buildings = model.Buildings - building
+                                )
+                            )
+                        },
+                        trailingIcon = {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = "Remove",
+                                modifier = Modifier.size(16.dp).align(Alignment.CenterVertically)
+                            )
+                        }
+                    )
+                }
             }
         }
     }
@@ -347,11 +367,9 @@ fun ForcedFinalBattleListEditor(
     var currentModels by remember { mutableStateOf(models) }
 
     Column(modifier = modifier) {
-        // Header with add button
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
         ) {
             Text(
                 "Forced Final Battles",
@@ -368,12 +386,11 @@ fun ForcedFinalBattleListEditor(
             }
         }
 
-        // List of editors
         FlowColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            currentModels.forEachIndexed{ index, model ->
+            currentModels.forEachIndexed { index, model ->
                 ForcedFinalBattleEditor(
                     model = model,
                     onModelChanged = { updatedModel ->
@@ -385,7 +402,6 @@ fun ForcedFinalBattleListEditor(
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                // Delete button for each item
                 IconButton(
                     onClick = {
                         currentModels = currentModels.toMutableList().apply {
@@ -415,8 +431,6 @@ private fun ForcedFinalBattleEditor(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text("Forced Final Battle", style = MaterialTheme.typography.headlineSmall)
-
             NumberInput(
                 label = "Week",
                 value = currentModel.Week,
@@ -501,7 +515,6 @@ private fun AdditionalStartCastleItem(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("Start Castle Configuration", style = MaterialTheme.typography.titleMedium)
                 IconButton(onClick = onRemove) {
                     Icon(Icons.Default.Delete, "Remove")
                 }
@@ -565,8 +578,6 @@ private fun AdditionalStartCastleItem(
         }
     }
 }
-
-// Helper components
 
 @Composable
 private fun NumberInput(
