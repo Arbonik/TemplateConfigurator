@@ -65,7 +65,6 @@ fun DependantDwellingConfigEditor(
                 )
             }
         )
-        // Uniform Distribution switch
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -97,7 +96,6 @@ fun DependantDwellingConfigEditor(
                 )
             }
         )
-        // Uniform Distribution switch
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()

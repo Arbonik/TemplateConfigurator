@@ -1,4 +1,5 @@
 import kotlinx.serialization.Serializable
+import project.data.enums.CastleType
 
 @Serializable
 data class EntitiesBanModel(
@@ -387,15 +388,15 @@ data class PandoraArtifactConfig(
 
 @Serializable
 data class PandoraCreatureConfig(
-    val TiersPool: List<Long>,
+    val TiersPool: List<Long>? = emptyList(),
     val NoGrades: Boolean? = null,
     val Grades: Boolean? = null,
     val Neutrals: Boolean? = null,
-    val NonPlayerFactions: Boolean? = null,
-    val PlayerFactions: Boolean? = null,
-    val PlayerType: PlayerType,
-    val CreatureIds: List<String>,
-    val GrowMultiplier: Double? = null
+    val TerrainTypes: List<TerrainType>? = emptyList(),
+    val PlayerFactions: Boolean = false,
+    val PlayerType: PlayerType? = null,
+    val CreatureIds: List<String>? = emptyList(),
+    val GrowMultiplier: Double? = null //
 )
 
 @Serializable
@@ -412,7 +413,7 @@ data class PandoraSpellConfig(
 data class StartBuildingConfig(
     val ApplyAllTerrains: Boolean? = null,
     val TerrainType: TerrainType? = null,
-    val CastleType: project.data.enums.CastleType? = null,
+    val CastleType: CastleType? = null,
     val Buildings: List<BuildingType> = listOf(),
     val BuildingMode: BuildingMode? = null
 )
@@ -499,7 +500,7 @@ enum class PlayerType(
 
 @Serializable
 data class StartSpellsByRace(
-    val CastleType: project.data.enums.CastleType,
+    val CastleType: CastleType,
     val Spells: List<SpellType>
 )
 
@@ -537,7 +538,7 @@ enum class ArtifactCategory(
     MINOR(0, "Минор"),
     MAJOR(1, "Мажор"),
     RELIC(2, "Реликт"),
-    GRAIL(3, "");
+    GRAIL(3, "Грааль");
 }
 
 @Serializable
@@ -859,7 +860,6 @@ enum class HeroType(
     val number: Int,
     val description: String
 ) {
-    NotSelected(0, ""),
     Brand(1, "Бранд"),
     Bersy(2, "Ибба"),
     Egil(3, "Эрлинг"),
@@ -1081,7 +1081,6 @@ enum class SpellType(
     val number: Int,
     val description: String
 ) {
-    SpellNone(0, ""),
     MagicArrow(1, "Магическая стрела"),
     MagicFist(2, "Магический кулак"),
     LightningBolt(3, "Молния"),
@@ -1158,14 +1157,14 @@ enum class SpellType(
 
 @Serializable
 enum class TerrainType {
-    FirstPlayer,//(0, "террейн первого игрока"),
-    SecondPlayer,//(1, "террейн второго игрока"),
-    Terrain1,//(2, "первый случайный свободный террейн"),
-    Terrain2,//(3, "второй случайный свободный террейн"),
-    Terrain3,//(4, "третий случайный свободный террейн"),
-    Terrain4,//(5, "четвёртый случайный свободный террейн"),
-    Terrain5,//(6, "пятый случайный свободный террейн"),
-    Terrain6,//(7, "шестой случайный свободный террейн")
+    FirstPlayer,
+    SecondPlayer,
+    Terrain1,
+    Terrain2,
+    Terrain3,
+    Terrain4,
+    Terrain5,
+    Terrain6,
     Humans,
     Inferno,
     Necropolis,

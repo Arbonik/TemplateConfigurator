@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import project.ui.dwellingGenerationConfig.DwellingValueEditor
 
 @Composable
 fun DwellingByPointsConfigScreen(
@@ -27,12 +28,10 @@ fun DwellingByPointsConfigScreen(
             onValueChange = { onConfigChanged(config.copy(PointsCount = it.toLong())) }
         )
 
-        _root_ide_package_.project.ui.dwellingGenerationConfig.DwellingValueEditor(
+        DwellingValueEditor(
             value = config.DwellingPoints ?: DwellingValue(),
             onValueChanged = { onConfigChanged(config.copy(DwellingPoints = it)) },
         )
-
-
 
         TierRangeInput(
             minTiers = config.MinTiersCount,
@@ -42,25 +41,26 @@ fun DwellingByPointsConfigScreen(
         )
 
         AllowedTiersInput(
+            label = "Allowed Tiers",
             AllowedTiers = config.AllowedTiers,
             onConfigChanged = { onConfigChanged(config.copy(AllowedTiers = it)) }
         )
 
         SectionTitle("Global Dwelling Points")
-        _root_ide_package_.project.ui.dwellingGenerationConfig.DwellingValueEditor(
+        DwellingValueEditor(
             value = config.DwellingPoints ?: DwellingValue(),
             onValueChanged = { onConfigChanged(config.copy(DwellingPoints = it)) }
         )
 
         SectionTitle("Per-Tier Limits")
-        _root_ide_package_.project.ui.dwellingGenerationConfig.DwellingValueEditor(
+        DwellingValueEditor(
             value = config.MinCountPerTier ?: DwellingValue(),
             onValueChanged = { onConfigChanged(config.copy(MinCountPerTier = it)) },
             label = "Min Count",
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
-        _root_ide_package_.project.ui.dwellingGenerationConfig.DwellingValueEditor(
+        DwellingValueEditor(
             value = config.MaxCountPerTier ?: DwellingValue(),
             onValueChanged = { onConfigChanged(config.copy(MaxCountPerTier = it)) },
             label = "Max Count",
@@ -117,7 +117,7 @@ fun NumberInputNullable(
     onValueChange: (Number?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var textValue by remember { mutableStateOf(value?.toString()     ?: "") }
+    var textValue by remember { mutableStateOf(value?.toString() ?: "") }
 
     OutlinedTextField(
         value = textValue,
@@ -183,11 +183,12 @@ private fun TierNumberInput(
 }
 
 @Composable
-private fun AllowedTiersInput(
+fun AllowedTiersInput(
+    label: String,
+    allTiers: List<Long> = (1L..7L).toList(),
     AllowedTiers: List<Long>,
     onConfigChanged: (List<Long>) -> Unit,
 ) {
-    // Allowed Tiers editor - теперь как 7 чекбоксов
     ElevatedCard(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -195,40 +196,13 @@ private fun AllowedTiersInput(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                "Allowed Tiers (select available tiers)",
-                style = MaterialTheme.typography.titleMedium
-            )
-
-            // 7 чекбоксов в две строки (4 + 3)
+            Text(label)
             Column {
-                // Первая строка: 4 чекбокса
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    for (tier in 1L..4L) {
-                        TierCheckbox(
-                            tier = tier,
-                            checked = AllowedTiers.contains(tier),
-                            onCheckedChange = { checked ->
-                                onConfigChanged(
-                                    if (checked)
-                                        AllowedTiers + tier
-                                    else
-                                        AllowedTiers - tier
-                                )
-                            }
-                        )
-                    }
-                }
-
-                // Вторая строка: 3 чекбокса
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    for (tier in 5L..7L) {
+                    for (tier in allTiers) {
                         TierCheckbox(
                             tier = tier,
                             checked = AllowedTiers.contains(tier),
@@ -293,7 +267,7 @@ private fun FactionSpecificEditors(
 
                     if (expandedFaction == faction) {
                         Spacer(modifier = Modifier.height(12.dp))
-                        _root_ide_package_.project.ui.dwellingGenerationConfig.DwellingValueEditor(
+                        DwellingValueEditor(
                             value = dwellingPoints[faction] ?: DwellingValue(),
                             onValueChanged = {
                                 onDwellingPointsChange(dwellingPoints + (faction to it))
@@ -301,7 +275,7 @@ private fun FactionSpecificEditors(
                             label = "Dwelling Points",
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
-                        _root_ide_package_.project.ui.dwellingGenerationConfig.DwellingValueEditor(
+                        DwellingValueEditor(
                             value = minCounts[faction] ?: DwellingValue(),
                             onValueChanged = {
                                 onMinCountsChange(minCounts + (faction to it))
@@ -310,7 +284,7 @@ private fun FactionSpecificEditors(
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
 
-                        _root_ide_package_.project.ui.dwellingGenerationConfig.DwellingValueEditor(
+                        DwellingValueEditor(
                             value = maxCounts[faction] ?: DwellingValue(),
                             onValueChanged = {
                                 onMaxCountsChange(maxCounts + (faction to it))

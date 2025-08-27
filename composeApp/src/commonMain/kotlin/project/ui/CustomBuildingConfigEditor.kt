@@ -1,20 +1,32 @@
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import project.ui.EnumDialogData
+import project.ui.common.CommonVerticalListItem
+import project.ui.components.DynamicColumnTable
+import project.ui.components.PickerItem
 
 @Composable
 fun BuildingConfigEditor(
@@ -48,23 +60,29 @@ fun BuildingConfigEditor(
             }
 
             FlowColumn(
-                modifier = Modifier.width(200.dp),
+                modifier = Modifier.width(200.dp).verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 buildingConfigs.forEachIndexed { index, config ->
-                    BuildingConfigItem(
-                        config = config,
+                    CommonVerticalListItem(
+                        item = config,
                         isSelected = index == selectedConnectionIndex,
-                        modifier = Modifier.clickable(onClick = { selectedConnectionIndex = index })
-                    )
+                        onDelete = {
+                            onConfigsUpdated(buildingConfigs - config)
+                        },
+                        onSelected = {
+                            selectedConnectionIndex = index
+                        }
+                    ) {
+                        BuildingConfigItem(
+                            config = config
+                        )
+                    }
                 }
             }
         }
-        Divider(
+        VerticalDivider(
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-            modifier = Modifier
-                .fillMaxHeight()
-                .width(1.dp)
         )
 
         if (buildingConfigs.isNotEmpty())
@@ -87,42 +105,28 @@ fun CustomBuildingConfigEditor(
     onConfigChanged: (CustomBuildingConfig) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var showEnumDialog by remember(config) { mutableStateOf<EnumDialogData<*>?>(null) }
     var currentSealedType by remember(config) { mutableStateOf(config.getActiveSealedType()) }
 
     Column(
         modifier = modifier.padding(16.dp).verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Basic fields
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("ID:", modifier = Modifier.width(100.dp))
-            OutlinedTextField(
-                value = config.Id.toString(),
-                onValueChange = { onConfigChanged(config.copy(Id = it.toIntOrNull() ?: config.Id)) },
-                modifier = Modifier.weight(1f)
-            )
-        }
-
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Value:", modifier = Modifier.width(100.dp))
-            OutlinedTextField(
-                value = config.Value.toString(),
-                onValueChange = { onConfigChanged(config.copy(Value = it.toLongOrNull() ?: config.Value)) },
-                modifier = Modifier.weight(1f)
-            )
-        }
-
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Guard Strength:", modifier = Modifier.width(100.dp))
-            OutlinedTextField(
-                value = config.GuardStrenght.toString(),
+            NumberInputNullable(
+                label = "Value:",
+                value = config.Value,
                 onValueChange = {
-                    onConfigChanged(
-                        config.copy(
-                            GuardStrenght = it.toLongOrNull() ?: config.GuardStrenght
-                        )
-                    )
+                    onConfigChanged(config.copy(Value = it as Long?))
+                }
+            )
+        }
+
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            NumberInputNullable(
+                label = "Guard Strength:",
+                value = config.GuardStrenght,
+                onValueChange = {
+                    onConfigChanged(config.copy(GuardStrenght = it as? Long?))
                 },
                 modifier = Modifier.weight(1f)
             )
@@ -133,11 +137,11 @@ fun CustomBuildingConfigEditor(
             label = "Building Texture:",
             currentValue = config.BuildingTexture ?: BuildingTextureConfig.DefaultDwellingByTerrain,
             values = BuildingTextureConfig.entries.toList(),
-            onValueSelected = {
-                onConfigChanged(config.copy(BuildingTexture = it as BuildingTextureConfig))
+            itemTitle = {
+                "${it.description} (${it.name})"
             },
-            showDialog = {
-                showEnumDialog = it
+            onValueSelected = {
+                onConfigChanged(config.copy(BuildingTexture = it))
             }
         )
 
@@ -145,17 +149,24 @@ fun CustomBuildingConfigEditor(
             label = "Road Type:",
             currentValue = config.RoadType ?: RoadType.MAINROAD,
             values = RoadType.entries.toList(),
-            onValueSelected = { onConfigChanged(config.copy(RoadType = it as RoadType)) },
-            showDialog = {
-                showEnumDialog = it
-            }
+            itemTitle = {
+                "${it.description} (${it.name})"
+            },
+            onValueSelected = { onConfigChanged(config.copy(RoadType = it)) },
         )
 
-        // Sealed type selector
-        Text("Building Type:", style = MaterialTheme.typography.titleMedium)
-        SealedTypeSelector(
-            currentType = currentSealedType,
-            onTypeSelected = { newType ->
+        EnumDropdownRow(
+            label = "Building Type",
+            currentValue = currentSealedType,
+            values = types.map { it.second },
+            itemTitle = { item ->
+                types.find {
+                    if (item != null && it.second != null)
+                        item::class.simpleName == it.second!!::class.simpleName
+                    else item == it.second
+                }?.first ?: "None"
+            },
+            onValueSelected = { newType ->
                 currentSealedType = newType
                 onConfigChanged(config.clearSealedTypes().setSealedType(newType))
             }
@@ -225,21 +236,10 @@ fun CustomBuildingConfigEditor(
                     onConfigChanged(config.copy(CreatureBankConfig = newConfig))
                 }
             )
-            else -> { /* No sealed type selected */ }
-        }
-    }
 
-    // Enum selection dialog
-    showEnumDialog?.let { dialogData ->
-        SearchableEnumDialog(
-            title = dialogData.title,
-            items = dialogData.items,
-            onDismiss = { showEnumDialog = null },
-            onItemSelected = { selected ->
-                dialogData.onSelected(selected)
-                showEnumDialog = null
+            else -> { /* No sealed type selected */
             }
-        )
+        }
     }
 }
 
@@ -259,7 +259,6 @@ fun CreatureBankConfigEditor(
     ) {
         Text(
             text = "Creature Bank Config Editor",
-            style = MaterialTheme.typography.headlineSmall
         )
 
         // Name field
@@ -503,7 +502,7 @@ private fun BuildingSelectionDialog(
                             it.name.contains(searchQuery, ignoreCase = true)
                 }
 
-                LazyColumn (
+                LazyColumn(
                     modifier = Modifier.heightIn(max = 400.dp)//.verticalScroll(rememberScrollState())
                 ) {
                     items(filteredBuildings) { building ->
@@ -724,70 +723,6 @@ private fun RunesSelectionSection(
                         }
                     )
                 }
-            }
-        }
-    }
-}
-
-@Composable
-private fun RuneTiersSection(
-    runeTiers: List<Long>,
-    onTiersChanged: (List<Long>) -> Unit
-) {
-    Card {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Text("Rune Tiers", style = MaterialTheme.typography.titleMedium)
-
-            if (runeTiers.isEmpty()) {
-                Text("No tiers specified", style = MaterialTheme.typography.bodySmall)
-            } else {
-                runeTiers.forEachIndexed { index, tier ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text("Tier ${index + 1}")
-
-                        var tierText by remember { mutableStateOf(tier.toString()) }
-                        TextField(
-                            value = tierText,
-                            onValueChange = { newValue ->
-                                if (newValue.all { it.isDigit() }) {
-                                    tierText = newValue
-                                    val newTiers = runeTiers.toMutableList()
-                                    newTiers[index] = newValue.toLongOrNull() ?: tier
-                                    onTiersChanged(newTiers)
-                                }
-                            },
-                            modifier = Modifier.weight(1f)
-                        )
-
-                        IconButton(
-                            onClick = {
-                                val newTiers = runeTiers.toMutableList()
-                                newTiers.removeAt(index)
-                                onTiersChanged(newTiers)
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Remove tier"
-                            )
-                        }
-                    }
-                }
-            }
-
-            Button(
-                onClick = {
-                    onTiersChanged(runeTiers + 1L) // Add new tier with default value 1
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Add Tier")
             }
         }
     }
@@ -1083,209 +1018,110 @@ fun ScriptBuildingConfigEditor(
     onConfigChanged: (ScriptBuildingConfig) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var expanded by remember { mutableStateOf(false) }
-    var selectedBuilding by remember { mutableStateOf(config.ScriptBuilding) }
-
-    Column(modifier = modifier.padding(16.dp)) {
-        Text(
-            text = "Script Building Configuration",
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = !expanded }
-        ) {
-            TextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .menuAnchor(),
-                readOnly = true,
-                value = selectedBuilding.name,
-                onValueChange = {},
-                label = { Text("Building Type") },
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                },
-                colors = ExposedDropdownMenuDefaults.textFieldColors()
-            )
-
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                ScriptBuilding.values().forEach { building ->
-                    DropdownMenuItem(
-                        text = { Text(building.name) },
-                        onClick = {
-                            selectedBuilding = building
-                            expanded = false
-                            onConfigChanged(ScriptBuildingConfig(building))
-                        }
-                    )
-                }
-            }
+    EnumDropdownRow(
+        label = "Building Type",
+        currentValue = config.ScriptBuilding,
+        itemTitle = { it.description },
+        values = ScriptBuilding.entries.toList(),
+        onValueSelected = {
+            onConfigChanged(ScriptBuildingConfig(it))
         }
-
-        Text(
-            text = "Description: ${selectedBuilding.description}",
-            modifier = Modifier.padding(top = 8.dp)
-        )
-
-        Text(
-            text = "Number: ${selectedBuilding.number}",
-            modifier = Modifier.padding(top = 4.dp)
-        )
-    }
+    )
 }
 
 @Composable
-private fun BuildingConfigItem(
+fun BuildingConfigItem(
     config: CustomBuildingConfig,
-    isSelected: Boolean,
-    modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(if (isSelected) 8.dp else 2.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) {
-                MaterialTheme.colorScheme.primaryContainer
-            } else {
-                MaterialTheme.colorScheme.surface
-            }
-        ),
-        border = if (isSelected) {
-            BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
-        } else {
-            null
-        }
+    Column(
+        modifier = Modifier
+            .wrapContentSize().padding(4.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            modifier = Modifier.padding(8.dp)
-        ) {
+        Text(
+            "Building Id:${config.Id}"
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        if (config.Value != null)
             Text(
-                "Building #${config.Id}",
-                style = MaterialTheme.typography.labelMedium,
-                color = if (isSelected) {
-                    MaterialTheme.colorScheme.onPrimaryContainer
-                } else {
-                    MaterialTheme.colorScheme.onSurface
-                }
+                "Value " + config.Value
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                "Value " + config.Value.toString(),
-                color = if (isSelected) {
-                    MaterialTheme.colorScheme.onPrimaryContainer
-                } else {
-                    MaterialTheme.colorScheme.onSurface
-                }
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                "GuardStrenght " + config.GuardStrenght.toString(),
-                color = if (isSelected) {
-                    MaterialTheme.colorScheme.onPrimaryContainer
-                } else {
-                    MaterialTheme.colorScheme.onSurface
-                }
-            )
-        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            "GuardStrenght " + config.GuardStrenght.toString(),
+        )
     }
 }
 
 @Composable
-private fun <T : Enum<*>> EnumDropdownRow(
+fun <T> EnumDropdownRow(
     label: String,
     currentValue: T,
+    itemTitle: (T) -> String,
     values: List<T>,
-    onValueSelected: (Enum<*>) -> Unit,
-    showDialog: (EnumDialogData<T>) -> Unit
+    onValueSelected: (T) -> Unit,
 ) {
+    var showEnumDialog by remember {
+        mutableStateOf<EnumDialogData<T>?>(null)
+    }
+
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(label, modifier = Modifier.width(100.dp))
+        if (label.isNotEmpty())
+            Text(label, modifier = Modifier.width(100.dp))
         OutlinedButton(
             onClick = {
-                showDialog(
-                    EnumDialogData(
-                        title = label.trimEnd(':'),
-                        items = values,
-                        currentSelected = currentValue,
-                        onSelected = onValueSelected
-                    )
+                showEnumDialog = EnumDialogData(
+                    title = label.trimEnd(':'),
+                    items = values,
+                    currentSelected = currentValue,
+                    onSelected = onValueSelected
                 )
             },
             modifier = Modifier.weight(1f)
         ) {
-            Text(currentValue.toString(), modifier = Modifier.weight(1f))
+            Text(itemTitle(currentValue), modifier = Modifier.weight(1f))
             Icon(Icons.Default.ArrowDropDown, contentDescription = "Dropdown")
         }
     }
-}
-
-@Composable
-private fun SealedTypeSelector(
-    currentType: Any?,
-    onTypeSelected: (Any?) -> Unit
-) {
-    val types = listOf(
-        "Creature Building" to CreatureBuildingConfig(
-            TiersPool = emptyList(),
-            PlayerType = PlayerType.ANY,
-            CreatureIds = emptyList()
-        ),
-        "Xdb Reference" to "",
-        "Pandora Box" to PandoraBoxConfig(
-            GoldAmount = emptyList(),
-            ExpAmount = emptyList(),
-            Artifacts = emptyList(),
-            PandoraCreatureConfig = emptyList(),
-            Spells = emptyList(),
-            Resources = emptyList()
-        ),
-        "Script Building" to ScriptBuildingConfig(ScriptBuilding.TowerPortal),
-        "Resource Building" to ResourceBuildingConfig(emptyList()),
-        "Mage Eye" to MageEyeConfig(0, 0),
-        "Runic Chest" to RunicChestConfig(emptyList(), emptyList()),
-        "Default Building" to DefaultBuildingConfig(DefaultBuilding.GoldChest5k),
-        "Creature Bank" to CreatureBankConfig("", emptyList(), emptyList()),
-        "None" to null
-    )
-
-    var expanded by remember { mutableStateOf(false) }
-    val selectedLabel = types.find { it.second == currentType }?.first ?: "None"
-
-    Box(modifier = Modifier.wrapContentSize()) {
-        OutlinedButton(
-            onClick = { expanded = true },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(selectedLabel)
-            Icon(
-                imageVector = if (expanded) Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown,
-                contentDescription = null
-            )
-        }
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            types.forEach { (label, type) ->
-                DropdownMenuItem(
-                    onClick = {
-                        onTypeSelected(type)
-                        expanded = false
-                    },
-                    text = { Text(label) }
-                )
+    // Enum selection dialog
+    showEnumDialog?.let { dialogData ->
+        SearchableEnumDialog(
+            label = dialogData.title,
+            items = dialogData.items,
+            itemTitle = itemTitle as (Any?) -> String,
+            onDismiss = { showEnumDialog = null },
+            onItemSelected = { selected ->
+                dialogData.onSelected(selected)
+                showEnumDialog = null
             }
-        }
+        )
     }
 }
+
+val types = listOf(
+    "Creature Building" to CreatureBuildingConfig(
+        TiersPool = emptyList(),
+        PlayerType = PlayerType.ANY,
+        CreatureIds = emptyList()
+    ),
+    "Xdb Reference" to "",
+    "Pandora Box" to PandoraBoxConfig(
+        GoldAmount = emptyList(),
+        ExpAmount = emptyList(),
+        Artifacts = emptyList(),
+        PandoraCreatureConfig = emptyList(),
+        Spells = emptyList(),
+        Resources = emptyList()
+    ),
+    "Script Building" to ScriptBuildingConfig(ScriptBuilding.TowerPortal),
+    "Resource Building" to ResourceBuildingConfig(emptyList()),
+    "Mage Eye" to MageEyeConfig(0, 0),
+    "Runic Chest" to RunicChestConfig(emptyList(), emptyList()),
+    "Default Building" to DefaultBuildingConfig(DefaultBuilding.GoldChest5k),
+    "Creature Bank" to CreatureBankConfig("", emptyList(), emptyList()),
+    "None" to null
+)
 
 @Composable
 fun CreatureBuildingConfigEditor(
@@ -1294,63 +1130,62 @@ fun CreatureBuildingConfigEditor(
     modifier: Modifier = Modifier
 ) {
     FlowColumn(
-        modifier = modifier.fillMaxSize().padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        Text("Creature Building Configuration", style = MaterialTheme.typography.headlineMedium)
-        TiersPoolEditor(
-            tiers = config.TiersPool,
-            onTiersChanged = { newTiers ->
+        AllowedTiersInput(
+            label = "Tiers pool",
+            AllowedTiers = config.TiersPool,
+            onConfigChanged = { newTiers ->
                 onConfigChanged(config.copy(TiersPool = newTiers))
             }
         )
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Filters", style = MaterialTheme.typography.titleMedium)
+        CheckboxInput(
+            label = "No Grades",
+            checked = config.NoGrades ?: false,
+            onCheckedChanged = { checked ->
+                onConfigChanged(config.copy(NoGrades = checked))
+            }
+        )
 
-            // Boolean switches
-            SwitchWithLabel(
-                label = "No Grades",
-                checked = config.NoGrades ?: false,
-                onCheckedChange = { checked ->
-                    onConfigChanged(config.copy(NoGrades = checked))
-                }
-            )
+        CheckboxInput(
+            label = "Grades",
+            checked = config.Grades ?: false,
+            onCheckedChanged = { checked ->
+                onConfigChanged(config.copy(Grades = checked))
+            }
+        )
 
-            SwitchWithLabel(
-                label = "Grades",
-                checked = config.Grades ?: false,
-                onCheckedChange = { checked ->
-                    onConfigChanged(config.copy(Grades = checked))
-                }
-            )
+        CheckboxInput(
+            label = "Neutrals",
+            checked = config.Neutrals ?: false,
+            onCheckedChanged = { checked ->
+                onConfigChanged(config.copy(Neutrals = checked))
+            }
+        )
 
-            SwitchWithLabel(
-                label = "Neutrals",
-                checked = config.Neutrals ?: false,
-                onCheckedChange = { checked ->
-                    onConfigChanged(config.copy(Neutrals = checked))
-                }
-            )
+        CheckboxInput(
+            label = "Non-Player Factions",
+            checked = config.NonPLayerFactions ?: false,
+            onCheckedChanged = { checked ->
+                onConfigChanged(config.copy(NonPLayerFactions = checked))
+            }
+        )
 
-            SwitchWithLabel(
-                label = "Non-Player Factions",
-                checked = config.NonPLayerFactions ?: false,
-                onCheckedChange = { checked ->
-                    onConfigChanged(config.copy(NonPLayerFactions = checked))
-                }
-            )
+        CheckboxInput(
+            label = "Player Factions",
+            checked = config.PLayerFactions ?: false,
+            onCheckedChanged = { checked ->
+                onConfigChanged(config.copy(PLayerFactions = checked))
+            }
+        )
 
-            SwitchWithLabel(
-                label = "Player Factions",
-                checked = config.PLayerFactions ?: false,
-                onCheckedChange = { checked ->
-                    onConfigChanged(config.copy(PLayerFactions = checked))
-                }
-            )
-        }
-        PlayerTypeSelector(
-            playerType = config.PlayerType,
-            onPlayerTypeChanged = { newType ->
+        EnumDropdownRow(
+            label = "Player Type",
+            currentValue = config.PlayerType,
+            itemTitle = { it.description },
+            values = PlayerType.entries,
+            onValueSelected = { newType ->
                 onConfigChanged(config.copy(PlayerType = newType))
             }
         )
@@ -1362,118 +1197,44 @@ fun CreatureBuildingConfigEditor(
             }
         )
 
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Multipliers", style = MaterialTheme.typography.titleMedium)
+        NullableNumberInputField(
+            label = "Cost Multiplier",
+            value = config.CostMultiplier,
+            onValueChange = { newValue ->
+                onConfigChanged(config.copy(CostMultiplier = newValue))
+            }
+        )
+        NullableNumberInputField(
+            label = "Resources Multiplier",
+            value = config.ResourcesMultiplier,
+            onValueChange = { newValue ->
+                onConfigChanged(config.copy(ResourcesMultiplier = newValue))
+            }
+        )
 
-            NullableNumberInputField(
-                label = "Cost Multiplier",
-                value = config.CostMultiplier,
-                onValueChange = { newValue ->
-                    onConfigChanged(config.copy(CostMultiplier = newValue))
-                }
-            )
-            NullableNumberInputField(
-                label = "Resources Multiplier",
-                value = config.ResourcesMultiplier,
-                onValueChange = { newValue ->
-                    onConfigChanged(config.copy(ResourcesMultiplier = newValue))
-                }
-            )
+        NullableNumberInputField(
+            label = "Grow Multiplier",
+            value = config.GrowMultiplier,
+            onValueChange = { newValue ->
+                onConfigChanged(config.copy(GrowMultiplier = newValue))
+            }
+        )
 
-            NullableNumberInputField(
-                label = "Grow Multiplier",
-                value = config.GrowMultiplier,
-                onValueChange = { newValue ->
-                    onConfigChanged(config.copy(GrowMultiplier = newValue))
-                }
-            )
+        NullableNumberInputField(
+            label = "Grow Multiplier",
+            value = config.GrowMultiplier,
+            onValueChange = { newValue ->
+                onConfigChanged(config.copy(GrowMultiplier = newValue))
+            }
+        )
 
-            NullableNumberInputField(
-                label = "Grow Multiplier",
-                value = config.GrowMultiplier,
-                onValueChange = { newValue ->
-                    onConfigChanged(config.copy(GrowMultiplier = newValue))
-                }
-            )
-        }
-
-        SwitchWithLabel(
+        CheckboxInput(
             label = "Is Dwelling",
             checked = config.IsDwelling ?: false,
-            onCheckedChange = { checked ->
+            onCheckedChanged = { checked ->
                 onConfigChanged(config.copy(IsDwelling = checked))
             }
         )
-    }
-}
-
-@Composable
-private fun TiersPoolEditor(
-    tiers: List<Long>,
-    onTiersChanged: (List<Long>) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    var newTier by remember { mutableStateOf("") }
-
-    Column(modifier = modifier) {
-        Text("Tiers Pool", style = MaterialTheme.typography.titleMedium)
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            OutlinedTextField(
-                value = newTier,
-                onValueChange = { newTier = it },
-                label = { Text("Add tier") },
-                modifier = Modifier.weight(1f)
-            )
-
-            Button(
-                onClick = {
-                    val tier = newTier.toLongOrNull()
-                    if (tier != null) {
-                        onTiersChanged(tiers + tier)
-                        newTier = ""
-                    }
-                },
-                modifier = Modifier.padding(start = 8.dp)
-            ) {
-                Text("Add")
-            }
-        }
-
-        if (tiers.isNotEmpty()) {
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(top = 8.dp)
-            ) {
-                tiers.forEach { tier ->
-                    Chip(
-                        onClick = { onTiersChanged(tiers - tier) },
-                        label = { Text(tier.toString()) },
-                        trailingIcon = { Icon(Icons.Default.Close, contentDescription = "Remove") }
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun PlayerTypeSelector(
-    playerType: PlayerType,
-    onPlayerTypeChanged: (PlayerType) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(modifier = modifier) {
-        Text("Player Type", style = MaterialTheme.typography.titleMedium)
-
-        PlayerType.values().forEach { type ->
-            RadioButtonWithLabel(
-                text = type.description,
-                selected = playerType == type,
-                onSelect = { onPlayerTypeChanged(type) }
-            )
-        }
     }
 }
 
@@ -1486,7 +1247,7 @@ private fun CreatureIdsEditor(
     var newCreatureId by remember { mutableStateOf("") }
 
     Column(modifier = modifier) {
-        Text("Creature IDs", style = MaterialTheme.typography.titleMedium)
+        Text("Creature IDs")
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             OutlinedTextField(
@@ -1517,9 +1278,9 @@ private fun CreatureIdsEditor(
             ) {
                 creatureIds.forEach { id ->
                     Chip(
-                        onClick = { onCreatureIdsChanged(creatureIds - id) },
                         label = { Text(id) },
-                        trailingIcon = { Icon(Icons.Default.Close, contentDescription = "Remove") }
+                        trailingIcon = { Icon(Icons.Default.Close, contentDescription = "Remove") },
+                        modifier = Modifier.clickable { onCreatureIdsChanged(creatureIds - id) }
                     )
                 }
             }
@@ -1528,41 +1289,7 @@ private fun CreatureIdsEditor(
 }
 
 @Composable
-private fun SwitchWithLabel(
-    label: String,
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Text(text = label, modifier = Modifier.weight(1f))
-        Switch(checked = checked, onCheckedChange = onCheckedChange)
-    }
-}
-
-@Composable
-private fun RadioButtonWithLabel(
-    text: String,
-    selected: Boolean,
-    onSelect: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.fillMaxWidth().clickable(onClick = onSelect)
-    ) {
-        RadioButton(selected = selected, onClick = null)
-        Text(text = text, modifier = Modifier.padding(start = 8.dp))
-    }
-}
-
-// Simple Chip component implementation
-@Composable
-private fun Chip(
-    onClick: () -> Unit,
+fun Chip(
     label: @Composable () -> Unit,
     trailingIcon: @Composable (() -> Unit)? = null,
     modifier: Modifier = Modifier
@@ -1570,7 +1297,6 @@ private fun Chip(
     Surface(
         shape = MaterialTheme.shapes.small,
         color = MaterialTheme.colorScheme.surfaceVariant,
-        onClick = onClick,
         modifier = modifier
     ) {
         Row(
@@ -1600,55 +1326,32 @@ private fun XdbRefEditor(
     }
 }
 
-// Implement similar editor components for other sealed types...
-
-// Dialog data class
-private data class EnumDialogData<T : Enum<*>>(
-    val title: String,
-    val items: List<T>,
-    val currentSelected: T,
-    val onSelected: (Enum<*>) -> Unit
-)
-
-// Searchable enum dialog
 @Composable
-private fun SearchableEnumDialog(
-    title: String,
-    items: List<Enum<*>>,
+fun <T> SearchableEnumDialog(
+    label: String,
+    items: List<T>,
+    itemTitle: (T) -> String,
     onDismiss: () -> Unit,
-    onItemSelected: (Enum<*>) -> Unit
+    onItemSelected: (T) -> Unit
 ) {
     var searchText by remember { mutableStateOf("") }
-    val filteredItems = items.filter { it.toString().contains(searchText, ignoreCase = true) }
 
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(title) },
-        text = {
-            Column {
-                OutlinedTextField(
-                    value = searchText,
-                    onValueChange = { searchText = it },
-                    label = { Text("Search") },
-                    modifier = Modifier.fillMaxWidth()
-                )
+    val filteredItems = items.filter {
+        itemTitle(it).contains(searchText, ignoreCase = true)
+    }
 
-                FlowColumn(modifier = Modifier.heightIn(max = 400.dp)) {
-                    filteredItems.forEach { item ->
-                        ListItem(
-                            headlineContent = { Text(item.toString()) },
-                            modifier = Modifier.clickable {
-                                onItemSelected(item)
-                            }
-                        )
-                    }
-                }
-            }
+
+    BeautifulAnimatedDialog(
+        onDismiss = onDismiss,
+        label = label,
+        searchText = searchText,
+        onSearchTextChange = { searchText = it },
+        filteredItems = filteredItems,
+        onItemSelected = { item ->
+            onItemSelected(item)
         },
-        confirmButton = {
-            Button(onClick = onDismiss) {
-                Text("Cancel")
-            }
+        itemTitle = { item ->
+            itemTitle(item)
         }
     )
 }
@@ -1696,5 +1399,185 @@ private fun CustomBuildingConfig.setSealedType(type: Any?): CustomBuildingConfig
         is DefaultBuildingConfig -> copy(DefaultBuildingConfig = type)
         is CreatureBankConfig -> copy(CreatureBankConfig = type)
         else -> this
+    }
+}
+
+
+@Composable
+fun <T> BeautifulAnimatedDialog(
+    onDismiss: () -> Unit,
+    label: String,
+    searchText: String,
+    onSearchTextChange: (String) -> Unit,
+    filteredItems: List<T>,
+    onItemSelected: (T) -> Unit,
+    itemTitle: (T) -> String
+) {
+    var animationState by remember { mutableStateOf(0f) }
+    val infiniteTransition = rememberInfiniteTransition(label = "infinite_animation")
+    val shimmer by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(4000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ), label = ""
+    )
+
+    // Анимация появления
+    val scale by animateFloatAsState(
+        targetValue = if (animationState == 1f) 1f else 0.8f,
+        animationSpec = spring(dampingRatio = 0.6f, stiffness = 200f), label = ""
+    )
+
+    val alpha by animateFloatAsState(
+        targetValue = if (animationState == 1f) 1f else 0f,
+        animationSpec = tween(durationMillis = 800), label = ""
+    )
+
+    LaunchedEffect(Unit) {
+        animationState = 1f
+    }
+
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Box(
+            modifier = Modifier
+                .background(Color.Black.copy(alpha = 0.6f))
+                .clickable { onDismiss() }
+        ) {
+            // Фоновые эффекты
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                drawCircle(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            Color(0xFF667EEA).copy(alpha = 0.3f),
+                            Color(0xFF764BA2).copy(alpha = 0.1f),
+                            Color.Transparent
+                        ),
+                        center = center,
+                        radius = size.maxDimension * 0.8f
+                    ),
+                    radius = size.maxDimension * 0.8f,
+                    center = center,
+                    blendMode = BlendMode.Screen
+                )
+            }
+
+            // Основной диалог
+            Card(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .widthIn(max = 500.dp)
+                    .heightIn(max = 600.dp)
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                        rotationZ = (1 - scale) * 5
+                    }
+                    .border(
+                        width = 2.dp,
+                        brush = Brush.linearGradient(
+                            colors = listOf(
+                                Color(0xFF00DBDE),
+                                Color(0xFFFC00FF),
+                                Color(0xFF00DBDE)
+                            ),
+                            start = Offset(-1000f, -1000f),
+                            end = Offset(2000f * shimmer, 2000f * shimmer)
+                        ),
+                        shape = RoundedCornerShape(24.dp)
+                    )
+                    .shadow(24.dp, RoundedCornerShape(24.dp), spotColor = Color(0xFF667EEA)),
+                shape = RoundedCornerShape(24.dp),
+                elevation = CardDefaults.cardElevation(8.dp)
+            ) {
+                BoxWithConstraints(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    Color(0xFF0F2027),
+                                    Color(0xFF203A43),
+                                    Color(0xFF2C5364)
+                                )
+                            )
+                        )
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(24.dp)
+                    ) {
+                        // Анимированный заголовок
+                        Text(
+                            text = label,
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = Color.White,
+                            modifier = Modifier
+                                .padding(bottom = 16.dp)
+                                .graphicsLayer {
+                                    translationY = (1 - alpha) * 50
+                                }
+                                .animateContentSize()
+                        )
+
+                        // Поле поиска с анимацией
+                        var isFocused by remember { mutableStateOf(false) }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 16.dp)
+                        ) {
+                            OutlinedTextField(
+                                value = searchText,
+                                onValueChange = onSearchTextChange,
+                                label = {
+                                    Text(
+                                        "Search...",
+                                        color = Color.White.copy(alpha = 0.7f)
+                                    )
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = TextFieldDefaults.colors(
+                                    focusedContainerColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
+                                    focusedTextColor = Color.White,
+                                    unfocusedTextColor = Color.White.copy(alpha = 0.8f),
+                                    cursorColor = Color(0xFF00DBDE),
+                                    focusedIndicatorColor = Color(0xFF00DBDE),
+                                    unfocusedIndicatorColor = Color.White.copy(alpha = 0.3f),
+                                    focusedLabelColor = Color(0xFF00DBDE),
+                                    unfocusedLabelColor = Color.White.copy(alpha = 0.5f)
+                                ),
+                                textStyle = MaterialTheme.typography.bodyLarge,
+                                singleLine = true,
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Search,
+                                        contentDescription = null,
+                                        tint = if (isFocused) Color(0xFF00DBDE) else Color.White.copy(alpha = 0.7f)
+                                    )
+                                },
+                            )
+                        }
+
+                        DynamicColumnTable(
+                            data = filteredItems,
+                        ) {
+                            PickerItem(
+                                text = itemTitle(it),
+                                onClick = {
+                                    onItemSelected(it)
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 }

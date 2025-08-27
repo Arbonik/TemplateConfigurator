@@ -1,12 +1,12 @@
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import project.Files
 import project.json
@@ -28,6 +28,7 @@ fun TemplateConfigEditor(
             // Фиксированное меню навигации
             NavigationPanel(
                 onItemSelected = { currentScreen = it },
+                currentScreen,
                 modifier = Modifier.width(230.dp)
             )
 
@@ -150,6 +151,7 @@ fun TemplateConfigEditor(
 @Composable
 private fun NavigationPanel(
     onItemSelected: (NavigationItem) -> Unit,
+    currentScreen: NavigationItem,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -188,6 +190,7 @@ private fun NavigationPanel(
             navItems.forEach { item ->
                 NavigationButton(
                     item = item,
+                    isSelected = item == currentScreen,
                     onClick = { onItemSelected(item) }
                 )
             }
@@ -239,13 +242,15 @@ fun CreatureBankConfigEditor(
 @Composable
 private fun NavigationButton(
     item: NavigationItem,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    isSelected: Boolean
 ) {
     Button(
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
+        border = BorderStroke(if (isSelected) 3.dp else 0.dp, if (isSelected) Color.Blue else Color.Gray),
         elevation = null
     ) {
         Row(

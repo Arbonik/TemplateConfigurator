@@ -35,5 +35,4 @@ sealed class NavigationItem(
     object CustomBuildings : NavigationItem("custom_buildings", "Custom Buildings", Icons.Default.Build)
     object CreatureBanks : NavigationItem("creature_banks", "Creature Banks", Icons.Default.AccountTree)
     object ZoneRandomization : NavigationItem("zone_randomization", "Zone Randomization", Icons.Default.Shuffle)
-//    object PNG : NavigationItem("png", "Graph Scheme", Icons.Default.AttachFile)
 }

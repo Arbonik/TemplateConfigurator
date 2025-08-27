@@ -14,12 +14,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
+import project.data.enums.Creature
+import project.ui.common.CommonVerticalListItem
+import project.ui.common.NullableFiled
 import project.ui.dwellingGenerationConfig.DependantDwellingConfigEditor
 
 @Composable
@@ -89,6 +91,7 @@ fun ZoneGenerationConfigEditor(
                         }.toList()
                     )
                 },
+                zonesIds = zones.map { zone -> zone.ZoneId }.toList(),
                 modifier = Modifier.weight(1f)
             )
         } ?: Text("Нет зон для отображения")
@@ -105,27 +108,25 @@ private fun ZoneList(
 ) {
     LazyColumn(modifier = modifier) {
         items(zones) { zone ->
-            _root_ide_package_.project.ui.MyListItem(
+            CommonVerticalListItem(
                 item = zone,
-                isSelected = zones.indexOf(zone) == selectedIndex,
-                onClick = { onZoneSelected(zones.indexOf(zone)) },
-                deleteZone = deleteZone,
-                content = {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text(
-                            text = "Zone ${it.ZoneId}",
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                        Text(
-                            text = it.TerrainType.toString(),
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                    }
-                },
-                modifier = Modifier
-            )
+                isSelected = selectedIndex == zones.indexOf(zone),
+                onDelete = deleteZone,
+                onSelected = { onZoneSelected(zones.indexOf(zone)) }
+            ){
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(
+                        text = "Zone ${it.ZoneId}",
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                    Text(
+                        text = it.TerrainType.toString(),
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
+            }
         }
     }
 }
@@ -133,6 +134,7 @@ private fun ZoneList(
 @Composable
 fun ZoneEditor(
     config: ZoneGenerationConfig,
+    zonesIds: List<Int>,
     onConfigChanged: (ZoneGenerationConfig) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -153,7 +155,11 @@ fun ZoneEditor(
             )
 
             if (expandedSections.contains("basic")) {
-                BasicZoneConfigEditor(config, onConfigChanged)
+                BasicZoneConfigEditor(
+                    config = config,
+                    zonesIds = zonesIds,
+                    onConfigChanged
+                )
             }
         }
 
@@ -263,27 +269,27 @@ private fun SectionHeader(
 @Composable
 private fun BasicZoneConfigEditor(
     config: ZoneGenerationConfig,
+    zonesIds : List<Int>,
     onConfigChanged: (ZoneGenerationConfig) -> Unit
 ) {
     Column(modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)) {
         // Terrain Type
-        EnumDropdown(
-            label = "Terrain Type",
-            options = TerrainType.values().toList(),
-            selectedOption = config.TerrainType,
-            onOptionSelected = { newTerrain ->
-                onConfigChanged(config.copy(TerrainType = newTerrain))
-            },
-            optionToString = { it.toString() }
+        EnumDropdownRow(
+            label = "Terrain Type:",
+            currentValue = config.TerrainType,
+            values = TerrainType.values().toList(),
+            itemTitle = { it.name },
+            onValueSelected = { onConfigChanged(config.copy(TerrainType = it as TerrainType))},
         )
 
         // Mirror Zone ID
-        NullableNumberInputField(
+        MirrorZoneId(
             label = "Mirror Zone ID",
             value = config.MirrorZoneId,
             onValueChange = { newValue ->
                 onConfigChanged(config.copy(MirrorZoneId = newValue))
-            }
+            },
+            values = zonesIds
         )
 
         // Town flag
@@ -346,24 +352,23 @@ private fun DwellingGenerationEditor(
                 }
             }
 
-            // Building Texture
-            EnumDropdown(
-                label = "Building Texture",
-                options = BuildingTextureConfig.values().toList(),
-                selectedOption = config.DwellingGenerationConfig.BuildingTexture
-                    ?: BuildingTextureConfig.DefaultDwellingByTerrain,
-                onOptionSelected = { newTexture ->
+            EnumDropdownRow(
+                label = "Building Texture:",
+                currentValue = config.DwellingGenerationConfig.BuildingTexture ?: BuildingTextureConfig.DefaultDwellingByTerrain,
+                values = BuildingTextureConfig.values().toList(),
+                itemTitle = {
+                    "${it.description} (${it.name})"
+                },
+                onValueSelected = { newTexture ->
                     onConfigChanged(
                         config.copy(
                             DwellingGenerationConfig =
-                                config.DwellingGenerationConfig.copy(BuildingTexture = newTexture)
+                                config.DwellingGenerationConfig.copy(BuildingTexture = newTexture as BuildingTextureConfig)
                         )
                     )
-                },
-                optionToString = { it.description }
+                }
             )
 
-            // Creatures Configuration
             CreaturesConfigEditor(
                 config = config.DwellingGenerationConfig.CreaturesConfiguration ?: CreaturesConfiguration(),
                 onConfigChanged = { newCreaturesConfig ->
@@ -568,7 +573,7 @@ private fun MineGenerationEditor(
             }
 
             // Wood
-            IntValueConfigWidget(
+            NullableIntValueConfigEditor(
                 label = "Wood",
                 config = config.MineGenerationConfig.Wood,
                 onConfigChanged = { newConfig ->
@@ -582,7 +587,7 @@ private fun MineGenerationEditor(
             )
 
             // Ore
-            IntValueConfigWidget(
+            NullableIntValueConfigEditor(
                 label = "Ore",
                 config = config.MineGenerationConfig.Ore,
                 onConfigChanged = { newConfig ->
@@ -596,7 +601,7 @@ private fun MineGenerationEditor(
             )
 
             // Mercury
-            IntValueConfigWidget(
+            NullableIntValueConfigEditor(
                 label = "Mercury",
                 config = config.MineGenerationConfig.Mercury,
                 onConfigChanged = { newConfig ->
@@ -610,7 +615,7 @@ private fun MineGenerationEditor(
             )
 
             // Crystals
-            IntValueConfigWidget(
+            NullableIntValueConfigEditor(
                 label = "Crystals",
                 config = config.MineGenerationConfig.Crystals,
                 onConfigChanged = { newConfig ->
@@ -624,7 +629,7 @@ private fun MineGenerationEditor(
             )
 
             // Sulfur
-            IntValueConfigWidget(
+            NullableIntValueConfigEditor(
                 label = "Sulfur",
                 config = config.MineGenerationConfig.Sulfur,
                 onConfigChanged = { newConfig ->
@@ -638,7 +643,7 @@ private fun MineGenerationEditor(
             )
 
             // Gems
-            IntValueConfigWidget(
+            NullableIntValueConfigEditor(
                 label = "Gems",
                 config = config.MineGenerationConfig.Gems,
                 onConfigChanged = { newConfig ->
@@ -652,7 +657,7 @@ private fun MineGenerationEditor(
             )
 
             // Gold
-            IntValueConfigWidget(
+            NullableIntValueConfigEditor(
                 label = "Gold",
                 config = config.MineGenerationConfig.Gold,
                 onConfigChanged = { newConfig ->
@@ -898,44 +903,53 @@ private fun NumberInputField(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NullableNumberInputField(
-    label: String,
+fun MirrorZoneId(
+    label : String,
     value: Int?,
+    values : List<Int>,
     onValueChange: (Int?) -> Unit,
     modifier: Modifier = Modifier
-) {
-    var isNull by remember { mutableStateOf(value == null) }
-    var textValue by remember { mutableStateOf(value?.toString() ?: "") }
+){
+    NullableFiled(
+        value = value,
+        label = label,
+        onValueChange = onValueChange,
+        defaultValue = 0,
+        modifier = modifier
+    ){
+        Box(modifier = Modifier.padding(8.dp)) {
+            var expanded by remember { mutableStateOf(false) }
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = { expanded = !expanded }
+            ) {
+                OutlinedTextField(
+                    value = value.toString(),
+                    onValueChange = {},
+                    label = { Text(label) },
+                    readOnly = true,
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                    modifier = Modifier.fillMaxWidth().menuAnchor()
+                )
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Checkbox(
-            checked = !isNull,
-            onCheckedChange = {
-                isNull = !it
-                onValueChange(null)
-                if (!isNull && textValue.isEmpty()) {
-                    textValue = "0"
-                    onValueChange(0)
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    values.forEach { type ->
+                        DropdownMenuItem(
+                            text = { Text(type.toString()) },
+                            onClick = {
+                                onValueChange(type)
+                                expanded = false
+                            }
+                        )
+                    }
                 }
             }
-        )
-
-        OutlinedTextField(
-            value = if (isNull) "" else textValue,
-            onValueChange = {
-                textValue = it
-                it.toIntOrNull()?.let { intValue -> onValueChange(intValue) }
-            },
-            label = { Text(label) },
-            modifier = Modifier.weight(1f),
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            enabled = !isNull
-        )
+        }
     }
 }
 
@@ -981,58 +995,6 @@ fun NullableNumberInputField(
 }
 
 @Composable
-private fun <T : Enum<T>> EnumDropdown(
-    label: String,
-    options: List<T>,
-    selectedOption: T,
-    onOptionSelected: (T) -> Unit,
-    optionToString: (T) -> String = { it.toString() },
-    modifier: Modifier = Modifier
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box(modifier = modifier.fillMaxWidth()) {
-        OutlinedTextField(
-            value = optionToString(selectedOption),
-            onValueChange = {},
-            label = { Text(label) },
-            modifier = Modifier.fillMaxWidth(),
-            readOnly = true,
-            trailingIcon = {
-                Icon(Icons.Default.ArrowDropDown, contentDescription = "Dropdown")
-            }
-        )
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            options.forEach { option ->
-                DropdownMenuItem(
-                    onClick = {
-                        onOptionSelected(option)
-                        expanded = false
-                    },
-                    text = {
-                        Text(optionToString(option))
-
-                    }
-                )
-            }
-        }
-
-        // This invisible button covers the text field and handles clicks
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .alpha(0f)
-                .clickable { expanded = true }
-        )
-    }
-}
-
-@Composable
 fun CheckboxWithLabel(
     label: String,
     checked: Boolean,
@@ -1058,37 +1020,20 @@ fun NullableIntValueConfigEditor(
     label: String,
     config: IntValueConfig?,
     onConfigChanged: (IntValueConfig?) -> Unit,
-    modifier: Modifier = Modifier
 ) {
-    var isNull by remember { mutableStateOf(config == null) }
-
-    Column(modifier = modifier.padding(vertical = 8.dp)) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(label, style = MaterialTheme.typography.labelMedium)
-            Checkbox(
-                checked = !isNull,
-                onCheckedChange = {
-                    isNull = !it
-                    if (isNull) {
-                        onConfigChanged(null)
-                    } else {
-                        onConfigChanged(IntValueConfig(0))
-                    }
-                }
-            )
-        }
-
-        if (!isNull) {
+    NullableFiled(
+        label = label,
+        value = config,
+        onValueChange = { newValue ->
+            onConfigChanged(newValue)
+        },
+        defaultValue = IntValueConfig(0),
+    ){
+        if (config != null)
             IntValueConfigWidget(
-                label = "",
                 config = config,
                 onConfigChanged = onConfigChanged
             )
-        }
     }
 }
 
@@ -1111,12 +1056,12 @@ fun CreaturesConfigEditor(
             Text("Creatures Configuration", style = MaterialTheme.typography.labelMedium)
         }
 
-        IntValueConfigWidget(
+        NullableIntValueConfigEditor(
             config = config.ReplacementsCount,
             onConfigChanged = {
                 onConfigChanged(config.copy(ReplacementsCount = it))
             },
-            label = "Replacements count",
+            label = "Replacement count",
         )
 
         // Boolean flags
@@ -1383,7 +1328,6 @@ private fun CreatureTierReplacementEditor(
             .fillMaxWidth()
             .padding(8.dp)
             .border(1.dp, MaterialTheme.colorScheme.background, RoundedCornerShape(4.dp))
-            .padding(8.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -1443,7 +1387,7 @@ private fun CreatureSelectionDialog(
     onDismiss: () -> Unit,
     onCreaturesSelected: (List<project.data.enums.Creature>) -> Unit
 ) {
-    val allCreatures = remember { _root_ide_package_.project.data.enums.Creature.values().toList() }
+    val allCreatures = remember { Creature.entries }
     var searchQuery by remember { mutableStateOf("") }
     val filteredCreatures = remember(searchQuery) {
         if (searchQuery.isBlank()) {
