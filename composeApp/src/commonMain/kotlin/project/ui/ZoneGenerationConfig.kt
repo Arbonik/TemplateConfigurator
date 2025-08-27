@@ -19,6 +19,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
+import project.data.enums.Creature
 import project.ui.common.CommonVerticalListItem
 import project.ui.common.NullableFiled
 import project.ui.dwellingGenerationConfig.DependantDwellingConfigEditor
@@ -955,47 +956,6 @@ fun MirrorZoneId(
 @Composable
 fun NullableNumberInputField(
     label: String,
-    value: Int?,
-    onValueChange: (Int?) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    var isNull by remember { mutableStateOf(value == null) }
-    var textValue by remember { mutableStateOf(value?.toString() ?: "") }
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Checkbox(
-            checked = !isNull,
-            onCheckedChange = {
-                isNull = !it
-                onValueChange(null)
-                if (!isNull && textValue.isEmpty()) {
-                    textValue = "0"
-                    onValueChange(0)
-                }
-            }
-        )
-
-        OutlinedTextField(
-            value = if (isNull) "" else textValue,
-            onValueChange = {
-                textValue = it
-                it.toIntOrNull()?.let { intValue -> onValueChange(intValue) }
-            },
-            label = { Text(label) },
-            modifier = Modifier.weight(1f),
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            enabled = !isNull
-        )
-    }
-}
-
-@Composable
-fun NullableNumberInputField(
-    label: String,
     value: Double?,
     onValueChange: (Double?) -> Unit,
     modifier: Modifier = Modifier
@@ -1368,7 +1328,6 @@ private fun CreatureTierReplacementEditor(
             .fillMaxWidth()
             .padding(8.dp)
             .border(1.dp, MaterialTheme.colorScheme.background, RoundedCornerShape(4.dp))
-            .padding(8.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -1428,7 +1387,7 @@ private fun CreatureSelectionDialog(
     onDismiss: () -> Unit,
     onCreaturesSelected: (List<project.data.enums.Creature>) -> Unit
 ) {
-    val allCreatures = remember { _root_ide_package_.project.data.enums.Creature.values().toList() }
+    val allCreatures = remember { Creature.entries }
     var searchQuery by remember { mutableStateOf("") }
     val filteredCreatures = remember(searchQuery) {
         if (searchQuery.isBlank()) {

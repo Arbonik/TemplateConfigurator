@@ -259,7 +259,6 @@ fun CreatureBankConfigEditor(
     ) {
         Text(
             text = "Creature Bank Config Editor",
-            style = MaterialTheme.typography.headlineSmall
         )
 
         // Name field
@@ -730,70 +729,6 @@ private fun RunesSelectionSection(
 }
 
 @Composable
-private fun RuneTiersSection(
-    runeTiers: List<Long>,
-    onTiersChanged: (List<Long>) -> Unit
-) {
-    Card {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Text("Rune Tiers", style = MaterialTheme.typography.titleMedium)
-
-            if (runeTiers.isEmpty()) {
-                Text("No tiers specified", style = MaterialTheme.typography.bodySmall)
-            } else {
-                runeTiers.forEachIndexed { index, tier ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text("Tier ${index + 1}")
-
-                        var tierText by remember { mutableStateOf(tier.toString()) }
-                        TextField(
-                            value = tierText,
-                            onValueChange = { newValue ->
-                                if (newValue.all { it.isDigit() }) {
-                                    tierText = newValue
-                                    val newTiers = runeTiers.toMutableList()
-                                    newTiers[index] = newValue.toLongOrNull() ?: tier
-                                    onTiersChanged(newTiers)
-                                }
-                            },
-                            modifier = Modifier.weight(1f)
-                        )
-
-                        IconButton(
-                            onClick = {
-                                val newTiers = runeTiers.toMutableList()
-                                newTiers.removeAt(index)
-                                onTiersChanged(newTiers)
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Remove tier"
-                            )
-                        }
-                    }
-                }
-            }
-
-            Button(
-                onClick = {
-                    onTiersChanged(runeTiers + 1L) // Add new tier with default value 1
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Add Tier")
-            }
-        }
-    }
-}
-
-@Composable
 private fun OptionalIntField(
     label: String,
     value: Int?,
@@ -1083,61 +1018,15 @@ fun ScriptBuildingConfigEditor(
     onConfigChanged: (ScriptBuildingConfig) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var expanded by remember { mutableStateOf(false) }
-    var selectedBuilding by remember { mutableStateOf(config.ScriptBuilding) }
-
-    Column(modifier = modifier.padding(16.dp)) {
-        Text(
-            text = "Script Building Configuration",
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = !expanded }
-        ) {
-            TextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .menuAnchor(),
-                readOnly = true,
-                value = selectedBuilding.name,
-                onValueChange = {},
-                label = { Text("Building Type") },
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                },
-                colors = ExposedDropdownMenuDefaults.textFieldColors()
-            )
-
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                ScriptBuilding.values().forEach { building ->
-                    DropdownMenuItem(
-                        text = { Text(building.name) },
-                        onClick = {
-                            selectedBuilding = building
-                            expanded = false
-                            onConfigChanged(ScriptBuildingConfig(building))
-                        }
-                    )
-                }
-            }
+    EnumDropdownRow(
+        label = "Building Type",
+        currentValue = config.ScriptBuilding,
+        itemTitle = { it.description },
+        values = ScriptBuilding.entries.toList(),
+        onValueSelected = {
+            onConfigChanged(ScriptBuildingConfig(it))
         }
-
-        Text(
-            text = "Description: ${selectedBuilding.description}",
-            modifier = Modifier.padding(top = 8.dp)
-        )
-
-        Text(
-            text = "Number: ${selectedBuilding.number}",
-            modifier = Modifier.padding(top = 4.dp)
-        )
-    }
+    )
 }
 
 @Composable
@@ -1233,44 +1122,6 @@ val types = listOf(
     "Creature Bank" to CreatureBankConfig("", emptyList(), emptyList()),
     "None" to null
 )
-
-@Composable
-private fun SealedTypeSelector(
-    currentType: Any?,
-    onTypeSelected: (Any?) -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-    val selectedLabel = types.find { it.second == currentType }?.first ?: "None"
-
-    Box(modifier = Modifier.wrapContentSize()) {
-        OutlinedButton(
-            onClick = { expanded = true },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(selectedLabel)
-            Icon(
-                imageVector = if (expanded) Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown,
-                contentDescription = null
-            )
-        }
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            types.forEach { (label, type) ->
-                DropdownMenuItem(
-                    onClick = {
-                        onTypeSelected(type)
-                        expanded = false
-                    },
-                    text = { Text(label) }
-                )
-            }
-        }
-    }
-}
 
 @Composable
 fun CreatureBuildingConfigEditor(
@@ -1396,7 +1247,7 @@ private fun CreatureIdsEditor(
     var newCreatureId by remember { mutableStateOf("") }
 
     Column(modifier = modifier) {
-        Text("Creature IDs", style = MaterialTheme.typography.titleMedium)
+        Text("Creature IDs")
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             OutlinedTextField(
@@ -1438,38 +1289,6 @@ private fun CreatureIdsEditor(
 }
 
 @Composable
-private fun SwitchWithLabel(
-    label: String,
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Text(text = label, modifier = Modifier.weight(1f))
-        Switch(checked = checked, onCheckedChange = onCheckedChange)
-    }
-}
-
-@Composable
-private fun RadioButtonWithLabel(
-    text: String,
-    selected: Boolean,
-    onSelect: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.fillMaxWidth().clickable(onClick = onSelect)
-    ) {
-        RadioButton(selected = selected, onClick = null)
-        Text(text = text, modifier = Modifier.padding(start = 8.dp))
-    }
-}
-
-@Composable
 fun Chip(
     label: @Composable () -> Unit,
     trailingIcon: @Composable (() -> Unit)? = null,
@@ -1507,7 +1326,6 @@ private fun XdbRefEditor(
     }
 }
 
-// Searchable enum dialog
 @Composable
 fun <T> SearchableEnumDialog(
     label: String,

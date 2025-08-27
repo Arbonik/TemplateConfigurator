@@ -3,8 +3,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.onClick
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -16,10 +18,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import project.ui.ListWithDialog
+import project.ui.common.AddIcon
+import project.ui.common.DecimalInputField
+import project.ui.common.DeleteIcon
 
 @Composable
 fun PandoraBoxConfigEditor(
@@ -30,7 +37,6 @@ fun PandoraBoxConfigEditor(
     var activeTab by remember { mutableStateOf<PandoraBoxConfigField?>(null) }
 
     Column(modifier = modifier) {
-        // Tab selector
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
@@ -40,15 +46,6 @@ fun PandoraBoxConfigEditor(
                 isActive = activeTab == PandoraBoxConfigField.GOLD,
                 onClick = {
                     activeTab = PandoraBoxConfigField.GOLD
-                    onConfigChanged(
-                        config.copy(
-                            ExpAmount = emptyList(),
-                            Artifacts = emptyList(),
-                            PandoraCreatureConfig = emptyList(),
-                            Spells = emptyList(),
-                            Resources = emptyList()
-                        )
-                    )
                 }
             )
 
@@ -57,15 +54,6 @@ fun PandoraBoxConfigEditor(
                 isActive = activeTab == PandoraBoxConfigField.EXP,
                 onClick = {
                     activeTab = PandoraBoxConfigField.EXP
-                    onConfigChanged(
-                        config.copy(
-                            GoldAmount = emptyList(),
-                            Artifacts = emptyList(),
-                            PandoraCreatureConfig = emptyList(),
-                            Spells = emptyList(),
-                            Resources = emptyList()
-                        )
-                    )
                 }
             )
 
@@ -74,15 +62,6 @@ fun PandoraBoxConfigEditor(
                 isActive = activeTab == PandoraBoxConfigField.ARTIFACTS,
                 onClick = {
                     activeTab = PandoraBoxConfigField.ARTIFACTS
-                    onConfigChanged(
-                        config.copy(
-                            GoldAmount = emptyList(),
-                            ExpAmount = emptyList(),
-                            PandoraCreatureConfig = emptyList(),
-                            Spells = emptyList(),
-                            Resources = emptyList()
-                        )
-                    )
                 }
             )
 
@@ -91,15 +70,6 @@ fun PandoraBoxConfigEditor(
                 isActive = activeTab == PandoraBoxConfigField.CREATURES,
                 onClick = {
                     activeTab = PandoraBoxConfigField.CREATURES
-                    onConfigChanged(
-                        config.copy(
-                            GoldAmount = emptyList(),
-                            ExpAmount = emptyList(),
-                            Artifacts = emptyList(),
-                            Spells = emptyList(),
-                            Resources = emptyList()
-                        )
-                    )
                 }
             )
 
@@ -108,15 +78,6 @@ fun PandoraBoxConfigEditor(
                 isActive = activeTab == PandoraBoxConfigField.SPELLS,
                 onClick = {
                     activeTab = PandoraBoxConfigField.SPELLS
-                    onConfigChanged(
-                        config.copy(
-                            GoldAmount = emptyList(),
-                            ExpAmount = emptyList(),
-                            Artifacts = emptyList(),
-                            PandoraCreatureConfig = emptyList(),
-                            Resources = emptyList()
-                        )
-                    )
                 }
             )
 
@@ -125,22 +86,12 @@ fun PandoraBoxConfigEditor(
                 isActive = activeTab == PandoraBoxConfigField.RESOURCES,
                 onClick = {
                     activeTab = PandoraBoxConfigField.RESOURCES
-                    onConfigChanged(
-                        config.copy(
-                            GoldAmount = emptyList(),
-                            ExpAmount = emptyList(),
-                            Artifacts = emptyList(),
-                            PandoraCreatureConfig = emptyList(),
-                            Spells = emptyList()
-                        )
-                    )
                 }
             )
         }
 
-        // Content area
         Box(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
+            modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.TopStart
         ) {
             when (activeTab) {
@@ -151,7 +102,7 @@ fun PandoraBoxConfigEditor(
                     }
                 )
 
-                PandoraBoxConfigField.EXP -> ExpAmountEditor(
+                PandoraBoxConfigField.EXP -> GoldAmountEditor(
                     amounts = config.ExpAmount,
                     onAmountsChanged = { newAmounts ->
                         onConfigChanged(config.copy(ExpAmount = newAmounts))
@@ -216,17 +167,30 @@ private fun GoldAmountEditor(
     onAmountsChanged: (List<Long>) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Implement gold amount editing UI
-    // For example, a list of number inputs
-}
-
-@Composable
-private fun ExpAmountEditor(
-    amounts: List<Long>,
-    onAmountsChanged: (List<Long>) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    // Implement exp amount editing UI
+    Column(modifier) {
+        AddIcon {
+            onAmountsChanged(amounts + 0L)
+        }
+        amounts.forEachIndexed { index, amount ->
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                DecimalInputField(
+                    title = "$index",
+                    value = amount.toString(),
+                    onValueChange = {
+                        val newAmount = it.toLongOrNull() ?: 0L
+                        onAmountsChanged(amounts.toMutableList().apply {
+                            this[index] = newAmount
+                        })
+                    },
+                )
+                DeleteIcon {
+                    val newAmounts = amounts.toMutableList()
+                    newAmounts.removeAt(index)
+                    onAmountsChanged(newAmounts)
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -235,24 +199,8 @@ private fun ArtifactsEditor(
     onArtifactsChanged: (List<PandoraArtifactConfig>) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier) {
-        artifacts.forEachIndexed { index, artifact ->
-            ArtifactConfigEditor(
-                config = artifact,
-                onConfigChanged = { newConfig ->
-                    val newList = artifacts.toMutableList()
-                    newList[index] = newConfig
-                    onArtifactsChanged(newList)
-                },
-                onRemove = {
-                    val newList = artifacts.toMutableList()
-                    newList.removeAt(index)
-                    onArtifactsChanged(newList)
-                }
-            )
-        }
-
-        Button(onClick = {
+    Column {
+        AddIcon {
             onArtifactsChanged(
                 artifacts + PandoraArtifactConfig(
                     Artifacts = emptyList(),
@@ -261,8 +209,23 @@ private fun ArtifactsEditor(
                     CostRanges = emptyList()
                 )
             )
-        }) {
-            Text("Add Artifact Config")
+        }
+        Column(modifier = modifier) {
+            artifacts.forEachIndexed { index, artifact ->
+                ArtifactConfigEditor(
+                    config = artifact,
+                    onConfigChanged = { newConfig ->
+                        val newList = artifacts.toMutableList()
+                        newList[index] = newConfig
+                        onArtifactsChanged(newList)
+                    },
+                    onRemove = {
+                        val newList = artifacts.toMutableList()
+                        newList.removeAt(index)
+                        onArtifactsChanged(newList)
+                    }
+                )
+            }
         }
     }
 }
@@ -276,66 +239,77 @@ private fun ArtifactConfigEditor(
 ) {
     Card(modifier = modifier.fillMaxWidth().padding(8.dp)) {
         Column(modifier = Modifier.padding(16.dp)) {
-            // Artifacts selection
-            SearchableEnumDropdown(
-                items = ArtifactType.values().toList(),
-                selectedItems = config.Artifacts,
-                onSelectionChanged = { newSelection ->
+            ListWithDialog(
+                label = "Artifact Types",
+                itemTitle = { it.description },
+                allItems = ArtifactType.entries,
+                currentItems = config.Artifacts,
+                onConfigChanged = { newSelection ->
                     onConfigChanged(config.copy(Artifacts = newSelection))
                 },
-                label = "Artifact Types"
             )
 
-            // Categories selection
-            SearchableEnumDropdown(
-                items = ArtifactCategory.values().toList(),
-                selectedItems = config.ArtifactCategories,
-                onSelectionChanged = { newSelection ->
+            ListWithDialog(
+                label = "Artifact Categories",
+                itemTitle = { it.description },
+                allItems = ArtifactCategory.entries,
+                currentItems = config.ArtifactCategories,
+                onConfigChanged = { newSelection ->
                     onConfigChanged(config.copy(ArtifactCategories = newSelection))
                 },
-                label = "Artifact Categories"
             )
 
-            // Slots selection
-            SearchableEnumDropdown(
-                items = ArtifactSlot.values().toList(),
-                selectedItems = config.ArtifactSlots,
-                onSelectionChanged = { newSelection ->
+            ListWithDialog(
+                label = "Artifact Slots",
+                itemTitle = { it.description },
+                allItems = ArtifactSlot.entries,
+                currentItems = config.ArtifactSlots,
+                onConfigChanged = { newSelection ->
                     onConfigChanged(config.copy(ArtifactSlots = newSelection))
                 },
-                label = "Artifact Slots"
             )
-
-            config.CostRanges.forEachIndexed { index, range ->
-                IntRangeEditor(
-                    range = range,
-                    onRangeChanged = { newRange ->
-                        val newRanges = config.CostRanges.toMutableList()
-                        newRanges[index] = newRange ?: IntValueConfig(0)
-                        onConfigChanged(config.copy(CostRanges = newRanges))
-                    },
-                    label = "CostRange $index",
-                    onRemove = {
-                        val newRanges = config.CostRanges.toMutableList()
-                        newRanges.removeAt(index)
-                        onConfigChanged(config.copy(CostRanges = newRanges))
-                    }
-                )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text("CostRanges")
+                AddIcon {
+                    onConfigChanged(config.copy(CostRanges = config.CostRanges + IntValueConfig(0)))
+                }
             }
-
-            Button(onClick = {
-                val newRanges = config.CostRanges.toMutableList()
-                newRanges.add(IntValueConfig())
-                onConfigChanged(config.copy(CostRanges = newRanges))
-            }) {
-                Text("Add Cost Range")
+            FlowColumn {
+                config.CostRanges.forEachIndexed { index, range ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        NullableIntValueConfigEditor(
+                            label = "Cost Range",
+                            range,
+                            onConfigChanged = {
+                                if (it != null)
+                                    onConfigChanged(
+                                        config.copy(
+                                            CostRanges = config.CostRanges.toMutableList().apply {
+                                                set(index, it)
+                                            }
+                                        )
+                                    )
+                            }
+                        )
+                        DeleteIcon {
+                            onConfigChanged(
+                                config.copy(
+                                    CostRanges = config.CostRanges.toMutableList().apply { removeAt(index) })
+                            )
+                        }
+                    }
+                }
             }
 
             // Count
             NumberInput(
-                value = config.Count?.toString() ?: "",
+                value = config.Count,
                 onValueChanged = { newValue ->
-                    onConfigChanged(config.copy(Count = newValue.toIntOrNull()))
+                    onConfigChanged(config.copy(Count = newValue))
                 },
                 label = "Count (optional)"
             )
@@ -357,6 +331,16 @@ private fun CreaturesEditor(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
+        AddIcon {
+            onCreaturesChanged(
+                creatures + PandoraCreatureConfig(
+                    TiersPool = emptyList(),
+                    PlayerType = PlayerType.ANY,
+                    CreatureIds = emptyList()
+                )
+            )
+        }
+
         creatures.forEachIndexed { index, creature ->
             CreatureConfigEditor(
                 config = creature,
@@ -372,18 +356,6 @@ private fun CreaturesEditor(
                 }
             )
         }
-
-        Button(onClick = {
-            onCreaturesChanged(
-                creatures + PandoraCreatureConfig(
-                    TiersPool = emptyList(),
-                    PlayerType = PlayerType.ANY,
-                    CreatureIds = emptyList()
-                )
-            )
-        }) {
-            Text("Add Creature Config")
-        }
     }
 }
 
@@ -397,16 +369,18 @@ private fun CreatureConfigEditor(
     Card(modifier = modifier.fillMaxWidth().padding(8.dp)) {
         Column(modifier = Modifier.padding(16.dp)) {
             // Tiers pool
-            NumberListEditor(
-                numbers = config.TiersPool,
-                onNumbersChanged = { newTiers ->
+            AllowedTiersInput(
+                label = "Tiers Pool",
+                AllowedTiers = config.TiersPool ?: emptyList(),
+                onConfigChanged = { newTiers ->
                     onConfigChanged(config.copy(TiersPool = newTiers))
                 },
-                label = "Tiers Pool"
             )
 
             // Boolean flags
-            Row {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 Checkbox(
                     checked = config.NoGrades == true,
                     onCheckedChange = { checked ->
@@ -426,7 +400,9 @@ private fun CreatureConfigEditor(
                 Text("Grades")
             }
 
-            Row {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 Checkbox(
                     checked = config.Neutrals == true,
                     onCheckedChange = { checked ->
@@ -438,35 +414,48 @@ private fun CreatureConfigEditor(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Checkbox(
-                    checked = config.NonPlayerFactions == true,
+                    checked = config.PlayerFactions,
                     onCheckedChange = { checked ->
-                        onConfigChanged(config.copy(NonPlayerFactions = if (checked) true else null))
+                        onConfigChanged(config.copy(PlayerFactions = checked))
                     }
                 )
-                Text("Non-Player Factions")
+                Text("PlayerFactions")
             }
 
-            Checkbox(
-                checked = config.PlayerFactions == true,
-                onCheckedChange = { checked ->
-                    onConfigChanged(config.copy(PlayerFactions = if (checked) true else null))
-                }
-            )
-            Text("Player Factions")
-
             // Player type
-            EnumDropdown(
-                items = PlayerType.values().toList(),
-                selectedItem = config.PlayerType,
-                onSelectionChanged = { newType ->
+            EnumDropdownRow(
+                label = "Player Type",
+                currentValue = config.PlayerType,
+                itemTitle = { it?.description?.ifEmpty { it.name } ?: "" },
+                values = PlayerType.entries - config.PlayerType,
+                onValueSelected = { newType ->
                     onConfigChanged(config.copy(PlayerType = newType))
                 },
-                label = "Player Type"
             )
+            Text("TerrainTypes")
+            AddIcon {
+                onConfigChanged(
+                    config.copy(TerrainTypes = (config.TerrainTypes ?: emptyList()) + TerrainType.Terrain1)
+                )
+            }
+            config.TerrainTypes?.forEachIndexed { index, terrainType ->
+                EnumDropdownRow(
+                    label = "",
+                    currentValue = terrainType,
+                    itemTitle = { it.name },
+                    values = TerrainType.entries - terrainType,
+                    onValueSelected = { newType ->
+                        onConfigChanged(
+                            config.copy(
+                                TerrainTypes = config.TerrainTypes.toMutableList().apply { set(index, newType) })
+                        )
+                    }
+                )
+            }
 
             // Creature IDs
             Text("Creature IDs")
-            config.CreatureIds.forEachIndexed { index, id ->
+            config.CreatureIds?.forEachIndexed { index, id ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     OutlinedTextField(
                         value = id,
@@ -479,29 +468,24 @@ private fun CreatureConfigEditor(
                         modifier = Modifier.weight(1f)
                     )
 
-                    IconButton(onClick = {
+                    DeleteIcon {
                         val newIds = config.CreatureIds.toMutableList()
                         newIds.removeAt(index)
                         onConfigChanged(config.copy(CreatureIds = newIds))
-                    }) {
-                        Icon(Icons.Default.Delete, "Remove")
                     }
                 }
             }
 
-            Button(onClick = {
-                val newIds = config.CreatureIds.toMutableList()
-                newIds.add("")
+            AddIcon {
+                val newIds = config.CreatureIds?.toMutableList()
+                newIds?.add("")
                 onConfigChanged(config.copy(CreatureIds = newIds))
-            }) {
-                Text("Add Creature ID")
             }
 
-            // Grow multiplier
             NumberInput(
-                value = config.GrowMultiplier?.toString() ?: "",
+                value = config.GrowMultiplier,
                 onValueChanged = { newValue ->
-                    onConfigChanged(config.copy(GrowMultiplier = newValue.toDoubleOrNull()))
+                    onConfigChanged(config.copy(GrowMultiplier = newValue))
                 },
                 label = "Grow Multiplier (optional)"
             )
@@ -523,6 +507,17 @@ private fun SpellsEditor(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
+        AddIcon {
+            onSpellsChanged(
+                spells + PandoraSpellConfig(
+                    Spells = emptyList(),
+                    MagicSchools = emptyList(),
+                    MagicTiers = emptyList(),
+                    RuneTiers = emptyList(),
+                    WarCryTiers = emptyList()
+                )
+            )
+        }
         spells.forEachIndexed { index, spell ->
             SpellConfigEditor(
                 config = spell,
@@ -538,20 +533,6 @@ private fun SpellsEditor(
                 }
             )
         }
-
-        Button(onClick = {
-            onSpellsChanged(
-                spells + PandoraSpellConfig(
-                    Spells = emptyList(),
-                    MagicSchools = emptyList(),
-                    MagicTiers = emptyList(),
-                    RuneTiers = emptyList(),
-                    WarCryTiers = emptyList()
-                )
-            )
-        }) {
-            Text("Add Spell Config")
-        }
     }
 }
 
@@ -562,60 +543,68 @@ private fun SpellConfigEditor(
     onRemove: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Card(modifier = modifier.fillMaxWidth().padding(8.dp)) {
-        Column(modifier = Modifier.padding(16.dp)) {
+    Card(modifier = modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(4.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
             // Spells selection
-            SearchableEnumDropdown(
-                items = SpellType.values().toList(),
-                selectedItems = config.Spells,
-                onSelectionChanged = { newSelection ->
+            ListWithDialog(
+                label = "Spell Types",
+                itemTitle = { it.description },
+                allItems = SpellType.entries,
+                currentItems = config.Spells,
+                onConfigChanged = { newSelection ->
                     onConfigChanged(config.copy(Spells = newSelection))
                 },
-                label = "Spell Types"
             )
 
             // Magic schools selection
-            SearchableEnumDropdown(
-                items = MagicSchool.values().toList(),
-                selectedItems = config.MagicSchools,
-                onSelectionChanged = { newSelection ->
+            ListWithDialog(
+                label = "Magic Schools",
+                itemTitle = { it.description },
+                allItems = MagicSchool.entries,
+                currentItems = config.MagicSchools,
+                onConfigChanged = { newSelection ->
                     onConfigChanged(config.copy(MagicSchools = newSelection))
                 },
-                label = "Magic Schools"
             )
 
             // Magic tiers
-            NumberListEditor(
-                numbers = config.MagicTiers,
-                onNumbersChanged = { newTiers ->
+            AllowedTiersInput(
+                label = "Magic Tiers",
+                allTiers = (1L..5L).toList(),
+                AllowedTiers = config.MagicTiers,
+                onConfigChanged = { newTiers ->
                     onConfigChanged(config.copy(MagicTiers = newTiers))
-                },
-                label = "Magic Tiers"
+                }
             )
 
             // Rune tiers
-            NumberListEditor(
-                numbers = config.RuneTiers,
-                onNumbersChanged = { newTiers ->
+            AllowedTiersInput(
+                label = "Rune Tiers",
+                allTiers = (1L..3L).toList(),
+                AllowedTiers = config.RuneTiers,
+                onConfigChanged = { newTiers ->
                     onConfigChanged(config.copy(RuneTiers = newTiers))
                 },
-                label = "Rune Tiers"
             )
 
             // War cry tiers
-            NumberListEditor(
-                numbers = config.WarCryTiers,
-                onNumbersChanged = { newTiers ->
+            AllowedTiersInput(
+                label = "War Cry Tiers",
+                allTiers = (1L..3L).toList(),
+                AllowedTiers = config.WarCryTiers,
+                onConfigChanged = { newTiers ->
                     onConfigChanged(config.copy(WarCryTiers = newTiers))
                 },
-                label = "War Cry Tiers"
             )
 
             // Count
             NumberInput(
-                value = config.Count?.toString() ?: "",
+                value = config.Count,
                 onValueChanged = { newValue ->
-                    onConfigChanged(config.copy(Count = newValue.toIntOrNull()))
+                    onConfigChanged(config.copy(Count = newValue))
                 },
                 label = "Count (optional)"
             )
@@ -637,6 +626,20 @@ private fun ResourcesEditor(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
+        AddIcon {
+            onResourcesChanged(
+                resources + ResourcesConfig(
+                    Wood = null,
+                    Ore = null,
+                    Mercury = null,
+                    Crystals = null,
+                    Sulfur = null,
+                    Gems = null,
+                    Gold = null
+                )
+            )
+        }
+
         resources.forEachIndexed { index, resource ->
             ResourceConfigEditor(
                 config = resource,
@@ -652,22 +655,6 @@ private fun ResourcesEditor(
                 }
             )
         }
-
-        Button(onClick = {
-            onResourcesChanged(
-                resources + ResourcesConfig(
-                    Wood = null,
-                    Ore = null,
-                    Mercury = null,
-                    Crystals = null,
-                    Sulfur = null,
-                    Gems = null,
-                    Gold = null
-                )
-            )
-        }) {
-            Text("Add Resource Config")
-        }
     }
 }
 
@@ -680,164 +667,70 @@ private fun ResourceConfigEditor(
 ) {
     Card(modifier = modifier.fillMaxWidth().padding(8.dp)) {
         Column(modifier = Modifier.padding(16.dp)) {
+
+            DeleteIcon(onRemove)
             // Wood
-            IntRangeEditor(
-                range = config.Wood,
-                onRangeChanged = { newRange ->
-                    onConfigChanged(config.copy(Wood = newRange))
-                },
+            NullableIntValueConfigEditor(
                 label = "Wood",
-                onRemove = {
-                    onConfigChanged(config.copy(Wood = null))
+                config = config.Wood,
+                onConfigChanged = { newRange ->
+                    onConfigChanged(config.copy(Wood = newRange))
                 }
             )
 
             // Ore
-            IntRangeEditor(
-                range = config.Ore,
-                onRangeChanged = { newRange ->
+            NullableIntValueConfigEditor(
+                config = config.Ore,
+                onConfigChanged = { newRange ->
                     onConfigChanged(config.copy(Ore = newRange))
                 },
                 label = "Ore",
-                onRemove = {
-                    onConfigChanged(config.copy(Ore = null))
-                }
             )
 
             // Mercury
-            IntRangeEditor(
-                range = config.Mercury,
-                onRangeChanged = { newRange ->
+            NullableIntValueConfigEditor(
+                config = config.Mercury,
+                onConfigChanged = { newRange ->
                     onConfigChanged(config.copy(Mercury = newRange))
                 },
                 label = "Mercury",
-                onRemove = {
-                    onConfigChanged(config.copy(Mercury = null))
-                }
             )
 
             // Crystals
-            IntRangeEditor(
-                range = config.Crystals,
-                onRangeChanged = { newRange ->
+            NullableIntValueConfigEditor(
+                config = config.Crystals,
+                onConfigChanged = { newRange ->
                     onConfigChanged(config.copy(Crystals = newRange))
                 },
                 label = "Crystals",
-                onRemove = {
-                    onConfigChanged(config.copy(Crystals = null))
-                }
             )
 
             // Sulfur
-            IntRangeEditor(
-                range = config.Sulfur,
-                onRangeChanged = { newRange ->
+            NullableIntValueConfigEditor(
+                config = config.Sulfur,
+                onConfigChanged = { newRange ->
                     onConfigChanged(config.copy(Sulfur = newRange))
                 },
                 label = "Sulfur",
-                onRemove = {
-                    onConfigChanged(config.copy(Sulfur = null))
-                }
             )
 
             // Gems
-            IntRangeEditor(
-                range = config.Gems,
-                onRangeChanged = { newRange ->
+            NullableIntValueConfigEditor(
+                config = config.Gems,
+                onConfigChanged = { newRange ->
                     onConfigChanged(config.copy(Gems = newRange))
                 },
                 label = "Gems",
-                onRemove = {
-                    onConfigChanged(config.copy(Gems = null))
-                }
             )
 
             // Gold
-            IntRangeEditor(
-                range = config.Gold,
-                onRangeChanged = { newRange ->
+            NullableIntValueConfigEditor(
+                config = config.Gold,
+                onConfigChanged = { newRange ->
                     onConfigChanged(config.copy(Gold = newRange))
                 },
                 label = "Gold",
-                onRemove = {
-                    onConfigChanged(config.copy(Gold = null))
-                }
             )
-
-            Button(
-                onClick = onRemove,
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
-            ) {
-                Text("Remove This Config")
-            }
-        }
-    }
-}
-
-// Helper components
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun <T : Enum<T>> SearchableEnumDropdown(
-    items: List<T>,
-    selectedItems: List<T>,
-    onSelectionChanged: (List<T>) -> Unit,
-    label: String,
-    modifier: Modifier = Modifier
-) {
-    var expanded by remember { mutableStateOf(false) }
-    var searchText by remember { mutableStateOf("") }
-
-    Box(modifier = modifier) {
-        OutlinedTextField(
-            value = if (selectedItems.isEmpty()) "Select $label" else selectedItems.joinToString { it.name },
-            onValueChange = {
-
-            },
-            readOnly = true,
-            label = { Text(label) },
-            trailingIcon = { Icon(Icons.Default.ArrowDropDown, null) },
-            modifier = Modifier.fillMaxWidth().onClick {
-                expanded = true
-            },
-        )
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier.fillMaxWidth(0.9f)
-        ) {
-            // Search field
-            OutlinedTextField(
-                value = searchText,
-                onValueChange = { searchText = it },
-                label = { Text("Search $label") },
-                modifier = Modifier.fillMaxWidth().padding(8.dp)
-            )
-
-            // Filtered items
-            val filteredItems = items.filter {
-                it.name.contains(searchText, ignoreCase = true)
-            }
-
-            filteredItems.forEach { item ->
-                DropdownMenuItem(onClick = {
-                    val newSelection = if (selectedItems.contains(item)) {
-                        selectedItems - item
-                    } else {
-                        selectedItems + item
-                    }
-                    onSelectionChanged(newSelection)
-                }, text = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Checkbox(
-                            checked = selectedItems.contains(item),
-                            onCheckedChange = null
-                        )
-                        Text(item.name)
-                    }
-                })
-            }
         }
     }
 }
@@ -874,7 +767,7 @@ private fun <T : Enum<T>> EnumDropdown(
                 DropdownMenuItem(onClick = {
                     onSelectionChanged(item)
                     expanded = false
-                }, text =  {
+                }, text = {
                     Text(item.name)
                 })
             }
@@ -972,21 +865,6 @@ private fun IntRangeEditor(
             }
         }
     }
-}
-
-@Composable
-private fun NumberInput(
-    value: String,
-    onValueChanged: (String) -> Unit,
-    label: String,
-    modifier: Modifier = Modifier
-) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChanged,
-        label = { Text(label) },
-        modifier = modifier.fillMaxWidth()
-    )
 }
 
 private enum class PandoraBoxConfigField {

@@ -185,6 +185,7 @@ private fun TierNumberInput(
 @Composable
 fun AllowedTiersInput(
     label: String,
+    allTiers: List<Long> = (1L..7L).toList(),
     AllowedTiers: List<Long>,
     onConfigChanged: (List<Long>) -> Unit,
 ) {
@@ -201,28 +202,7 @@ fun AllowedTiersInput(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    for (tier in 1L..4L) {
-                        TierCheckbox(
-                            tier = tier,
-                            checked = AllowedTiers.contains(tier),
-                            onCheckedChange = { checked ->
-                                onConfigChanged(
-                                    if (checked)
-                                        AllowedTiers + tier
-                                    else
-                                        AllowedTiers - tier
-                                )
-                            }
-                        )
-                    }
-                }
-
-                // Вторая строка: 3 чекбокса
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    for (tier in 5L..7L) {
+                    for (tier in allTiers) {
                         TierCheckbox(
                             tier = tier,
                             checked = AllowedTiers.contains(tier),

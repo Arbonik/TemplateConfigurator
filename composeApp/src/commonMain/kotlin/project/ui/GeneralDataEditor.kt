@@ -32,12 +32,7 @@ fun GeneralDataEditor(
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text(
-            text = "Guard Levels Configuration",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
+
 
         // Mine 1 Level Guard
         OutlinedTextField(
@@ -59,7 +54,6 @@ fun GeneralDataEditor(
             label = { Text("Mine 1 Level Guard") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             isError = showError && mine1Level.isNotEmpty() && mine1Level.toIntOrNull() == null
         )
 
@@ -83,7 +77,6 @@ fun GeneralDataEditor(
             label = { Text("Mine 2 Level Guard") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             isError = showError && mine2Level.isNotEmpty() && mine2Level.toIntOrNull() == null
         )
 
@@ -108,7 +101,6 @@ fun GeneralDataEditor(
             label = { Text("Gold Mine Guard") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             isError = showError && mineGoldLevel.isNotEmpty() && mineGoldLevel.toIntOrNull() == null
         )
 

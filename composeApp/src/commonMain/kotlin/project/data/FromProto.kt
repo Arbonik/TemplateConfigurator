@@ -388,15 +388,15 @@ data class PandoraArtifactConfig(
 
 @Serializable
 data class PandoraCreatureConfig(
-    val TiersPool: List<Long>,
+    val TiersPool: List<Long>? = emptyList(),
     val NoGrades: Boolean? = null,
     val Grades: Boolean? = null,
     val Neutrals: Boolean? = null,
-    val NonPlayerFactions: Boolean? = null,
-    val PlayerFactions: Boolean? = null,
-    val PlayerType: PlayerType,
-    val CreatureIds: List<String>,
-    val GrowMultiplier: Double? = null
+    val TerrainTypes: List<TerrainType>? = emptyList(),
+    val PlayerFactions: Boolean = false,
+    val PlayerType: PlayerType? = null,
+    val CreatureIds: List<String>? = emptyList(),
+    val GrowMultiplier: Double? = null //
 )
 
 @Serializable
@@ -538,7 +538,7 @@ enum class ArtifactCategory(
     MINOR(0, "Минор"),
     MAJOR(1, "Мажор"),
     RELIC(2, "Реликт"),
-    GRAIL(3, "");
+    GRAIL(3, "Грааль");
 }
 
 @Serializable

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -18,49 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun EnumDropdown(
-    value: String,
-    label: String,
-    values: List<String>,
-    onBuildingChanged: (String) -> Unit,
-) {
-    var expanded by remember { mutableStateOf(false) }
-    Box(modifier = Modifier.padding(8.dp)) {
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = !expanded }
-        ) {
-            OutlinedTextField(
-                value = value,
-                onValueChange = {},
-                label = { Text(label) },
-                readOnly = true,
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                },
-                modifier = Modifier.fillMaxWidth().menuAnchor()
-            )
-
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                values.forEach { type ->
-                    androidx.compose.material3.DropdownMenuItem(
-                        text = { Text(type) },
-                        onClick = {
-                            onBuildingChanged(type)
-                            expanded = false
-                        }
-                    )
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun DecimalInputField(
@@ -193,5 +151,18 @@ fun <T> CommonVerticalListItem(
                 Icon(Icons.Default.Delete, contentDescription = "Delete")
             }
         }
+    }
+}
+
+@Composable
+fun AddIcon(onAddClick: () -> Unit){
+    IconButton(onClick = onAddClick) {
+        Icon(Icons.Default.Add, contentDescription = "Add")
+    }
+}
+@Composable
+fun DeleteIcon(onDeleteClick: () -> Unit){
+    IconButton(onClick = onDeleteClick) {
+        Icon(Icons.Default.Delete, contentDescription = "Delete")
     }
 }

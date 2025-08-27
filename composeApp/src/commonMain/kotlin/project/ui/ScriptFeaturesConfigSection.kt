@@ -580,7 +580,7 @@ private fun AdditionalStartCastleItem(
 }
 
 @Composable
-private fun NumberInput(
+fun NumberInput(
     label: String,
     value: Long?,
     onValueChanged: (Long?) -> Unit,
@@ -600,7 +600,27 @@ private fun NumberInput(
 }
 
 @Composable
-private fun NumberInput(
+fun NumberInput(
+    label: String,
+    value: Double?,
+    onValueChanged: (Double?) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var textValue by remember { mutableStateOf(value?.toString() ?: "") }
+
+    OutlinedTextField(
+        value = textValue,
+        onValueChange = {
+            textValue = it
+            onValueChanged(it.toDoubleOrNull())
+        },
+        label = { Text(label) },
+        modifier = modifier.fillMaxWidth(),
+    )
+}
+
+@Composable
+fun NumberInput(
     label: String,
     value: Int?,
     onValueChanged: (Int?) -> Unit,
