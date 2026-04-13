@@ -87,7 +87,7 @@ enum BuildingTextureConfig {
   BuildingTextureConfigNull = 0;
   DefaultDwellingByTerrain = 1; // Двелинг в соответствии с террейном
   DefaultDwellingByCreature = 2; // Двелинг в соотстветствии с юнитом
-  
+
   NeutralCreatureBuilding = 3; // Здание нейтралов
   TowerByCreature = 4; // Башня в соотстветствии с юнитом
   TowerByTerrain = 5; // Башня в соответствии с террейном
@@ -104,7 +104,7 @@ enum BuildingTextureConfig {
   ExpChest = 23; // Сундук с экспой
   ResourceChest = 24; // Сундук с реурсами
   SpellsChest = 25; // Сундук с заклинаниями
-  
+
   PandoraBox = 100; // ящик пандоры
   Random = 101; // случайная текстура
 }
@@ -119,6 +119,15 @@ enum TerrainType {
   Terrain4 = 6; // четвёртый случайный свободный террейн
   Terrain5 = 7; // пятый случайный свободный террейн
   Terrain6 = 8; // шестой случайный свободный террейн
+
+  Humans = 9; // террейн хумов
+  Inferno = 10; // террейн инферно
+  Necropolis = 11; // террейн некров
+  Elves = 12; // террейн эльфов
+  Liga = 13; // террейн лиги
+  Mages = 14; // террейн магов
+  Dwarfs = 15; // террейн гномов
+  Horde = 16; // террейн орды
 }
 
 enum PlayerType {
@@ -228,4 +237,17 @@ enum DefaultBuilding {
   RareResourceGiver = 43; // Здание выдающее 5-10 случайного редкого ресурса
 
   DefaultBuildingTowerPortal = 44; // Портал в родной город
+}
+
+enum RoadType {
+  NoRoad = 0; // без дорорги
+  SecondaryRoad = 1; // второстепенная дорога
+  MainRoad = 2 ; // основная дорога
+}
+
+enum BuildingInteractionMessage {
+  NoMessage = 0; // взаимодействие без какого-либо сообщения
+  Default = 1; // вывод стандартного игрового сообщения для подобного типа зданий
+  Scouting = 2; // вывод сообщения в стиле "Разведки"
+  Custom = 3; // кастомное сообщение(пока не реализовано)
 }

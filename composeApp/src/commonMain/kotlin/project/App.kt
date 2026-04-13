@@ -21,13 +21,18 @@ val json = Json {
     ignoreUnknownKeys = true
     explicitNulls = false   // не требовать явных null для отсутствующих полей
     coerceInputValues = true // преобразовывать некорректные значения к значениям по умолчанию
+    prettyPrint = true
     decodeEnumsCaseInsensitive = true
 }
 
 @Composable
 fun App() {
+    var error by remember { mutableStateOf("") }
+    var config: TemplateGenerationConfig? by remember { mutableStateOf(null) }
+
+    var isFileOpen by remember { mutableStateOf(false) }
+
     AppTheme {
-        var error by remember { mutableStateOf("") }
         if (error.isEmpty())
             Column(
                 modifier = Modifier
@@ -35,10 +40,6 @@ fun App() {
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                var config: TemplateGenerationConfig? by remember { mutableStateOf(null) }
-
-                var isFileOpen by remember { mutableStateOf(false) }
-
                 if (isFileOpen) {
                     TemplateConfigEditor(
                         config = config!!,

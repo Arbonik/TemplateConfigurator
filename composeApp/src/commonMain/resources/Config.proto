@@ -3,440 +3,12 @@ import "google/protobuf/wrappers.proto";
 import "HeroTypeEnum.proto";
 import "SpellTypeEnum.proto";
 import "ArtifactTypeEnum.proto";
+import "MapObjectEnum.proto";
 import "Common.proto";
 import "Enums.proto";
 import "TemplateGeneration/Enums.proto";
 package TemplateGenerationConfigs;
 option optimize_for = SPEED;
-
-enum SpellType {
-  SpellNone = 0;
-  MagicArrow = 1; // Магическая стрела
-  MagicFist = 2; // Магический кулак
-  LightningBolt = 3; // Молния
-  IceBolt = 4; // Льдина
-  Fireball = 5; // Огненный шар
-  FrostRing = 6; // Кольцо холода
-  ChainLightning = 7; // Цепь молний
-  MeteorShower = 8; // Метеоритный дождь
-  Implosion = 9; // Шок земли
-  Armageddon = 10; // Армагеддон
-  Curse = 11; // Ослабление
-  Slow = 12; // Замедление
-  DisruptingRay = 13; // Разрушающий луч
-  Plague = 14; // Чума
-  Weakness = 15; // Немощность
-  Forgetfullness = 17; // Рассеянность
-  Berserk = 18; // Берсерк
-  Blind = 19; // Ослепление
-  Hypnotize = 20; // Подчинение
-  UnholyWord = 21; // Нечестивое слово
-  Bless = 23; // Божественная сила
-  Haste = 24; // Ускорение
-  Stoneskin = 25; // Каменная кожа
-  Dispel = 26; // Снятие чар
-  Bloodlust = 28; // Карающий удар
-  DeflectArrows = 29; // Уклонение
-  Antimagic = 31; // Антимагия
-  Teleport = 32; // Телепорт
-  CelestialShield = 34; // Небесный щит
-  HolyWord = 35; // Святое слово
-  LandMine = 38; // Огненная ловушка
-  WaspSwarm = 39; // Призыв осиного роя
-  Phantom = 40; // Создание фантома
-  Earthquake = 41; // Землетрясение
-  AnimateDead = 42; // Поднятие мертвых
-  SummonElementals = 43; // Призыв элементалей
-  Resurrect = 48; // Воскрешение
-  SummonBoat = 49; // Вызов корабля
-  DimensionDoor = 50; // Астральные врата
-  TownPortal = 51; // Портал в город
-  SummonCreatures = 234; // Вызов подкреплений
-  ConjurePhoenix = 235; // Призыв феникса
-  Firewall = 236; // Огненная стена
-  StoneSpikes = 237; // Каменные шипы
-  RuneOfCharge = 249; // Руна энергии
-  RuneOfBerserk = 250; // Руна берсеркерства
-  RuneOfMagicControl = 251; // Руна магического надзора
-  RuneOfExorcism = 252; // Руна экзорцизма
-  RuneOfElementalImmunity = 253; // Руна стихийной невосприимчивости
-  RuneOfStunning = 254; // Руна громового раската
-  RuneOfBattlerage = 255; // Руна боевой ярости
-  RuneOfEtherealness = 256; // Руна неосязаемости
-  RuneOfRevive = 257; // Руна воскрешения
-  RuneOfDragonform = 258; // Руна драконьего обличия
-  Sorrow = 277; // Скорбь
-  Vampirism = 278; // Вампиризм
-  DeepFreeze = 279; // Останавливающий холод
-  Regeneration = 280; // Регенерация
-  DivineVengeance = 281; // Божественная месть
-  ArcaneCrystal = 282; // Магический кристалл
-  SummonHive = 283; // Призыв улья
-  BladeBarrier = 284; // Стена мечей
-  RallingCry = 290; // Сборный клич
-  CallOfBlood = 291; // Зов крови
-  WordOfTheChief = 292; // Слово воштя
-  FearMyRoar = 293; // Пугалка
-  Battlecry = 294; // Боевой клич
-  ShoutOfMany = 295; // Ярость орды
-  SummonAirElementals = 378; // Призыв элементалей воздуха
-  SummonEarthElementals = 379; // Призыв элементалей земли
-  SummonFireElementals = 380; // Призыв элементалей огня
-  SummonWaterElementals = 381; // Призыв элементалей воды
-}
-
-enum MagicSchool {
-  Destructive = 0; // Хаос
-  Dark = 1; // Тьма
-  Light = 2; // Свет
-  Summoning = 3; // Призыв
-  Adventure = 4; // Контроль
-  Runic = 5; // Руны гномов
-  Warcries = 6; // Кличи орков
-  Special = 7; // Абилки существ/героев и технические спеллы
-}
-
-enum BuildingType {
-  T1 = 0; // Т1 двелл
-  T1G = 1; // Т1 гс
-  T2 = 2; // Т2 двелл
-  T2G = 3; // Т2 гс
-  T3 = 4; // Т3 двелл
-  T3G = 5; // Т3 гс
-  T4 = 6; // Т4 двелл
-  T4G = 7; // Т4 гс
-  T5 = 8; // Т5 двелл
-  T5G = 9; // Т5 гс
-  T6 = 10; // Т6 двелл
-  T6G = 11; // Т6 гс
-  T7 = 12; // Т7 двелл
-  T7G = 13; // Т7 гс
-  Tavern = 14; // Таверна
-  Forge = 15; // Кузница
-  Market1 = 16; // Рынок
-  Market2 = 17; // Склад
-  GM1 = 18; // Гм лвл 1
-  GM2 = 19; // Гм лвл 2
-  GM3 = 20; // Гм лвл 3
-  GM4 = 21; // Гм лвл 4
-  GM5 = 22; // Гм лвл 5
-  Fort1 = 23; // Форт
-  Fort2 = 24; // Цитадель
-  Fort3 = 25; // Замок
-  Gold1 = 26; // Дом старейшин
-  Gold2 = 27; // Ратуша
-  Gold3 = 28; // Магистрат
-  Gold4 = 29; // Капитолий
-  Asha = 30; // Здание за Слезу Асхи
-  HavenTrainingGrounds = 31; // Трен лвл 1
-  HavenHeroesMonument = 32; // Трен лвл 2
-  HavenStables = 33; // Конюшня
-  HavenFarms = 34; // Фермы на прирост крестьян
-  InfernoHellGates = 35; // +10% к гейтингу
-  InfernoDemonsGrow = 36; // Прирост демонов +2
-  InfernoHallOfHorror = 37; // Прирост коней +1
-  InfernoSacrificialPit = 38; // Жертвенная яма
-  NecromancyAmplifier = 39; // +1000 очков некромантии
-  NecromancyUnholyTemple = 40; // Конвертер нежити
-  NecromancyGraves = 41; // Прирост скелетов +6
-  NecromancyDragonTombstone = 42; // Прирост драконов +1
-  PreserveAvengerGuild = 43; // Гильдия мстителей
-  PreserveAvengerBrotherhood = 44; // Братство мстителей, +10% шанс прока заклятых
-  PreserveMysticPond = 45; // Пруд +ресурсы
-  PreserveSparklingFountain = 46; // Фонтан +удачи
-  PreserveBloomingGrove = 47; // Прирост фей
-  PreserveTreantSamplings = 48; // Прирост энтов
-  DungeonAltarOfElements = 49; // Элементальные цепочки
-  DungeonAltarOfPrimalChaos = 50; // +10% урона от цепочек
-  DungeonRitualPit = 51; // Ритуальная яма
-  DungeonTradePost = 52; // Лавка артефактов
-  DungeonHallOfIntrigue = 53; // +1 знания героям
-  AcademyLibrary = 54; // Библиотека
-  AcademyArcaneForge = 55; // Кузница миниартефактов
-  AcademyArtifactMerchant = 56; // Лавка артефактов
-  AcademyTreasureCave = 57; // +500 золота и прирост джиннов
-  FortressRunicShrine1 = 58; // Руны лвл 1
-  FortressRunicShrine2 = 59; // Руны лвл 2
-  FortressRunicShrine3 = 60; // Руны лвл 3
-  FortressArena = 61; // Прирост берсерков
-  FortressGuardPost = 62; // Сторожевая башня +отряд карликов
-  FortressStoneworks = 63; // Укрепленные стены
-  FortressRunicAcademy = 64; // Прирост жрецов рун
-  StrongholdHallOfTrial = 65; // Кличи лвл 1
-  StrongholdHallOfMastership = 66; // Кличи лвл 2
-  StrongholdHallOfMight = 67; // Кличи лвл 3
-  StrongholdGarbagePile = 68; // Прирост гоблинов
-  StrongholdTravellerShelter = 69; // Талисманы для походных артов
-  StrongholdPileOfOurFoes = 70; // Куча черепов +кровь на старте боя
-  StrongholdSlaveMarket = 71; // Рынок рабов
-}
-
-enum BuildingMode {
-  All = 0; //Здание будет построенно во всех городах фракции
-  StartCastle = 1; //Здание будет построенно только в стартовых городах игроков
-  NeutralCastle = 2; //Здание будет построенно только в нейтральных городах
-}
-
-enum BuildingTextureConfig {
-  BuildingTextureConfigNull = 0;
-  DefaultDwellingByTerrain = 1; // Двелинг в соответствии с террейном
-  DefaultDwellingByCreature = 2; // Двелинг в соотстветствии с юнитом
-
-  NeutralCreatureBuilding = 3; // Здание нейтралов
-  TowerByCreature = 4; // Башня в соотстветствии с юнитом
-  TowerByTerrain = 5; // Башня в соответствии с террейном
-
-  TowerGates = 10; // Текстура портала
-  RunicChest = 11; // Рунная коробка
-  DwarvenCareer = 12; // Шахта с редкими ресурсами
-  WoodShelter = 13; // Склад дерева
-  OreShelter = 14; // Склад руды
-
-  RandomChest = 20; // Сундук с неизвестным наполнением
-  ArtsChest = 21; // Сундук с артефактом
-  GoldChest = 22; // Сундук с золотом
-  ExpChest = 23; // Сундук с экспой
-  ResourceChest = 24; // Сундук с реурсами
-  SpellsChest = 25; // Сундук с заклинаниями
-
-  PandoraBox = 100; // ящик пандоры
-  Random = 101; // случайная текстура
-}
-
-enum TerrainType {
-  TerrainTypeNull = 0; // нет значения
-  FirstPlayer = 1; // террейн первого игрока
-  SecondPlayer = 2; // террейн второго игрока
-  Terrain1 = 3; // первый случайный свободный террейн
-  Terrain2 = 4; // второй случайный свободный террейн
-  Terrain3 = 5; // третий случайный свободный террейн
-  Terrain4 = 6; // четвёртый случайный свободный террейн
-  Terrain5 = 7; // пятый случайный свободный террейн
-  Terrain6 = 8; // шестой случайный свободный террейн
-}
-
-enum PlayerType {
-  Any = 0;  // любой игрок игроки
-  First = 1; // первый игрока
-  Second = 2; // второй игрока
-}
-
-enum HeroClassType {
-  None = 0;
-  Knight = 1; // Рыцарь
-  Demonlord = 2; // Повелитель демонов
-  Necromancer = 3;  // Некромант
-  Ranger = 4; // Рейнджер
-  Warlock = 5; // Чернокнижник
-  Wizard = 6; // Маг
-  Runemage = 7; // Рунный жрец
-  Barbarian = 8; // Варвар
-}
-
-enum SkillType {
-  NoSkill = 0;
-  Logistics = 1; // Логистика
-  WarMachines = 2; // Машины
-  Learning = 3; // Образование
-  Leadership = 4; // Лидерство
-  Luck = 5; // Удача
-  Offence = 6; // Нападение
-  Defence = 7; // Защита
-  Sorcery = 8; // Чародейство
-  DestructiveMagic = 9; // Магия Хаоса
-  DarkMagic = 10; // Магия Тьмы
-  LightMagic = 11; // Магия Света
-  SummoningMagic = 12; // Магия Призыва
-  Training = 13; // Контрудар
-  Gating = 14; // Открытие врат
-  Necromancy = 15; // Некромантия
-  Avenger = 16; // Мститель
-  Artificier = 17; // Мастер артефактов
-  Invocation = 18; // Неодолимая магия
-  Runelore = 151; // Магия рун
-  DemonicRage = 172; // Гнев крови
-  BarbarianLearning = 183; // Образование варвара
-  Voice = 187; // Кличи
-  ShatterDestructive = 191; // Приглушение Хаоса
-  ShatterDark = 195; // Приглушение Тьмы
-  ShatterLight = 199; // Приглушение Света
-  ShatterSummoning = 203; // Приглушение Призыва
-}
-
-enum ScriptBuilding {
-  TowerPortal = 0; // Портал перемещающий игрока к ближайшему родному городу
-}
-
-enum DefaultBuilding {
-  GoldChest5k = 0; // Сундук на 5k золота
-  GoldChest10k = 1; // Сундук на 10k золота
-  GoldChest15k = 2; // Сундук на 15k золота
-  GoldChest20k = 3; // Сундук на 20k золота
-
-  ExpChest5k = 4; // Сундук на 5k опыта
-  ExpChest10k = 5; // Сундук на 10k опыта
-  ExpChest15k = 6; // Сундук на 15k опыта
-  ExpChest20k = 7; // Сундук на 20k опыта
-
-  MinorArtChest = 8; // Сундук с малым артефактом
-  MajorArtChest = 9; // Сундук с большим артефактом
-  RelicArtChest = 10; // Сундук с реликтовым артефактом
-
-  FullDestructiveMagicChest = 11; // Сундук со всеми заклинаниями Разрушения (Все кличи для орка)
-  FullDarkMagicChest = 12; // Сундук со всеми заклинаниями Тьмы (Все кличи для орка)
-  FullLightMagicChest = 13; // Сундук со всеми заклинаниями Света (Все кличи для орка)
-  FullSummoningMagicChest = 14; // Сундук со всеми заклинаниями Призыва (Все кличи для орка)
-  FullAdventureMagicChest = 15; // Сундук со всеми заклинаниями Приключений (Все кличи для орка)
-  RandomFullMagicSchoolChest = 16; // Сундук со всеми заклинаниями случайной школы (Все кличи для орка)
-
-  FullT1MagicChest = 17; // Сундук со всеми заклинаниями 1 уровня (Т1 для орка)
-  FullT2MagicChest = 18; // Сундук со всеми заклинаниями 2 уровня (Т2 для орка)
-  FullT3MagicChest = 19; // Сундук со всеми заклинаниями 3 уровня (Т2 для орка)
-  FullT4MagicChest = 20; // Сундук со всеми заклинаниями 4 уровня (T3 для орка)
-  FullT5MagicChest = 21; // Сундук со всеми заклинаниями 5 уровня (T3 для орка)
-
-  RandomT1MagicChest = 22; // Сундук со случайным заклинанием 1 уровня (T1 для орка)
-  RandomT2MagicChest = 23; // Сундук со случайным заклинанием 2 уровня (T2 для орка)
-  RandomT3MagicChest = 24; // Сундук со случайным заклинанием 3 уровня (T2 для орка)
-  RandomT4MagicChest = 25; // Сундук со случайным заклинанием 4 уровня (T3 для орка)
-  RandomT5MagicChest = 26; // Сундук со случайным заклинанием 5 уровня (T3 для орка)
-
-  RandomT1CreatureBox = 27; // Ящик со случайным грейженным существом 1 ранга x3 прирост
-  RandomT2CreatureBox = 28; // Ящик со случайным грейженным существом 2 ранга x3 прирост
-  RandomT3CreatureBox = 29; // Ящик со случайным грейженным существом 3 ранга x3 прирост
-  RandomT4CreatureBox = 30; // Ящик со случайным грейженным существом 4 ранга x3 прирост
-  RandomT5CreatureBox = 31; // Ящик со случайным грейженным существом 5 ранга x3 прирост
-  RandomT6CreatureBox = 32; // Ящик со случайным грейженным существом 6 ранга x3 прирост
-  RandomT7CreatureBox = 33; // Ящик со случайным грейженным существом 7 ранга x3 прирост
-
-  HighTierRunicChest = 34; // Сундук с высокоуровневыми (т3-т5) рунами и 5к экспы герою не гнома
-  RandomRunicChest = 35; // Сундук со случайной руной и 3к экспы герою не гнома
-  T1RunicChest = 36; // Сундук с руной 1 ранга и 1к экспы герою не гнома
-  T2RunicChest = 37; // Сундук с руной 2 ранга и 2к экспы герою не гнома
-  T3RunicChest = 38; // Сундук с руной 3 ранга и 3к экспы герою не гнома
-  T4RunicChest = 39; // Сундук с руной 4 ранга и 4к экспы герою не гнома
-  T5RunicChest = 40; // Сундук с руной 5 ранга и 5к экспы герою не гнома
-
-  WoodGiver = 41; // Здание выдающее 5-10 дерева
-  OreGiver = 42; // Здание выдающее 5-10 руды
-  RareResourceGiver = 43; // Здание выдающее 5-10 случайного редкого ресурса
-
-  DefaultBuildingTowerPortal = 44; // Портал в родной город
-}
-enum ArtifactType {
-  None = 0;
-  SwordOfRuins = 1; // Меч мощи
-  DwarfKingAxe = 2; // Секира короля гномов
-  WandOfSpell = 3; // Палочка с заклинанием
-  UnicornBow = 4; // Лук из рога единорога
-  TitansTrident = 5; // Трезубец титанов
-  StaffOfTheUnderworld = 6; // Посох Преисподней
-  Shackles = 7; // Кандалы неизбежности
-  FourLeafClover = 8; // Четырехлистный клевер
-  IceShield = 9; // Ледяной щит
-  Sextant = 10; // Секстант морских эльфов
-  CrownOfLion = 11; // Корона льва
-  CrownOfManyEyes = 12; // Корона всевидящего
-  ArmorOfForgottenHero = 13; // Доспехи забытого героя
-  BreastplateOfPower = 14; // Нагрудник огромной мощи
-  PedantOfMastery = 15; // Кулон мастерства
-  NecklaceOfLion = 16; // Ошейник льва
-  NecklaceOfBloodyClaw = 17; // Ожерелье кровавого когтя
-  EvercoldIcycle = 18; // Кулон ледяных объятий
-  NecklaceOfVictory = 19; // Ожерелье победы
-  RingOfLightningProtection = 20; // Кольцо защиты от молний
-  RingOfVitality = 21; // Кольцо жизненной силы
-  RingOfHaste = 22; // Кольцо скорости
-  NightmarishRing = 23; // Кольцо сломленного духа
-  BootsOfSwiftJourney = 24; // Сапоги путешественника
-  GoldenHorseshoe = 25; // Золотая подкова
-  BootsOfOpenRoad = 26; // Сапоги открытого пути
-  BootsOfMagicDefence = 27; // Сапоги магической защиты
-  EndlessSackOfGold = 28; // Сумка бесконечного золота
-  EndlessBagOfGold = 29; // Мешочек бесконечного золота
-  CapeOfLion = 31; // Накидка с гривой льва
-  PhoenixFeatherCape = 32; // Накидка из перьев феникса
-  CloakOfMourning = 33; // Плащ смертоносной тени
-  TurbanOfEnlightenment = 34; // Тюрбан просвещения
-  ChainMailOfEnlightenment = 35; // Кольчуга просвещения
-  DragonScaleArmor = 36; // Доспех из чешуи дракона
-  DragonScaleShield = 37; // Щит из чешуи дракона
-  DragonBoneGraves = 38; // Поножи из кости дракона
-  DragonWingMantle = 39; // Мантия из крыльев дракона
-  DragonTeethNecklace = 40; // Ожерелье из зубов дракона
-  DragonTalonCrown = 41; // Корона из когтей дракона
-  DragonEyeRing = 42; // Кольцо глаз дракона
-  DragonFlameTongue = 43; // Пламенный язык дракона
-  RobeOfSarIssa = 44; // Халат Сар-Иссы
-  StaffOfSarIssa = 45; // Посох Сар-Иссы
-  CrownOfSarIssa = 46; // Корона Сар-Иссы
-  RingOfSarIssa = 47; // Кольцо Сар-Иссы
-  DwarvenKingCuirass = 48; // Кираса короля гномов
-  DwarvenKingGreaves = 49; // Поножи короля гномов
-  DwarvenKingHelmet = 50; // Шлем короля гномов
-  DwarvenKingShield = 51; // Щит короля гномов
-  ScrollOfSpell = 52; // Свиток с заклинанием
-  NecromancerHelm = 55; // Шлем некроманта
-  ArmorOfValor = 56; // Доспехи бесстрашия
-  WindstriderBoots = 57; // Сапоги странника
-  Moonblade = 58; // Лунный клинок
-  RingOfCelerity = 59; // Кольцо стремительности
-  ElementalWaistband = 60; // Кольцо элементалей
-  EmeraldSlippers = 61; // Изумрудные туфли
-  CloakOfSylanna = 62; // Плащ силанны
-  CursedWaistband = 63; // Проклятое кольцо
-  TunicOfFlesh = 64; // Туника из плоти
-  RingOfCaution = 65; // Кольцо предостережения
-  HelmOfChaos = 66; // Шлем хаоса
-  PendantOfConflux = 67; // Кулон поглощения
-  SandalsOfBlessed = 68; // Сандалии святого
-  SandroCloak = 69; // Плащ Сандро
-  NecromancerRing = 70; // Кольцо грешников
-  NecromancerAmulet = 71; // Амулет некроманта
-  OgreClub = 74; // Дубина людоеда
-  OgreShield = 75; // Щит людоеда
-  TomeOfChaos = 76; // Том магии Хаоса
-  TomeOfLight = 77; // Том магии Света
-  TomeOfDark = 78; // Том магии Тьмы
-  TomeOfSummon = 79; // Том магии Призыва
-  BeginnerMagicStick = 80; // Волшебная палочка новичка
-  RunicAxe = 81; // Рунный боевой топор
-  RunicHarness = 82; // Рунная боевая упряжь
-  SkullOfMarkal = 83; // Шлем Маркела
-  BearhideWraps = 84; // Тайные защитные покровы
-  DwarvenHammer = 85; // Гномий кузнечный молот
-  RuneOfFlame = 86; // Руна пламени
-  TarotDesk = 87; // Колода Таро
-  CrownOfLeadership = 88; // Корона лидерства
-  MaskOfDoppelganger = 89; // Маска справедливости
-  EdgeOfBalance = 90; // На грани равновесия
-  RingOfMachines = 91; // Кольцо родства с машинами
-  HornOfPlenty = 92; // Рог изобилия
-  RingOfUnsummon = 93; // Кольцо изгнания
-  BookOfPower = 94; // Том Силы
-  TreebornQuiver = 95; // Изумительный колчан
-  RingOfSilence = 97; // Кольцо безмолвия
-}
-
-enum ArtifactCategory {
-  Minor = 0; // Минор
-  Major = 1; // Мажор
-  Relic = 2; // Реликт
-  Grail = 3;
-}
-
-enum ArtifactSlot {
-  Inventory = 0; // только в сумке
-  Primary = 1; // оружие
-  Secondary = 2; // щит
-  Head = 3; // голова
-  Chest = 4; // грудь
-  Neck = 5; // шея
-  Finger = 6; // кольцо
-  Feet = 7; // сапоги
-  Shoulders = 8; // плечи
-  MiscSlot = 9; // карман
-}
 
 // Это входная точка генерации, эта модель будет рутовая в json документе
 message TemplateGenerationConfig {
@@ -444,20 +16,20 @@ message TemplateGenerationConfig {
   repeated ZoneGenerationConfig Zones = 2; // настройка зон, не заполненные параметры будут использованы из оригинального XDB
   repeated ConnectionModel Connections = 3; // настройки ГО шаблона,  не заполненные параметры будут использованы из оригинального XDB
   repeated TerrainConfig TerrainConfig = 4; // управлениями объектов в шоп поинтсах под конкретные террейны
-  repeated StartBuildingConfig StartBuildingConfigs = 5; // настройка стартовых зданий в городах
-  GeneralData GeneralData = 6; // общие настройки: иконки, плотность боёв и т.д.
+  map<string, FactionTerrainConfig> FactionTerrainConfigs = 5; //  объектов в шоп поинтсах для конкретной фракции (Humans, Inferno, Necropolis, Elves, Liga, Mages, Dwarfs, Horde )
+  repeated StartBuildingConfig StartBuildingConfigs = 6; // общие настройки стартовых зданий в городах
+  repeated SpecificCastleBuildingConfig SpecificCastlesStartBuildings = 7; // настройки стартовых зданий в конкретных городах
+  GeneralData GeneralData = 8; // общие настройки: иконки, плотность боёв и т.д.
 
-  google.protobuf.DoubleValue BaseArmyMultiplier = 7; // общий множитель стартовой армии, 1 по умолчанию
-  map<string, double> ArmyMultipliers = 8; //  настройка множителей для конкретной фракции (Humans, Inferno, Necropolis, Elves, Liga, Mages, Dwarfs, Horde )
+  google.protobuf.DoubleValue BaseArmyMultiplier = 9; // общий множитель стартовой армии, 1 по умолчанию
+  map<string, double> ArmyMultipliers = 10; //  настройка множителей для конкретной фракции (Humans, Inferno, Necropolis, Elves, Liga, Mages, Dwarfs, Horde )
 
-  ScriptFeaturesConfig ScriptFeaturesConfig = 9; // настройки скриптовых фич
-  EntitiesBanModel EntitiesBanConfig = 10; // настройки банов на шаблоне
-  StartSpellsConfig StartSpellsConfig = 11; // найстройки стартовых заклинаний
+  ScriptFeaturesConfig ScriptFeaturesConfig = 11; // настройки скриптовых фич
+  EntitiesBanModel EntitiesBanConfig = 12; // настройки банов на шаблоне
+  StartSpellsConfig StartSpellsConfig = 13; // найстройки стартовых заклинаний
 
-  repeated CustomBuildingConfig CustomBuildingConfigs = 12; // Создание кастомных зданий которые можно использовать в других секциях конфигов
-  CreatureBanksPool CreatureBanksPool = 13; // настройки специального пула банков существ который может быть добавлен в настройках террейнов через опцию AddCreatureBanksPool
-
-  ZoneRandomizationConfig ZoneRandomizationConfig = 14; // настройки рандомизации координат в шаблоне
+  repeated CustomBuildingConfig CustomBuildingConfigs = 14; // Создание кастомных зданий которые можно использовать в других секциях конфигов
+  ZoneRandomizationConfig ZoneRandomizationConfig = 15; // настройки рандомизации координат в шаблоне
 }
 
 message EntitiesBanModel {
@@ -483,15 +55,17 @@ message CreaturesConfiguration {
   IntValueConfig ReplacementsCount = 1; // количество тиров, которые будут заменены
   google.protobuf.BoolValue TerrainFaction = 2; // добавлять ли юнитов текущего террейна
   google.protobuf.BoolValue NonPlayersFactions = 3; // включать ли фракции, не выданные игрокам
-  google.protobuf.BoolValue NoGrades = 4; // включать ли негрейды
-  google.protobuf.BoolValue Grades = 5; // включать ли грейды
-  google.protobuf.BoolValue Neutrals = 6; // включать ли нейтралов
-  google.protobuf.DoubleValue BaseCostMultiplier = 7; // множитель стоимости в золоте
-  google.protobuf.DoubleValue BaseResourcesMultiplier = 8; // множитель стоимости в ресурсах
-  google.protobuf.DoubleValue BaseGrowMultiplier = 9; // множитель прироста
-  repeated CreatureModifier CreatureModifiers = 10; // модификаторы юнитов по тирам
-  repeated CreatureTierReplacement CreatureTierReplacements = 11; // конкретные юниты на замену в тирах, при заполнении секции в эти тиры будут рандомиться только юниты по указанным айди
-  google.protobuf.BoolValue NonUniqueReplacements = 12; // могут ли заменённые юниты повторяться в других локациях
+  bool PlayerFactions = 4; // добавлять ли фракции игроков
+  TemplateGenerationEnums.PlayerType PlayerType = 5; // фракции каких игроков нужно добавить
+  google.protobuf.BoolValue NoGrades = 6; // включать ли негрейды
+  google.protobuf.BoolValue Grades = 7; // включать ли грейды
+  google.protobuf.BoolValue Neutrals = 8; // включать ли нейтралов
+  google.protobuf.DoubleValue BaseCostMultiplier = 9; // множитель стоимости в золоте
+  google.protobuf.DoubleValue BaseResourcesMultiplier = 10; // множитель стоимости в ресурсах
+  google.protobuf.DoubleValue BaseGrowMultiplier = 11; // множитель прироста
+  repeated CreatureModifier CreatureModifiers = 12; // модификаторы юнитов по тирам
+  repeated CreatureTierReplacement CreatureTierReplacements = 13; // конкретные юниты на замену в тирах, при заполнении секции в эти тиры будут рандомиться только юниты по указанным айди
+  google.protobuf.BoolValue NonUniqueReplacements = 14; // могут ли заменённые юниты повторяться в других локациях
 }
 
 message CreatureModifier {
@@ -717,15 +291,16 @@ message StaticDwellingConfigs {
 
 message DwellingByPointsConfig {
   int64 PointsCount = 1; // количество поинтов для распределения двелов
-  DwellingValue DwellingPoints = 2; // выставление велью поинтов конкретным тирам
-  map<string, DwellingValue> DwellingPointsByFaction = 3; // выставление велью поинтов конкретным тирам по фракциям (Humans, Inferno, Necropolis, Elves, Liga, Mages, Dwarfs, Horde )
-  google.protobuf.Int64Value MinTiersCount = 4; // минимальное количество тиров существ в двелинга
-  google.protobuf.Int64Value MaxTiersCount = 5; // максимальное количество тиров существ в двелинга
-  repeated int64 AllowedTiers = 6; // массив разрешённых тиров для генерации, по умолчанию будут все тиры 1-7
-  DwellingValue MinCountPerTier = 7; // настройка минимального количества двелов для конкретного тира
-  map<string, DwellingValue> MinCountPerTierByFaction = 8; // настройка минимального количества двелов для конкретного тира по фракциям (Humans, Inferno, Necropolis, Elves, Liga, Mages, Dwarfs, Horde )
-  DwellingValue MaxCountPerTier = 9; // настройка максимального количества двелов для конкретного тира
-  map<string, DwellingValue> MaxCountPerTierByFaction = 10; // настройка максимального количества двелов для конкретного тира по фракциям (Humans, Inferno, Necropolis, Elves, Liga, Mages, Dwarfs, Horde )
+  map<string, int64> PointsCountByFaction = 3; // количество поинтов по фракциям (Humans, Inferno, Necropolis, Elves, Liga, Mages, Dwarfs, Horde )
+  DwellingValue DwellingPoints = 4; // выставление велью поинтов конкретным тирам
+  map<string, DwellingValue> DwellingPointsByFaction = 5; // выставление велью поинтов конкретным тирам по фракциям (Humans, Inferno, Necropolis, Elves, Liga, Mages, Dwarfs, Horde )
+  google.protobuf.Int64Value MinTiersCount = 6; // минимальное количество тиров существ в двелинга
+  google.protobuf.Int64Value MaxTiersCount = 7; // максимальное количество тиров существ в двелинга
+  repeated int64 AllowedTiers = 8; // массив разрешённых тиров для генерации, по умолчанию будут все тиры 1-7
+  DwellingValue MinCountPerTier = 9; // настройка минимального количества двелов для конкретного тира
+  map<string, DwellingValue> MinCountPerTierByFaction = 10; // настройка минимального количества двелов для конкретного тира по фракциям (Humans, Inferno, Necropolis, Elves, Liga, Mages, Dwarfs, Horde )
+  DwellingValue MaxCountPerTier = 11; // настройка максимального количества двелов для конкретного тира
+  map<string, DwellingValue> MaxCountPerTierByFaction = 12; // настройка максимального количества двелов для конкретного тира по фракциям (Humans, Inferno, Necropolis, Elves, Liga, Mages, Dwarfs, Horde )
 }
 
 message DependantDwellingConfig {
@@ -790,6 +365,83 @@ message ZoneGenerationConfig {
   IntValueConfig MainTownRotationDirection = 26; // поворот замка, принимает значение 0, 1, 2, 3
   google.protobuf.BoolValue TreasureBlocksScalingFromTownDist = 27; // включён ли скейлинг распределения велью по удалению от замка
   IntValueConfig DistBetweenTreasureBlocks = 28; // расстояние между боевыми точками, определяет плотность пробивок
+  IntValueConfig Taverns = 29; // количество таверн
+  IntValueConfig TradingPosts = 30; // количество факторий
+  IntValueConfig HillForts = 31; // количество фортов
+  IntValueConfig SpellMentors = 32; // количество менторов
+  IntValueConfig MagicWells = 33; // количество колодцев на ману
+  IntValueConfig LearningStones = 34; // количество шрайнов на 1к экспы
+  IntValueConfig EnlightenmentStones = 35; // количество  шрайнов на 5к экспы
+  IntValueConfig WisdomStones = 36; // количество шрайнов на 10к экспы
+  IntValueConfig RedwoodObservatories = 37; // количество обзорок
+  IntValueConfig Wagons = 38; // количество тележек с ресами
+  IntValueConfig Skeletons = 39; // количество могил с артом
+  IntValueConfig TombOfTheWarriors = 40; // количество могил с артом
+  AdditionalMapObjectConfig AdditionalMapObjectConfig = 41; // настройка дополнительных объектов, если не указаны то возьмутся из зеркальной зоны при наличии
+  
+  google.protobuf.BoolValue RemoveZone = 101; // нужно ли удалить эту зону, остальные параметры  игнорируются
+}
+
+message AdditionalMapObjectConfig {
+  repeated AdditionalObjectModel StaticObjects = 1; // Статичные объекты для постановки
+  map<string, AdditionalObjectModels> StaticObjectsByCastle = 2; // Статичные объекты для постановки для конкретных фракций (Humans, Inferno, Necropolis, Elves, Liga, Mages, Dwarfs, Horde )
+  repeated AdditionalObjectByPointsModel ByPointModels = 3; // объекты которые расставляются по очкам
+  repeated AdditionalObjectFewOfModel FewOfModels = 4; // расстановка рандомных объектов из заданных наборов
+  repeated ArtifactsGenerationModel ArtifactsGenerationModels = 5; // генерация артов по их стоимости
+  ResourcesGenerationModel ResourcesGenerationModel = 6; // генерация ресурсов
+}
+
+message AdditionalObjectModels {
+  repeated AdditionalObjectModel Objects = 1; // перечисление объектов
+}
+
+message AdditionalObjectModel {
+  int32 BuildingId = 1; // id объекта из секции custom buildings
+  IntValueConfig Count = 2; // количество объектов для постановки
+}
+
+message AdditionalObjectByPointsModel {
+  int64 PointsCount = 1; // количество поинтов
+  map<string, int64> PointsCountByFaction = 2; // количество поинтов по фракциям (Humans, Inferno, Necropolis, Elves, Liga, Mages, Dwarfs, Horde )
+  map<int32, int64> PointsByBuildingId = 3; // id объекта из секции custom buildings с стоимостью в виде поинтов
+  google.protobuf.Int64Value MinBuildingsCount = 4; // минимальное количество каждого из объектов
+  google.protobuf.Int64Value MaxBuildingsCount = 5; // максимальное количество каждого из объектов
+}
+
+message AdditionalObjectFewOfModel {
+  repeated FewOfModel Models = 1; // набор объектов
+  IntValueConfig Count = 2; // количество объектов которое нужно выбрать
+}
+
+message FewOfModel {
+  repeated AdditionalObjectModel Objects = 1; // перечисление объектов
+  IntValueConfig Count = 2; // количество объектов которое нужно выбрать
+}
+
+message ArtifactsGenerationModel {
+  repeated ArtifactTypeEnum.ArtifactType AllowedArtifacts = 1; // допустимые артефакты (по умолчанию доступны все)
+  google.protobuf.Int64Value MinValue = 2; // минимальное велью артов ( > )
+  google.protobuf.Int64Value MaxValue = 3; // максимальное велью артов ( <= )
+  int64 TotalValue = 4; // общее велью артефактов в локации
+  google.protobuf.Int64Value AllowedDuplicatesCount = 5; // допустимое количество дубликатов, по-умолчанию 0
+  google.protobuf.DoubleValue GuardsMultiplier = 6; // множитель охраны артефактов 
+}
+
+message ResourcesGenerationModel {
+  IntValueConfig Wood = 1; // Кучки дерева
+  IntValueConfig Ore = 2; // Кучки руды
+  google.protobuf.DoubleValue BaseResourcesGuardsMultiplier = 3; // множитель охраны дерева/руды
+  IntValueConfig Mercury = 4; // Кучка ртути
+  IntValueConfig Gems = 5; // Кучка самоцеветов
+  IntValueConfig Crystal = 6; // Кучка кристалов
+  IntValueConfig Sulfur = 7; // Кучка серы
+  google.protobuf.DoubleValue RareResourcesGuardsMultiplier = 8; // множитель охраны редких ресурсов
+  IntValueConfig Chest = 9; // Сундуки
+  google.protobuf.DoubleValue ChestGuardsMultiplier = 10; // множитель охраны сндуков
+  IntValueConfig Gold = 11; // Кучки золота
+  google.protobuf.DoubleValue GoldGuardsMultiplier = 12; // множитель охраны золота
+  IntValueConfig Campfire = 13; // Костры
+  google.protobuf.DoubleValue CampfireGuardsMultiplier = 14; // множитель охраны костров
 }
 
 //SourceZoneIndex-DestZoneIndex-IsMain - эти три поля являются ключём для поиска. Если го по таком ключу будет найденно то следующие параметры будут просто обновлены, если нет - будет добавлено новое го в шаблон.
@@ -922,6 +574,16 @@ message TerrainConfig {
   TerrainBuildingsConfig NewBuffBuildings = 11; // Банки сегмент +. Не охраняются
 }
 
+message FactionTerrainConfig {
+  TerrainBuildingsConfig NewLuckMoraleBuildings = 1; // Повышалки удачи, морали и мувов, не охраняются
+  TerrainBuildingsConfig NewShopBuildings = 2; // Элемник,мастерская, библа и т.д. Эти строения охраняются.
+  TerrainBuildingsConfig NewResourceGivers = 3; // Мельница, сокровищница, леприкон. Не охраняются.
+  TerrainBuildingsConfig NewUpgradeBuildings = 4; // Повышалки статов. Здания охраняются
+  TerrainBuildingsConfig NewShrines = 5; // Шрайны на экспу. Не охраняются
+  TerrainBuildingsConfig NewTreasuryBuildings = 6; //  Банки стартовой зоны. Не охраняются.
+  TerrainBuildingsConfig NewBuffBuildings = 7; // Банки сегмент +. Не охраняются
+}
+
 //<details>
 //  <summary>Секции зданий шаблона (полный список)</summary>
 //
@@ -1019,15 +681,9 @@ message TerrainConfig {
 message TerrainBuildingsConfig {
   google.protobuf.BoolValue ClearBuildings = 1; // нужно ли очистить все здания в этой секции
   repeated string BuildingsToDelete = 2; // массив строковых названий объектов которые нужно удалить
-  repeated int32 BuildingsToAdd = 3; //  массив айдишников зданий из секции ShopBuildingConfigs для добавления
-  google.protobuf.BoolValue AddCreatureBanksPool = 4; // нужно добавить здания сгенерированные в секции CreatureBanksPool
+  repeated int32 BuildingsToAdd = 3; //  массив айдишников зданий из секции CustomBuildingConfig для добавления
 }
 
-message CreatureBanksPool {
-  google.protobuf.BoolValue NonPlayerFactions = 1; // нужно использовать банки фракций не занятых игроками
-  google.protobuf.BoolValue PlayerFactions = 2; // нужно использовать банки фракций занятые игроками
-  IntValueConfig BanksAmount = 3; // количество банков добавляемых в пул
-}
 
 //<details>
 //  <summary>Секции зданий шаблона (полный список)</summary>
@@ -1126,20 +782,25 @@ message CreatureBanksPool {
 // Начиная с поля CreatureBuilding допустима только одна вариация настройки т.е. нукжно заполнять только один из полей. По умолчанию считается первое если заполнить несколько
 message CustomBuildingConfig {
   int32 Id = 1; // уникальный ID здания
-  int64 Value = 2; // велью здания
-  int64 GuardStrenght = 3; // размер охраны
+  google.protobuf.Int64Value Value = 2; // велью здания
+  google.protobuf.Int64Value GuardStrenght = 3; // размер охраны
   TemplateGenerationEnums.BuildingTextureConfig BuildingTexture = 4; // какая текстура будет использоваться для здания если применимо
+  TemplateGenerationEnums.RoadType RoadType = 5; // какая дорога должна вести к объекту
   oneof BuildingType {
-    CreatureBuildingConfig CreatureBuilding = 5; // банк существ
-    google.protobuf.StringValue XdbRef = 6; // ссылка на объект в игре, должна использоваться достоверная href из файлов игры
-    PandoraBoxConfig PandoraBox = 7; // коробка
-    ResourceBuildingConfig ResourceGiver = 8; // здание для выдачи ресурсов
-    ScriptBuildingConfig ScriptBuilding = 9; // одно из кастомных зданий без дополнительных настроек
-    MageEyeConfig MageEye = 10; // здание для открытия тумана войны по заданным координатам
-    RunicChestConfig RunicChest = 11;  // объект с выдачей рун герою
+    CreatureBuildingConfig CreatureBuilding = 6; // банк существ
+    google.protobuf.StringValue XdbRef = 7; // ссылка на объект в игре, должна использоваться достоверная href из файлов игры
+    PandoraBoxConfig PandoraBox = 8; // коробка
+    ResourceBuildingConfig ResourceGiver = 9; // здание для выдачи ресурсов
+    ScriptBuildingConfig ScriptBuilding = 10; // одно из кастомных зданий без дополнительных настроек
+    MageEyeConfig MageEye = 11; // здание для открытия тумана войны по заданным координатам
+    RunicChestConfig RunicChest = 12;  // объект с выдачей рун герою
+    ArtifactXdb ArtifactXdb = 13; // объект в виде артефакта 
+    MapObjectXdb MapObjectXdb = 14; // один из дефолтных объектов
+
     DefaultBuildingConfig DefaultBuilding = 99;  // вариант объекта по умолчанию без кастомизации (текстура тоже будет взята из дефолтного объекта)
-    CreatureBankConfig MjoBankConfig = 100; // это вариант здания который будет использован для специальной генерации объектов с настройками в секции CreatureBanksPool и добавлен специальной галочкой AddCreatureBanksPool.
   }
+  TemplateGenerationEnums.BuildingInteractionMessage InteractionMessageType = 15; // тип сообщения, которое вызывается при взаимодействии с этим объектом (на данный момент поддерживается только для CreatureBuilding IsDwelling = false) 
+  LocalizedCustomTextsModel CustomTexts = 16; // кастомные описания для объекта
 }
 
 // <details>
@@ -1329,8 +990,8 @@ message CreatureBuildingConfig {
   google.protobuf.BoolValue NoGrades = 2; // добавлять ли негрейд
   google.protobuf.BoolValue Grades = 3; // добавлять ли грейд
   google.protobuf.BoolValue Neutrals = 4; // добавлять ли нейтралов
-  google.protobuf.BoolValue NonPLayerFactions = 5; // добавлять ли фракции игроков
-  google.protobuf.BoolValue PLayerFactions = 6; // добавлять ли фракции игроков
+  repeated TemplateGenerationEnums.TerrainType TerrainTypes = 5; // какие террейны нужно добавить
+  bool PlayerFactions = 6; // добавлять ли фракции игроков
   TemplateGenerationEnums.PlayerType PlayerType = 7; // фракции каких игроков нужно добавить
   repeated string CreatureIds = 8; // массив существ, одно из которых будет выбрано — если указано, остальные параметры игнорируются
   google.protobuf.DoubleValue CostMultiplier = 9; // множитель цены в золоте юнитов
@@ -1338,6 +999,8 @@ message CreatureBuildingConfig {
   google.protobuf.DoubleValue GrowMultiplier = 11; // множитель прироста юнитов
 
   google.protobuf.BoolValue IsDwelling = 12; // Должен ли банк сгенерироваться в виде двеллинга
+  
+  repeated BuildingGuardsArray GuardsPool = 13; // массив массивов существ для охраны, из которых будет выбран один вариант
 }
 
 message PandoraBoxConfig {
@@ -1374,13 +1037,30 @@ message MageEyeConfig {
   google.protobuf.Int32Value Radius = 3; // радиус открытия тумана войны
 }
 
+message BuildingGuardConfig {
+  string CreatureId = 1; // айди юнита
+  google.protobuf.DoubleValue GrowMultiplier = 2; // множитель прироста юнитов
+}
+
+message BuildingGuardsArray {
+  repeated BuildingGuardConfig Guards = 1; // пул охран здания
+}
+
+message ArtifactXdb {
+  ArtifactTypeEnum.ArtifactType ArtifactType = 1; // моделька артефакта
+}
+
+message MapObjectXdb {
+  MapObjectEnum.MapObject MapObject = 1; // моделька объекта
+}
+
 message PandoraCreatureConfig {
   repeated int64 TiersPool = 1; // набор тиров который может выпасть в коробке
   google.protobuf.BoolValue NoGrades = 2; // добавлять ли негрейд
   google.protobuf.BoolValue Grades = 3; // добавлять ли грейд
   google.protobuf.BoolValue Neutrals = 4; // добавлять ли нейтралов
-  google.protobuf.BoolValue NonPlayerFactions = 5; // добавлять ли фракции игроков
-  google.protobuf.BoolValue PlayerFactions = 6; // добавлять ли фракции игроков
+  repeated TemplateGenerationEnums.TerrainType TerrainTypes = 5; // какие террейны нужно добавить
+  bool PlayerFactions = 6; // добавлять ли фракции игроков
   TemplateGenerationEnums.PlayerType PlayerType = 7; // фракции каких игроков нужно добавить
   repeated string CreatureIds = 8; // массив существ которые нужно добавить.
   google.protobuf.DoubleValue GrowMultiplier = 9; // множитель прироста юнитов
@@ -1403,28 +1083,26 @@ message PandoraSpellConfig {
   google.protobuf.Int64Value Count = 6; // количество заклинаний которые могут выпасть, по умолччанию 1
 }
 
-message CreatureBankConfig {
-  string Name = 1; // уникальное имя модели объекта, актуальные имена см. в конфиге MJO
-  repeated string CreaturesPool = 2; // массив ID существ, из которых будет выбран один случайный
-  repeated Common.StringArray GuardsPool = 3; // массив массивов существ для охраны, из которых будет выбран один вариант
-  google.protobuf.DoubleValue CreatureCostMultiplier = 4; // множитель цены существа в золоте
-  google.protobuf.DoubleValue CreatureResourcesMultiplier = 5; // множитель цены существа в ресурсах
-  google.protobuf.DoubleValue CreatureGrowMultiplier = 6; // множитель прироста существа
-  google.protobuf.DoubleValue GuardGrowMultiplier = 7; // множитель прироста охраны
-}
-
 message StartBuildingConfig {
   google.protobuf.BoolValue ApplyAllTerrains = 1; // нужно применить настройку ко всем террейнам
   TemplateGenerationEnums.TerrainType TerrainType = 2; // к какому террейну нужно применить настройку (only if ApplyAllTerrains = false)
-  repeated TemplateGenerationEnums.BuildingType Buildings = 3; // массив зданий для постройки, названия указаны в справочнике в конце документа
-  TemplateGenerationEnums.BuildingMode BuildingMode = 4; // К каким городам нужно применять настройку
+  Enums.CastleType CastleType = 3; // к какому фракции нужно применить настройку (only if ApplyAllTerrains == false && TerrainType == null)
+  repeated TemplateGenerationEnums.BuildingType Buildings = 4; // массив зданий для постройки, названия указаны в справочнике в конце документа
+  TemplateGenerationEnums.BuildingMode BuildingMode = 5; // К каким городам нужно применять настройку
+}
+
+message SpecificCastleBuildingConfig {
+  google.protobuf.Int64Value CoordinateX = 1; // координата x конкретного замка на карте
+  google.protobuf.Int64Value CoordinateY = 2; // координата y конкретного замка на карте
+  google.protobuf.Int64Value SearchRadius = 3; // радиус поиска конкретного замка(default - 10)
+  repeated TemplateGenerationEnums.BuildingType Buildings = 4; // массив зданий, которые должны быть построены в этом конкретном замке
 }
 
 message ScriptFeaturesConfig {
   CastleCaptureModel CastleCaptureProps = 1; // включение победы по удержанию замка
   GMRebuildModel GMRebuildProps = 2; // включение перестройки ГМа
   GloballyDisabledBuildingsModel GloballyDisabledBuildingsProps = 3; // список отключённых зданий
-  ForcedFinalBattleModel ForcedFinalBattleProps = 4; // данные о принудительной финальной битве
+  repeated ForcedFinalBattleModel ForcedFinalBattleProps = 4; // данные о принудительной финальной битве, будет выбран случайный конфиг
   repeated AdditionalStartCastle AdditionalStartCastles = 5; // данные о  дополнительных замках игроков
 }
 
@@ -1507,4 +1185,13 @@ message BannedBasesByClass {
 message BasesBanModel {
   repeated TemplateGenerationEnums.SkillType CommonBannedSkills = 1; // забаненные базы для всех героев
   repeated BannedBasesByClass SkillsBannedForClass = 2; // забаненные базы для конкретных классов героев
+}
+
+message CustomTextsModel {
+  string Name = 1; // кастомное имя здание
+  string Description = 2; // кастомное описание здания
+}
+
+message LocalizedCustomTextsModel {
+  map<string, CustomTextsModel> Texts = 1; // словарь локализованных кастомных описаний объекта(ключи - языки). Если для языка не задано кастомное описание, будет использовано стандартное
 }

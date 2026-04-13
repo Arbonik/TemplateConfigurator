@@ -139,7 +139,7 @@ data class ResourcesConfig(
 @Serializable
 data class ZoneGenerationConfig(
     val ZoneId: Int,
-    val TerrainType: TerrainType,
+    val TerrainType: TerrainType? = null,
     val MirrorZoneId: Int? = null,
     val DwellingGenerationConfig: DwellingGenerationConfig? = null,
     val MineGenerationConfig: ResourcesConfig? = null,

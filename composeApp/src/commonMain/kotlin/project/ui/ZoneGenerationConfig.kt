@@ -278,7 +278,7 @@ private fun BasicZoneConfigEditor(
             label = "Terrain Type:",
             currentValue = config.TerrainType,
             values = TerrainType.values().toList(),
-            itemTitle = { it.name },
+            itemTitle = { it?.name ?: it.toString() },
             onValueSelected = { onConfigChanged(config.copy(TerrainType = it as TerrainType))},
         )
 

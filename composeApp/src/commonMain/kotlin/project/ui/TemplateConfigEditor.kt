@@ -20,17 +20,26 @@ fun TemplateConfigEditor(
 ) {
     var currentScreen by remember { mutableStateOf<NavigationItem>(NavigationItem.General) }
 
-    Scaffold { padding ->
+    Scaffold { _ ->
         Row(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            // Фиксированное меню навигации
-            NavigationPanel(
-                onItemSelected = { currentScreen = it },
-                currentScreen,
-                modifier = Modifier.width(230.dp)
-            )
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = config.TemplateName,
+                    modifier = Modifier.padding(16.dp)
+                )
+                // Фиксированное меню навигации
+                NavigationPanel(
+                    onItemSelected = { currentScreen = it },
+                    currentScreen,
+                    modifier = Modifier.width(230.dp)
+                )
+            }
 
             // Основное содержание
             Box(
@@ -127,13 +136,18 @@ fun TemplateConfigEditor(
                     is NavigationItem.File -> {
                         FilePickerScreen(
                             openFile = {
-                                Files.openFile({ text ->
-                                    onConfigChanged(
-                                        json.decodeFromString<TemplateGenerationConfig>(
-                                            text ?: ""
+                                Files.openFile(
+                                    readerText = { text ->
+                                        onConfigChanged(
+                                            json.decodeFromString<TemplateGenerationConfig>(
+                                                text ?: ""
+                                            )
                                         )
-                                    )
-                                }, onError = { })
+                                    },
+                                    onError = {
+
+                                    }
+                                )
                             },
                             saveFile = {
                                 Files.saveFile(
@@ -163,13 +177,6 @@ private fun NavigationPanel(
                 .verticalScroll(rememberScrollState())
                 .padding(8.dp)
         ) {
-            Text(
-                text = "H5 Lobby - Template Editor",
-                modifier = Modifier.padding(16.dp)
-            )
-
-            Divider()
-
             val navItems = listOf(
                 NavigationItem.General,
                 NavigationItem.Zones,
